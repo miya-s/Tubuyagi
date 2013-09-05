@@ -18,6 +18,33 @@
     }
     return self;
 }
+#define _scheme_ NSLinguisticTagSchemeTokenType
+- (void)showMorphDivision:(NSString*)targetText{
+    
+    // スキーム
+    NSArray *schemes = @[_scheme_];
+    
+    // NSLinguisticTaggerオブジェクトを生成
+    NSLinguisticTagger *tagger = [[NSLinguisticTagger alloc] initWithTagSchemes:schemes
+                                                                        options:0];
+    
+    [tagger setString:targetText];
+    
+    // トークンのタグを取得開始
+    
+    __block NSString *previousEntity = @"BOS";
+    [tagger enumerateTagsInRange:NSMakeRange(0, targetText.length)
+                          scheme:_scheme_
+                         options:0
+                      usingBlock:
+     ^(NSString *tag, NSRange tokenRange, NSRange sentenceRange, BOOL *stop) {
+         NSString *currentEntity = [targetText substringWithRange:tokenRange];
+         //currentEntityにアレが入る
+         NSLog(@"%@ : %@",previousEntity,currentEntity);
+         previousEntity = currentEntity;
+     }];
+    NSLog(@"%@ : %@",previousEntity,@"EOS");
+}
 
 
 #define margin 15
@@ -81,6 +108,8 @@
     
     CGRect textRect = CGRectMake(margin, margin, bubbleRect.size.width, bubbleRect.size.height);//75, 45, 150, 60);
     NSString *text = @"こんにちは。\n吹き出し描いたよ。\nくちばし部分の構造は下の絵を見てね。";
+    
+    [self showMorphDivision:text];
     [[UIColor colorWithWhite:0.1 alpha:1] set];
     [text drawInRect:textRect withFont:[UIFont systemFontOfSize:12]];
     
