@@ -7,7 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FoodUIViewController.h"
+@interface ViewController : UIViewController<FoodViewControllerDelegate>
 
-@interface ViewController : UIViewController
-
+@property (strong, nonatomic) IBOutlet UILabel *strYagiName;
+@property (weak, nonatomic) IBOutlet UILabel *strYagiTweet;
+- (IBAction)chooseFood:(UIButton *)sender;
+- (IBAction)setConfig:(UIButton *)sender;
 @end
