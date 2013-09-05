@@ -10,4 +10,6 @@
 
 @interface bubbleView : UIView
 
+@property (nonatomic, retain)NSString *strTweet;
+
 @end

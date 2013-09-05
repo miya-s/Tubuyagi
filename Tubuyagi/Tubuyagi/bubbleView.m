@@ -15,6 +15,7 @@
     self = [super initWithFrame:frame];
     if (self) {
         self.backgroundColor = [UIColor colorWithRed:1 green:1 blue:0.980 alpha:1];
+        self.strTweet = @"aiueo";
     }
     return self;
 }
@@ -33,7 +34,7 @@
     
     //Path作成
 //    CGRect bubbleRect = CGRectMake(0, //60.5, 40.5, 170, 70);
-    CGRect bubbleRect = CGRectMake(self.bounds.origin.x - margin, self.bounds.origin.y - margin, self.bounds.size.width, self.bounds.size.height);
+    CGRect bubbleRect = CGRectMake(self.bounds.origin.x , self.bounds.origin.y , self.bounds.size.width-margin, self.bounds.size.height);
     CGContextBubblePath(context, bubbleRect);
     CGPathRef bubblePath = CGContextCopyPath(context);
     
@@ -79,10 +80,11 @@
     //---------
     // 何か書く
     
-    CGRect textRect = CGRectMake(margin, margin, bubbleRect.size.width, bubbleRect.size.height);//75, 45, 150, 60);
+    CGRect textRect = CGRectMake(self.bounds.origin.x + margin, self.bounds.origin.y + margin, bubbleRect.size.width, bubbleRect.size.height);//75, 45, 150, 60);
     NSString *text = @"こんにちは。\n吹き出し描いたよ。\nくちばし部分の構造は下の絵を見てね。";
     [[UIColor colorWithWhite:0.1 alpha:1] set];
     [text drawInRect:textRect withFont:[UIFont systemFontOfSize:12]];
+//    [self sizeToFit];
     
     //---------
     // 顔Icon
@@ -101,10 +103,10 @@
 //    [profImage drawInRect:profRect];
     
     //縁取り
-    CGContextAddPath(context, profPath);
-    CGContextSetRGBStrokeColor(context, 0, 0, 0, 0.3);
-    CGContextSetLineWidth(context, 1);
-    CGContextStrokePath(context);
+//    CGContextAddPath(context, profPath);
+//    CGContextSetRGBStrokeColor(context, 0, 0, 0, 0.3);
+//    CGContextSetLineWidth(context, 1);
+//    CGContextStrokePath(context);
     
     //Path解放
     CGPathRelease(profPath);
@@ -241,7 +243,7 @@ void CGContextDrawAdditionalLine(CGContextRef context, CGRect rect, CGFloat scal
     CGContextAddLineToPoint(context, lx-qx, by);
     CGContextStrokePath(context);
     
-    CGContextSetRGBStrokeColor(context, 0, 0, 1, 0.7);
+    CGContextSetRGBStrokeColor(context, 0, 0, 1, 0.0);
     CGContextMoveToPoint(context, lx-qx, by);
     //CGContextAddLineToPoint(context, lx, by-cqy);
     CGContextAddLineToPoint(context, lx, by-qy);
