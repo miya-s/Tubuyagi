@@ -7,6 +7,7 @@
 //
 
 #import "FoodUIViewController.h"
+#import "TextAnalyzer.h"
 
 @interface FoodUIViewController ()
 
@@ -129,6 +130,9 @@
 {
     UITableViewCell *selectedCell = [self.foodTableView cellForRowAtIndexPath:indexPath];
     [self.delegate setTweetString:selectedCell.textLabel.text];
+    
+    learnFromText(selectedCell.textLabel.text);
+    
 
     [self dismissViewControllerAnimated:YES completion:nil];
     
