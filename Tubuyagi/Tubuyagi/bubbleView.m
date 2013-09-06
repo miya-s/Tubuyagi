@@ -15,8 +15,13 @@
     self = [super initWithFrame:frame];
     if (self) {
         self.backgroundColor = [UIColor colorWithRed:1 green:1 blue:0.980 alpha:1];
-        self.strTweet = @"aiueo";
+
     }
+    self.strTweet = [[UILabel alloc] initWithFrame:CGRectMake(60, 100, 280, 500)];
+    //フォント
+    UIFont *font = [UIFont fontWithName:@"Helvetica-Bold"size:18];
+    self.strTweet.font = font;
+    self.strTweet.text = @"タップしてね";
     return self;
 }
 #define _scheme_ NSLinguisticTagSchemeTokenType
@@ -41,16 +46,23 @@
      ^(NSString *tag, NSRange tokenRange, NSRange sentenceRange, BOOL *stop) {
          NSString *currentEntity = [targetText substringWithRange:tokenRange];
          //currentEntityにアレが入る
-         NSLog(@"%@ : %@",previousEntity,currentEntity);
+//         NSLog(@"%@ : %@",previousEntity,currentEntity);
          previousEntity = currentEntity;
      }];
-    NSLog(@"%@ : %@",previousEntity,@"EOS");
+//    NSLog(@"%@ : %@",previousEntity,@"EOS");
 }
 
 
-#define margin 15
+#define textMarginX 18
+#define textMarginY 6
 - (void)drawRect:(CGRect)rect
 {
+    //フォント
+    UIFont *font = [UIFont fontWithName:@"Helvetica-Bold"size:18];
+    
+    //全体のsize取得
+    CGSize size = [self.strTweet.text sizeWithFont:font constrainedToSize:self.bounds.size lineBreakMode:NSLineBreakByWordWrapping];
+    
     CGContextRef context = UIGraphicsGetCurrentContext();
     
     //---------
@@ -61,7 +73,8 @@
     
     //Path作成
 //    CGRect bubbleRect = CGRectMake(0, //60.5, 40.5, 170, 70);
-    CGRect bubbleRect = CGRectMake(self.bounds.origin.x , self.bounds.origin.y , self.bounds.size.width-margin, self.bounds.size.height);
+
+    CGRect bubbleRect = CGRectMake(self.bounds.origin.x , self.bounds.origin.y , size.width, size.height );
     CGContextBubblePath(context, bubbleRect);
     CGPathRef bubblePath = CGContextCopyPath(context);
     
@@ -107,8 +120,8 @@
     //---------
     // 何か書く
     
-    CGRect textRect = CGRectMake(self.bounds.origin.x + margin, self.bounds.origin.y + margin, bubbleRect.size.width, bubbleRect.size.height);//75, 45, 150, 60);
-    NSString *text = @"こんにちは。\n吹き出し描いたよ。\nくちばし部分の構造は下の絵を見てね。";
+    CGRect textRect = CGRectMake(self.bounds.origin.x + textMarginX, self.bounds.origin.y + textMarginY, bubbleRect.size.width , bubbleRect.size.height);//75, 45, 150, 60);
+    NSString *text = self.strTweet.text;//@"こんにちは。\n吹き出し描いたよ。\nくちばし部分の構造は下の絵を見てね。";
     
     [self showMorphDivision:text];
     [[UIColor colorWithWhite:0.1 alpha:1] set];

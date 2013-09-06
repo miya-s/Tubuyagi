@@ -10,10 +10,12 @@
 #import "FoodUIViewController.h"
 #import "bubbleView.h"
 @interface ViewController : UIViewController<FoodViewControllerDelegate>
-
+{
+    UILabel *lblYagiTweet;
+}
 @property (strong, nonatomic) IBOutlet UILabel *strYagiName;
-@property (weak, nonatomic) IBOutlet UILabel *strYagiTweet;
-@property (weak, nonatomic) IBOutlet bubbleView *bubbleTweetView;
+//@property (strong, nonatomic) IBOutlet UILabel *strYagiTweet;
+@property (strong, nonatomic) bubbleView *bblView;
 @property (weak, nonatomic) IBOutlet UIImageView *imgViewYagi;
 - (IBAction)chooseFood:(UIButton *)sender;
 - (IBAction)setConfig:(UIButton *)sender;
