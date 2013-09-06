@@ -15,7 +15,7 @@
 @end
 
 @implementation ViewController
-@synthesize bblView = _bblView;
+//@synthesize bblView = _bblView;
 
 - (void)viewDidLoad
 {
@@ -36,6 +36,9 @@
     lblYagiTweet = [[UILabel alloc] initWithFrame:lblRect];
     lblYagiTweet.text = @"aaaa";
     [self.view addSubview:lblYagiTweet];
+    
+    //twitter情報の取得
+    [self getTwitterAccountInformation];
     
     [self initialize];
 }
@@ -58,6 +61,7 @@
     
     FoodUIViewController *fvc = [[FoodUIViewController alloc] initWithNibName:@"FoodUIViewController" bundle:nil];
     fvc.delegate = self;
+    fvc.twitterAccounts = self.twitterAccounts;
     [self presentViewController:fvc animated:YES completion:nil];
 }
 
@@ -106,5 +110,46 @@
 - (void)alert{
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"まだできていません" message:@"Coming Soon!" delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
     [alert show];
+}
+
+- (void)getTwitterAccountInformation
+{
+    _accountStore = [[ACAccountStore alloc] init];
+    
+    ACAccountType *accountType = [_accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
+    NSArray *accounts = [_accountStore accountsWithAccountType:accountType];
+    if (accounts.count == 0) {
+        NSLog(@"Please add twitter account on Settings.");
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Twitterアカウント情報取得失敗" message:@"本体の環境設定からTwitterのアカウントを設定して下さい" delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+        [alert show];
+        return;
+    }
+    NSLog(@"%@", _accountStore);
+    [_accountStore requestAccessToAccountsWithType:accountType
+                                           options:nil
+                                        completion:^(BOOL granted, NSError *error) {
+                                            dispatch_async(dispatch_get_main_queue(), ^{
+                                                if (granted) {
+                                                    //
+                                                    // Get twitter accounts.
+                                                    //
+                                                    _twitterAccounts = [_accountStore accountsWithAccountType:accountType];
+                                                    //
+                                                    // Display accounts.
+                                                    //
+                                                    NSMutableString *text = [[NSMutableString alloc] initWithCapacity:200];
+                                                    [text appendString:@"Twitter Accounts:\n"];
+                                                    for (ACAccount *account in _twitterAccounts) {
+                                                        [text appendString:@" > "];
+                                                        [text appendString:account.username];
+                                                        [text appendString:@"\n"];
+                                                    }
+                                                    NSLog(@"%@",text);
+                                                } else {
+                                                    NSLog(@"User denied to access twitter account.");
+                                                }
+                                            });
+                                        }];
+
 }
 @end

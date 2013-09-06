@@ -24,6 +24,8 @@
 		374D797317D8463800FAE80C /* FoodUIViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 374D797117D8463800FAE80C /* FoodUIViewController.m */; };
 		374D797417D8463800FAE80C /* FoodUIViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 374D797217D8463800FAE80C /* FoodUIViewController.xib */; };
 		374D797D17D8552B00FAE80C /* bubbleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 374D797C17D8552B00FAE80C /* bubbleView.m */; };
+		375137BE17D976150069A12C /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 375137BD17D976150069A12C /* Accounts.framework */; };
+		375137C017D9761F0069A12C /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 375137BF17D9761F0069A12C /* Social.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -51,6 +53,8 @@
 		374D797217D8463800FAE80C /* FoodUIViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FoodUIViewController.xib; sourceTree = "<group>"; };
 		374D797B17D8552B00FAE80C /* bubbleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bubbleView.h; sourceTree = "<group>"; };
 		374D797C17D8552B00FAE80C /* bubbleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bubbleView.m; sourceTree = "<group>"; };
+		375137BD17D976150069A12C /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
+		375137BF17D9761F0069A12C /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +62,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				375137C017D9761F0069A12C /* Social.framework in Frameworks */,
+				375137BE17D976150069A12C /* Accounts.framework in Frameworks */,
 				374D792A17D822D000FAE80C /* UIKit.framework in Frameworks */,
 				374D792C17D822D000FAE80C /* Foundation.framework in Frameworks */,
 				374D792E17D822D000FAE80C /* CoreGraphics.framework in Frameworks */,
@@ -87,6 +93,8 @@
 		374D792817D822CF00FAE80C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				375137BF17D9761F0069A12C /* Social.framework */,
+				375137BD17D976150069A12C /* Accounts.framework */,
 				374D792917D822D000FAE80C /* UIKit.framework */,
 				374D792B17D822D000FAE80C /* Foundation.framework */,
 				374D792D17D822D000FAE80C /* CoreGraphics.framework */,
@@ -350,6 +358,7 @@
 				374D794B17D822D000FAE80C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

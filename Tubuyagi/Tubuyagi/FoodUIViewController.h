@@ -7,13 +7,18 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <Social/Social.h>
 
 @protocol FoodViewControllerDelegate;
 
 @interface FoodUIViewController : UIViewController<UITableViewDataSource, UITableViewDelegate>
-
+{
+    NSArray *tweets;
+}
 @property (strong, nonatomic) IBOutlet UITableView *foodTableView;
 @property (nonatomic, retain) id<FoodViewControllerDelegate> delegate;
+@property (nonatomic, retain) NSArray *twitterAccounts;
+//@property (nonatomic, retain) NSArray *tweets;
 
 - (IBAction)backMainView:(id)sender;
 
