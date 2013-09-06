@@ -46,6 +46,7 @@
             if (200 <= statusCode && statusCode < 300) {
                 tweets = [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil];
                 [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+//                [self performSelector:@selector(reloadData) withObject:self.foodTableView afterDelay:1.0];
                 [self.foodTableView reloadData];
             } else {
                 NSDictionary *twitterErrorRoot = [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil];
@@ -73,6 +74,18 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+- (NSArray *)getTextOrUserName:(NSString *)key{
+    //tweetとユーザー名取得
+    if ([key isEqualToString:@"text"]) {//本文の配列を返す
+        NSArray *texts = [tweets valueForKeyPath:@"text"];
+        return texts;
+    } else if ([key isEqualToString:@"user"]){//ユーザー名の配列を返す
+        NSArray *users = [[tweets valueForKeyPath:@"user"] valueForKeyPath:@"screen_name"];
+        return users;
+    } else
+        return nil;
+}
+
 
 #pragma mark - UITableViewDataSource
 
@@ -87,7 +100,8 @@
 // セルの中身の実装
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"Cell";
+    NSString *strCellIdentifier = [NSString stringWithFormat:@"%d", indexPath.row];
+    NSString *CellIdentifier = strCellIdentifier;
     
 //    CustomCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     UITableViewCell *cell = [self.foodTableView dequeueReusableCellWithIdentifier:CellIdentifier];
@@ -95,13 +109,16 @@
     if (cell == nil) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
         if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+//            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+            cell.textLabel.font = [UIFont systemFontOfSize:[UIFont systemFontSize]];
+            cell.textLabel.numberOfLines = 0;
+            cell.detailTextLabel.font = [UIFont systemFontOfSize:[UIFont systemFontSize]];
+            
+            
             
             //tweetとユーザー名取得
-            NSArray *texts = [tweets valueForKeyPath:@"text"];
-            cell.textLabel.text = [texts objectAtIndex:indexPath.row];
-            NSArray *users = [[tweets valueForKeyPath:@"user"] valueForKeyPath:@"screen_name"];
-            cell.detailTextLabel.text = [users objectAtIndex:indexPath.row];
+            cell.textLabel.text = [[self getTextOrUserName:@"text"] objectAtIndex:indexPath.row];//[texts objectAtIndex:indexPath.row];
+            cell.detailTextLabel.text = [[self getTextOrUserName:@"user"] objectAtIndex:indexPath.row];
         }
     }
     return cell;
@@ -115,6 +132,31 @@
 
     [self dismissViewControllerAnimated:YES completion:nil];
     
+}
+
+//セルの高さ
+- (float)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (tweets) {
+        
+        UITableViewCell *cell = [self tableView:self.foodTableView cellForRowAtIndexPath:indexPath];
+        CGSize bounds = CGSizeMake(self.foodTableView.frame.size.width, self.foodTableView.frame.size.height);
+        UIFont *font = cell.textLabel.font;
+        NSLog(@"%@", font);
+        //textLabelのサイズ
+        CGSize size = [cell.textLabel.text sizeWithFont:cell.textLabel.font
+                                    constrainedToSize:bounds
+                                        lineBreakMode:NSLineBreakByClipping];
+        NSLog(@"%@", cell.textLabel);
+        NSLog(@"%@", NSStringFromCGSize(size));
+        //detailTextLabelのサイズ
+        CGSize detailSize = [[[self getTextOrUserName:@"user"] objectAtIndex:indexPath.row] sizeWithFont: cell.detailTextLabel.font
+                                                constrainedToSize: bounds
+                                                    lineBreakMode: NSLineBreakByWordWrapping];//UILineBreakModeCharacterWrap];
+        NSLog(@"%f",size.height + detailSize.width);
+        return size.height + detailSize.height;
+    }
+    return 44;
 }
 
 @end
