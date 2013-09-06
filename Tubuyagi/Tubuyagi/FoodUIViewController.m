@@ -29,6 +29,36 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
+    
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+    //    if (_twitterAccounts.count == 0) return;
+    
+    NSURL *url = [NSURL URLWithString:@"https://api.twitter.com/1.1/statuses/home_timeline.json"];
+    SLRequest *request = [SLRequest requestForServiceType:SLServiceTypeTwitter
+                                            requestMethod:SLRequestMethodGET
+                                                      URL:url
+                                               parameters:nil];
+    // Use first twitter account.
+    [request setAccount:[_twitterAccounts objectAtIndex:0]];
+    [request performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSUInteger statusCode = urlResponse.statusCode;
+            if (200 <= statusCode && statusCode < 300) {
+                tweets = [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil];
+                [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+                [self.foodTableView reloadData];
+            } else {
+                NSDictionary *twitterErrorRoot = [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil];
+                NSArray *twitterErrors = [twitterErrorRoot objectForKey:@"errors"];
+                if (twitterErrors.count > 0) {
+                    NSLog(@"%@",[[twitterErrors objectAtIndex:0] objectForKey:@"message"]);
+                } else {
+                    NSLog(@"Failed to get tweets.");
+                    
+                }
+            }
+        });
+    }];
 }
 
 - (void)didReceiveMemoryWarning
@@ -48,8 +78,10 @@
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     
-    
-    return 10;//tweetの数
+    if (tweets) {
+        return [tweets count];
+    }
+    return 0;//tweetの数
 }
 
 // セルの中身の実装
@@ -64,10 +96,12 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
         if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-            NSString *strCell = [NSString stringWithFormat:@"tweet内容%d番目", indexPath.row];
-            cell.textLabel.text = strCell;
-            cell.detailTextLabel.text = @"つぶやいてる人の名前？？";
-            //            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+            
+            //tweetとユーザー名取得
+            NSArray *texts = [tweets valueForKeyPath:@"text"];
+            cell.textLabel.text = [texts objectAtIndex:indexPath.row];
+            NSArray *users = [[tweets valueForKeyPath:@"user"] valueForKeyPath:@"screen_name"];
+            cell.detailTextLabel.text = [users objectAtIndex:indexPath.row];
         }
     }
     return cell;

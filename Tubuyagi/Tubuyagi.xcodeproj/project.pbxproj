@@ -31,6 +31,8 @@
 		4A63EAAF17D96F7000C93F86 /* FMDatabaseQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A63EAA917D96F7000C93F86 /* FMDatabaseQueue.m */; };
 		4A63EAB017D96F7000C93F86 /* FMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A63EAAB17D96F7000C93F86 /* FMResultSet.m */; };
 		4A63EB9D17D9BD5300C93F86 /* TextAnalyzer.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A63EB9C17D9BD5300C93F86 /* TextAnalyzer.m */; };
+		375137BE17D976150069A12C /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 375137BD17D976150069A12C /* Accounts.framework */; };
+		375137C017D9761F0069A12C /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 375137BF17D9761F0069A12C /* Social.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -71,6 +73,9 @@
 		4A63EAAB17D96F7000C93F86 /* FMResultSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FMResultSet.m; path = lib/FMResultSet.m; sourceTree = "<group>"; };
 		4A63EB9B17D9BD5300C93F86 /* TextAnalyzer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TextAnalyzer.h; path = lib/TextAnalyzer.h; sourceTree = "<group>"; };
 		4A63EB9C17D9BD5300C93F86 /* TextAnalyzer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TextAnalyzer.m; path = lib/TextAnalyzer.m; sourceTree = "<group>"; };
+		375137BD17D976150069A12C /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
+		375137BF17D9761F0069A12C /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
+
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,6 +84,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				4A63EA9F17D890F400C93F86 /* libsqlite3.0.dylib in Frameworks */,
+				375137C017D9761F0069A12C /* Social.framework in Frameworks */,
+				375137BE17D976150069A12C /* Accounts.framework in Frameworks */,
 				374D792A17D822D000FAE80C /* UIKit.framework in Frameworks */,
 				374D792C17D822D000FAE80C /* Foundation.framework in Frameworks */,
 				374D792E17D822D000FAE80C /* CoreGraphics.framework in Frameworks */,
@@ -109,6 +116,8 @@
 		374D792817D822CF00FAE80C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				375137BF17D9761F0069A12C /* Social.framework */,
+				375137BD17D976150069A12C /* Accounts.framework */,
 				374D792917D822D000FAE80C /* UIKit.framework */,
 				374D792B17D822D000FAE80C /* Foundation.framework */,
 				374D792D17D822D000FAE80C /* CoreGraphics.framework */,
