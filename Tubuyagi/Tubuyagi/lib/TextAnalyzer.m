@@ -19,20 +19,24 @@ NSString*   databaseName = @"bi-gram.db";
 NSString* escapeDangerousChars(NSString *str){
     //あとでRT後の部分とか消したり
     NSString *result = [str stringByReplacingOccurrencesOfString:@"\n" withString:@""];
-    result = [str stringByReplacingOccurrencesOfString:@"。" withString:@" EOS "];
     return result;
 }
 
 void updateBigramValue(FMDatabase *db, NSString* previous, NSString* current){
     FMResultSet* sqlResult = [db executeQueryWithFormat:sqlSelectBigram, previous, current];
     BOOL isThereTargetBigram = [sqlResult next];
+    int value;
     
-    
+    if ([previous isEqualToString:@"。"]){
+        value = 10;
+    } else {
+        value = 1;
+    }
     if (isThereTargetBigram){
         int count = [sqlResult intForColumn:@"count"];
-        [db executeUpdateWithFormat:sqlUpdateBigram, count + 1, previous, current];
+        [db executeUpdateWithFormat:sqlUpdateBigram, count + value, previous, current];
     } else {
-        [db executeUpdateWithFormat:sqlAddBigram, previous, current, 1];
+        [db executeUpdateWithFormat:sqlAddBigram, previous, current, value];
     }
 }
 
@@ -64,7 +68,7 @@ NSString* generateSentence(void){
     [db open];
     while (true){
         NSString* next = generateNextWord(db, previous);
-        if ([previous isEqualToString:@"EOS"]){
+        if ([next isEqualToString:@"EOS"]){
             break;
         }
         result = [NSString stringWithFormat:@"%@%@",result,next];
