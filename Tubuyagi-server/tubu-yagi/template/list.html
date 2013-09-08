@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>CRUDサンプル</title>
+</head>
+<body>
+<h1>List（一覧）</h1>
+> <a href="/add">追加</a><br><br>
+
+<table cellspacing="1" cellpadding="8" border="0" bgcolor="#999999">
+  <tr bgcolor="#EBEBEB">
+    <td>&nbsp;</td>
+    <td align="center">名前</td>
+    <td align="center">性別</td>
+    <td align="center">年齢</td>
+    <td align="center">メールアドレス</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+{% for person in persons %}
+  <tr bgcolor="#FFFFFF">
+    <td><a href="/view/{{ person.key }}">詳細</a></td>
+    <td>{{ person.name }}</td>
+    <td align="center">{{ person.sex }}</td>
+    <td align="center">{{ person.age }}歳</td>
+    <td>{{ person.email }}</td>
+    <td><a href="/edit/{{ person.key }}">編集</a></td>
+    <td><a href="/delete/{{ person.key }}" onClick="if(confirm('本当に削除しますか？')){return true;}else{return false;}">削除</a></td>
+  </tr>
+{% endfor %}
+</table>
+
+</body>
+</html>

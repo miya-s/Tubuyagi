@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>CRUDサンプル</title>
+</head>
+<body>
+<h1>Edit（編集）</h1>
+> <a href="/list">一覧</a><br><br>
+
+<form action="/edit/{{ person.key }}" method="post">
+<table cellspacing="1" cellpadding="8" border="0" bgcolor="#999999">
+  <tr>
+    <td width="100" bgcolor="#EBEBEB">名前 <sup><font color="#FF0000">*</font></sup></td>
+    <td width="250" bgcolor="#FFFFFF"><input type="text" name="name" value="{{ person.name }}"></td>
+  </tr>
+  <tr>
+    <td bgcolor="#EBEBEB">年齢 <sup><font color="#FF0000">*</font></sup></td>
+    <td bgcolor="#FFFFFF"><select name="age">
+{% for age in forms.ages %}
+    <option value="{{ age }}"{% ifequal person.age age %} selected{% endifequal %}>{{ age }}</option>
+{% endfor %}
+    </select> 歳</td>
+  </tr>
+  <tr>
+    <td bgcolor="#EBEBEB">誕生日</td>
+    <td bgcolor="#FFFFFF"><select name="birthday_year">
+    <option value="}">-</option>
+{% for b_year in forms.b_years %}
+    <option value="{{ b_year }}"{% ifequal person.birthday_year b_year %} selected{% endifequal %}>{{ b_year }}</option>
+{% endfor %}
+    </select> 年 <select name="birthday_month">
+    <option value="}">-</option>
+{% for b_month in forms.b_months %}
+    <option value="{{ b_month }}"{% ifequal person.birthday_month b_month %} selected{% endifequal %}>{{ b_month }}</option>
+{% endfor %}
+    </select> 月 <select name="birthday_day">
+    <option value="}">-</option>
+{% for b_day in forms.b_days %}
+    <option value="{{ b_day }}"{% ifequal person.birthday_day b_day %} selected{% endifequal %}>{{ b_day }}</option>
+{% endfor %}
+    </select> 日</td>
+  </tr>
+  <tr>
+    <td bgcolor="#EBEBEB">性別</td>
+    <td bgcolor="#FFFFFF">
+    <input type="radio" name="sex" value="男"{% ifequal person.sex forms.sex_man %} checked{% endifequal %}>男 
+    <input type="radio" name="sex" value="女"{% ifequal person.sex forms.sex_woman %} checked{% endifequal %}>女</td>
+  </tr>
+  <tr>
+    <td bgcolor="#EBEBEB">電話番号</td>
+    <td bgcolor="#FFFFFF"><input type="text" name="tel" value="{{ person.tel }}"></td>
+  </tr>
+  <tr>
+    <td bgcolor="#EBEBEB">メールアドレス</td>
+    <td bgcolor="#FFFFFF"><input type="text" name="email" value="{{ person.email }}"></td>
+  </tr>
+  <tr>
+    <td bgcolor="#EBEBEB">住所</td>
+    <td bgcolor="#FFFFFF"><input type="text" name="address" value="{{ person.address }}"></td>
+  </tr>
+  <tr>
+    <td bgcolor="#EBEBEB">ブログ</td>
+    <td bgcolor="#FFFFFF"><input type="text" name="blog" value="{{ person.blog }}"></td>
+  </tr>
+  <tr>
+    <td bgcolor="#EBEBEB">管理者権限</td>
+    <td bgcolor="#FFFFFF"><input type="checkbox" name="isAdmin" value="True"{% if person.isAdmin %} checked{% endif %}></td>
+  </tr>
+  <tr>
+    <td bgcolor="#EBEBEB">コメント</td>
+    <td bgcolor="#FFFFFF"><textarea name="comment">{{ person.comment }}</textarea></td>
+  </tr>
+</table><br>
+<input type="submit" value="変更する">
+</form>
+
+<br>
+<font color="#FF0000">*</font>は必須項目
+
+</body>
+</html>
