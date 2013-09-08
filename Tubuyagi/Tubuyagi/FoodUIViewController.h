@@ -19,6 +19,7 @@
 @property (nonatomic, retain) id<FoodViewControllerDelegate> delegate;
 @property (nonatomic, retain) NSArray *twitterAccounts;
 //@property (nonatomic, retain) NSArray *tweets;
+@property (strong, nonatomic) IBOutlet UILabel *lblTitle;
 
 - (IBAction)backMainView:(id)sender;
 
@@ -27,5 +28,6 @@
 @protocol FoodViewControllerDelegate <NSObject>
 
 - (void)setTweetString:(NSString *)strTweet;
+- (void)foodCancel;
 
 @end
