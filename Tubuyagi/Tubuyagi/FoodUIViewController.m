@@ -22,6 +22,7 @@
         // Custom initialization
 //        self.foodTableView.delegate = self;
 //        self.foodTableView.dataSource = self;
+        
     }
     return self;
 }
@@ -61,6 +62,9 @@
             }
         });
     }];
+    
+    self.lblTitle.text = @"田中";
+    NSLog(@"titel is %@", self.lblTitle);
 }
 
 - (void)didReceiveMemoryWarning
@@ -72,6 +76,7 @@
 
 - (IBAction)backMainView:(id)sender {
     
+    [self.delegate foodCancel];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 

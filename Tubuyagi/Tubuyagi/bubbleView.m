@@ -33,8 +33,13 @@
     //フォント
     UIFont *font = [UIFont fontWithName:@"Helvetica-Bold"size:18];
     
+    
+    CGSize bounds = CGSizeMake(280, 500);
+    
     //全体のsize取得
-    CGSize size = [self.strTweet.text sizeWithFont:font constrainedToSize:self.bounds.size lineBreakMode:NSLineBreakByWordWrapping];
+    CGSize size = [self.strTweet.text sizeWithFont:font
+                                 constrainedToSize:bounds
+                                     lineBreakMode:NSLineBreakByWordWrapping];
     
     CGContextRef context = UIGraphicsGetCurrentContext();
     

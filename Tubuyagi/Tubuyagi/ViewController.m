@@ -8,6 +8,8 @@
 
 #import "ViewController.h"
 #import "FoodUIViewController.h"
+#import "CMPopTipView.h"
+#import "TextAnalyzer.h"
 
 
 @interface ViewController ()
@@ -21,15 +23,33 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
-    UITapGestureRecognizer *gesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tweetYagi)];
-    [self.imgViewYagi addGestureRecognizer:gesture];
-    self.imgViewYagi.userInteractionEnabled = YES;
+    //ヤギの生成
+    CGRect yagiRect = CGRectMake(70, 158, 230, 228);
+    _yagiView = [[YagiView alloc] initWithFrame:yagiRect];
+    [self.view addSubview:_yagiView];
+    
+    //ヤギを押した時のボタン
+    btnYagi = [UIButton buttonWithType:UIButtonTypeCustom];
+    btnYagi.frame = yagiRect;
+    [btnYagi addTarget:self action:@selector(tweetYagi) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:btnYagi];
+    
+    //PopTipViewの管理
+    visiblePopTipViews = [NSMutableArray array];
+    
+    
+//    UITapGestureRecognizer *gesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tweetYagi)];
+//    [_yagiView addGestureRecognizer:gesture];
+//    .userInteractionEnabled = YES;
+    
+
+
     
     //bubbleView生成
-    CGRect bblRect = CGRectMake( 60, 100, 200, 115);
-    _bblView = [[bubbleView alloc] initWithFrame:bblRect];
-    self.bblView.backgroundColor = [UIColor clearColor];
-    [self.view addSubview:self.bblView];
+//    CGRect bblRect = CGRectMake( 60, 100, 200, 115);
+//    _bblView = [[bubbleView alloc] initWithFrame:bblRect];
+//    self.bblView.backgroundColor = [UIColor clearColor];
+//    [self.view addSubview:self.bblView];
     
     //食べる紙のVIew
     CGRect lblRect = CGRectMake(40, 330, 280, 52);
@@ -48,6 +68,7 @@
 {
     lblYagiTweet.frame = CGRectMake(40, 330, 280, 52);
     lblYagiTweet.alpha = 0.0;
+    timerFlag = YES;
 //    lblYagiTweet.transform = CGAffineTransformIdentity;
 }
 
@@ -62,48 +83,76 @@
     FoodUIViewController *fvc = [[FoodUIViewController alloc] initWithNibName:@"FoodUIViewController" bundle:nil];
     fvc.delegate = self;
     fvc.twitterAccounts = self.twitterAccounts;
+//    for (ACAccount *account in self.twitterAccounts) {
+
+//    }
+    NSLog(@"before title is %@", fvc.lblTitle);
     [self presentViewController:fvc animated:YES completion:nil];
+    
+    for (ACAccount *account in _twitterAccounts) {
+        NSString *strTitle = [NSString stringWithFormat:@"%@のタイムライン", account.username];
+        fvc.lblTitle.text = strTitle;//account.username;
+    }
+
 }
 
 - (IBAction)setConfig:(UIButton *)sender {
     [self alert];
 }
 
-- (void)setTweetString:(NSString *)strTweet
-{
 
-    lblYagiTweet.alpha = 1.0;
-//    [UIView beginAnimations:nil context:NULL];
-//    [UIView setAnimationDuration:2.f];
-    [UIView animateWithDuration:2.0f animations:^{
-        lblYagiTweet.center = self.imgViewYagi.center;
-        lblYagiTweet.transform = CGAffineTransformMakeScale(0.01, 0.01);
-    } completion:^(BOOL finished){
-        lblYagiTweet.transform = CGAffineTransformIdentity;
-        [self initialize];
-    }];
-    lblYagiTweet.text = strTweet;
-    
-//    [UIView commitAnimations];
 
-    
-}
+
 
 - (void)eatPaper
 {
-    lblYagiTweet.center = self.imgViewYagi.center;
+    lblYagiTweet.center = _yagiView.center;
     lblYagiTweet.transform = CGAffineTransformMakeScale(0.01, 0.01);
+}
+
+- (void)judgdeWalkRestart
+{
+    [_yagiView walkRestart];
+    [self dismissAllPopTipViews];
+    timerFlag = YES;
+}
+
+- (void)dismissAllPopTipViews {
+	while ([visiblePopTipViews count] > 0) {
+		CMPopTipView *popTipView = [visiblePopTipViews objectAtIndex:0];
+		[popTipView dismissAnimated:YES];
+		[visiblePopTipViews removeObjectAtIndex:0];
+	}
 }
 
 - (void)tweetYagi
 {
+    [self dismissAllPopTipViews];
 
-    int randomNumber = arc4random() %10000000000000000;
-    NSString *strNum = [NSString stringWithFormat:@"あなたの今日のラッキーナンバーは%dだね", randomNumber];
+    //吹き出し
+    CMPopTipView *popTipView = [[CMPopTipView alloc] initWithMessage:generateSentence()];
+//    popTipView.delegate = self;
+    popTipView.animation = 0;
+    popTipView.has3DStyle = 0;
+    [popTipView presentPointingAtView:btnYagi inView:self.view animated:YES];
+    popTipView.backgroundColor = [UIColor whiteColor];
+    popTipView.textColor = [UIColor blackColor];
+    [visiblePopTipViews addObject:popTipView];
+//    popTipView.center = CGPointMake(self.view.center.x, popTipView.center.y);
     
-    //文字のサイズを取るためのUILabel
-    self.bblView.strTweet.text = strNum;
-    [self.bblView setNeedsDisplay];
+    //ヤギの動き
+    [_yagiView stopWalk:NO];
+    
+    if (timerFlag == NO) {
+        [timer invalidate];
+    }
+    timer = [NSTimer scheduledTimerWithTimeInterval:3.0f
+                                    target:self
+                                  selector:@selector(judgdeWalkRestart)
+                                  userInfo:nil
+                                   repeats:NO];
+    timerFlag = NO;
+
 }
 
 
@@ -151,5 +200,35 @@
                                             });
                                         }];
 
+}
+
+
+#pragma mark - FoodViewControllerDelegate
+
+- (void)setTweetString:(NSString *)strTweet
+{
+    
+    lblYagiTweet.alpha = 1.0;
+    //    [UIView beginAnimations:nil context:NULL];
+    //    [UIView setAnimationDuration:2.f];
+    [UIView animateWithDuration:2.0f animations:^{
+        lblYagiTweet.center = _yagiView.center;
+        lblYagiTweet.transform = CGAffineTransformMakeScale(0.01, 0.01);
+    } completion:^(BOOL finished){
+        lblYagiTweet.transform = CGAffineTransformIdentity;
+        [self initialize];
+    }];
+    lblYagiTweet.text = strTweet;
+    
+    //    [UIView commitAnimations];
+    
+    
+}
+
+- (void)foodCancel
+{
+    [_yagiView stopWalk:YES];
+    [self performSelector:@selector(judgdeWalkRestart) withObject:nil afterDelay:2.4];
+    
 }
 @end

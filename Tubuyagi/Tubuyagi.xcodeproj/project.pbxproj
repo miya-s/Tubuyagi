@@ -24,6 +24,20 @@
 		374D797317D8463800FAE80C /* FoodUIViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 374D797117D8463800FAE80C /* FoodUIViewController.m */; };
 		374D797417D8463800FAE80C /* FoodUIViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 374D797217D8463800FAE80C /* FoodUIViewController.xib */; };
 		374D797D17D8552B00FAE80C /* bubbleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 374D797C17D8552B00FAE80C /* bubbleView.m */; };
+		375137BE17D976150069A12C /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 375137BD17D976150069A12C /* Accounts.framework */; };
+		375137C017D9761F0069A12C /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 375137BF17D9761F0069A12C /* Social.framework */; };
+		37D0611E17DB421700F94E30 /* _doutai.png in Resources */ = {isa = PBXBuildFile; fileRef = 37D0611917DB421700F94E30 /* _doutai.png */; };
+		37D0611F17DB421700F94E30 /* _kao.png in Resources */ = {isa = PBXBuildFile; fileRef = 37D0611A17DB421700F94E30 /* _kao.png */; };
+		37D0612017DB421700F94E30 /* _maeAshi.png in Resources */ = {isa = PBXBuildFile; fileRef = 37D0611B17DB421700F94E30 /* _maeAshi.png */; };
+		37D0612117DB421700F94E30 /* _ushiroAsh.png in Resources */ = {isa = PBXBuildFile; fileRef = 37D0611C17DB421700F94E30 /* _ushiroAsh.png */; };
+		37D0612217DB421700F94E30 /* _usiroashi.png in Resources */ = {isa = PBXBuildFile; fileRef = 37D0611D17DB421700F94E30 /* _usiroashi.png */; };
+		37D0612517DB422300F94E30 /* YagiView.m in Sources */ = {isa = PBXBuildFile; fileRef = 37D0612417DB422300F94E30 /* YagiView.m */; };
+		37D0612917DB469C00F94E30 /* maeAshi.png in Resources */ = {isa = PBXBuildFile; fileRef = 37D0612617DB469C00F94E30 /* maeAshi.png */; };
+		37D0612A17DB469C00F94E30 /* ushiroAsh.png in Resources */ = {isa = PBXBuildFile; fileRef = 37D0612717DB469C00F94E30 /* ushiroAsh.png */; };
+		37D0612B17DB469C00F94E30 /* usiroashi_03.png in Resources */ = {isa = PBXBuildFile; fileRef = 37D0612817DB469C00F94E30 /* usiroashi_03.png */; };
+		37D0612D17DB5BAD00F94E30 /* yoko_03.png in Resources */ = {isa = PBXBuildFile; fileRef = 37D0612C17DB5BAD00F94E30 /* yoko_03.png */; };
+		37D0615F17DB647100F94E30 /* CMPopTipView.m in Sources */ = {isa = PBXBuildFile; fileRef = 37D0615E17DB647100F94E30 /* CMPopTipView.m */; };
+		37D0616117DC1E7200F94E30 /* yagi_hukigen.png in Resources */ = {isa = PBXBuildFile; fileRef = 37D0616017DC1E7200F94E30 /* yagi_hukigen.png */; };
 		4A63EA9F17D890F400C93F86 /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A63EA9E17D890F400C93F86 /* libsqlite3.0.dylib */; };
 		4A63EAAC17D96F7000C93F86 /* FMDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A63EAA317D96F7000C93F86 /* FMDatabase.m */; };
 		4A63EAAD17D96F7000C93F86 /* FMDatabaseAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A63EAA517D96F7000C93F86 /* FMDatabaseAdditions.m */; };
@@ -31,8 +45,6 @@
 		4A63EAAF17D96F7000C93F86 /* FMDatabaseQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A63EAA917D96F7000C93F86 /* FMDatabaseQueue.m */; };
 		4A63EAB017D96F7000C93F86 /* FMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A63EAAB17D96F7000C93F86 /* FMResultSet.m */; };
 		4A63EB9D17D9BD5300C93F86 /* TextAnalyzer.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A63EB9C17D9BD5300C93F86 /* TextAnalyzer.m */; };
-		375137BE17D976150069A12C /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 375137BD17D976150069A12C /* Accounts.framework */; };
-		375137C017D9761F0069A12C /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 375137BF17D9761F0069A12C /* Social.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -60,6 +72,22 @@
 		374D797217D8463800FAE80C /* FoodUIViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FoodUIViewController.xib; sourceTree = "<group>"; };
 		374D797B17D8552B00FAE80C /* bubbleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bubbleView.h; sourceTree = "<group>"; };
 		374D797C17D8552B00FAE80C /* bubbleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bubbleView.m; sourceTree = "<group>"; };
+		375137BD17D976150069A12C /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
+		375137BF17D9761F0069A12C /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
+		37D0611917DB421700F94E30 /* _doutai.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = _doutai.png; path = YImages/_doutai.png; sourceTree = "<group>"; };
+		37D0611A17DB421700F94E30 /* _kao.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = _kao.png; path = YImages/_kao.png; sourceTree = "<group>"; };
+		37D0611B17DB421700F94E30 /* _maeAshi.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = _maeAshi.png; path = YImages/_maeAshi.png; sourceTree = "<group>"; };
+		37D0611C17DB421700F94E30 /* _ushiroAsh.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = _ushiroAsh.png; path = YImages/_ushiroAsh.png; sourceTree = "<group>"; };
+		37D0611D17DB421700F94E30 /* _usiroashi.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = _usiroashi.png; path = YImages/_usiroashi.png; sourceTree = "<group>"; };
+		37D0612317DB422300F94E30 /* YagiView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YagiView.h; sourceTree = "<group>"; };
+		37D0612417DB422300F94E30 /* YagiView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YagiView.m; sourceTree = "<group>"; };
+		37D0612617DB469C00F94E30 /* maeAshi.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = maeAshi.png; path = YImages/maeAshi.png; sourceTree = "<group>"; };
+		37D0612717DB469C00F94E30 /* ushiroAsh.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ushiroAsh.png; path = YImages/ushiroAsh.png; sourceTree = "<group>"; };
+		37D0612817DB469C00F94E30 /* usiroashi_03.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = usiroashi_03.png; path = YImages/usiroashi_03.png; sourceTree = "<group>"; };
+		37D0612C17DB5BAD00F94E30 /* yoko_03.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = yoko_03.png; sourceTree = "<group>"; };
+		37D0615D17DB647000F94E30 /* CMPopTipView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMPopTipView.h; sourceTree = "<group>"; };
+		37D0615E17DB647100F94E30 /* CMPopTipView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMPopTipView.m; sourceTree = "<group>"; };
+		37D0616017DC1E7200F94E30 /* yagi_hukigen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = yagi_hukigen.png; path = YImages/yagi_hukigen.png; sourceTree = "<group>"; };
 		4A63EA9E17D890F400C93F86 /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = usr/lib/libsqlite3.0.dylib; sourceTree = SDKROOT; };
 		4A63EAA217D96F7000C93F86 /* FMDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FMDatabase.h; path = lib/FMDatabase.h; sourceTree = "<group>"; };
 		4A63EAA317D96F7000C93F86 /* FMDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FMDatabase.m; path = lib/FMDatabase.m; sourceTree = "<group>"; };
@@ -73,9 +101,6 @@
 		4A63EAAB17D96F7000C93F86 /* FMResultSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FMResultSet.m; path = lib/FMResultSet.m; sourceTree = "<group>"; };
 		4A63EB9B17D9BD5300C93F86 /* TextAnalyzer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TextAnalyzer.h; path = lib/TextAnalyzer.h; sourceTree = "<group>"; };
 		4A63EB9C17D9BD5300C93F86 /* TextAnalyzer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TextAnalyzer.m; path = lib/TextAnalyzer.m; sourceTree = "<group>"; };
-		375137BD17D976150069A12C /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
-		375137BF17D9761F0069A12C /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
-
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -156,6 +181,16 @@
 		374D795A17D8291E00FAE80C /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				37D0616017DC1E7200F94E30 /* yagi_hukigen.png */,
+				37D0612C17DB5BAD00F94E30 /* yoko_03.png */,
+				37D0612617DB469C00F94E30 /* maeAshi.png */,
+				37D0612717DB469C00F94E30 /* ushiroAsh.png */,
+				37D0612817DB469C00F94E30 /* usiroashi_03.png */,
+				37D0611917DB421700F94E30 /* _doutai.png */,
+				37D0611A17DB421700F94E30 /* _kao.png */,
+				37D0611B17DB421700F94E30 /* _maeAshi.png */,
+				37D0611C17DB421700F94E30 /* _ushiroAsh.png */,
+				37D0611D17DB421700F94E30 /* _usiroashi.png */,
 				374D795B17D8291E00FAE80C /* gort.png */,
 				374D795C17D8291E00FAE80C /* grassland.jpeg */,
 				374D795D17D8291E00FAE80C /* signBoard.png */,
@@ -166,6 +201,10 @@
 		374D797917D8550600FAE80C /* SubClass */ = {
 			isa = PBXGroup;
 			children = (
+				37D0615D17DB647000F94E30 /* CMPopTipView.h */,
+				37D0615E17DB647100F94E30 /* CMPopTipView.m */,
+				37D0612317DB422300F94E30 /* YagiView.h */,
+				37D0612417DB422300F94E30 /* YagiView.m */,
 				374D797B17D8552B00FAE80C /* bubbleView.h */,
 				374D797C17D8552B00FAE80C /* bubbleView.m */,
 			);
@@ -264,6 +303,16 @@
 				374D795F17D8291E00FAE80C /* grassland.jpeg in Resources */,
 				374D796017D8291E00FAE80C /* signBoard.png in Resources */,
 				374D797417D8463800FAE80C /* FoodUIViewController.xib in Resources */,
+				37D0611E17DB421700F94E30 /* _doutai.png in Resources */,
+				37D0611F17DB421700F94E30 /* _kao.png in Resources */,
+				37D0612017DB421700F94E30 /* _maeAshi.png in Resources */,
+				37D0612117DB421700F94E30 /* _ushiroAsh.png in Resources */,
+				37D0612217DB421700F94E30 /* _usiroashi.png in Resources */,
+				37D0612917DB469C00F94E30 /* maeAshi.png in Resources */,
+				37D0612A17DB469C00F94E30 /* ushiroAsh.png in Resources */,
+				37D0612B17DB469C00F94E30 /* usiroashi_03.png in Resources */,
+				37D0612D17DB5BAD00F94E30 /* yoko_03.png in Resources */,
+				37D0616117DC1E7200F94E30 /* yagi_hukigen.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -285,6 +334,8 @@
 				4A63EAAF17D96F7000C93F86 /* FMDatabaseQueue.m in Sources */,
 				4A63EAB017D96F7000C93F86 /* FMResultSet.m in Sources */,
 				4A63EB9D17D9BD5300C93F86 /* TextAnalyzer.m in Sources */,
+				37D0612517DB422300F94E30 /* YagiView.m in Sources */,
+				37D0615F17DB647100F94E30 /* CMPopTipView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
