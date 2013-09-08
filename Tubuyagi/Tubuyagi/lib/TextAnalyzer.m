@@ -16,10 +16,21 @@ NSString*   sqlSelectBigramSet = @"SELECT * FROM bigram WHERE pre = %@";
 NSString*   sqlUpdateBigram = @"UPDATE bigram SET count = %d WHERE pre = %@ AND post = %@;";
 NSString*   databaseName = @"bi-gram.db";
 
-NSString* escapeDangerousChars(NSString *str){
+NSString* deleteNoises(NSString *str){
     //あとでRT後の部分とか消したり
-    NSString *result = [str stringByReplacingOccurrencesOfString:@"\n" withString:@""];
+    NSString *result = [str stringByReplacingOccurrencesOfString:@"\n" withString:@" "];
+    NSRegularExpression *regexp;
+    NSError *err = NULL;
+    regexp = [NSRegularExpression regularExpressionWithPattern:@"(RT @.*?:|#[^ ]*|http(s)?://[/\\w-\\./?%&=]*)" options:0 error:&err];
+    result = [regexp stringByReplacingMatchesInString:result options:0 range:NSMakeRange(0, [result length]) withTemplate:@" "];
+    regexp = [NSRegularExpression regularExpressionWithPattern:@"(@[\\w_0-9]*|RT|（|）|\\(|\\)|「|」|\\[|\\]|\\+|\\=|\\<|\\>|\\.|\\,|\\-|\\*|\\&|\\^|【|】|\"|\'|『|』)" options:0 error:&err];
+    result = [regexp stringByReplacingMatchesInString:result options:0 range:NSMakeRange(0, [result length]) withTemplate:@" "];
+    
     return result;
+}
+
+void deleteAllData(FMDatabase *db){
+    
 }
 
 void updateBigramValue(FMDatabase *db, NSString* previous, NSString* current){
@@ -71,10 +82,17 @@ NSString* generateSentence(void){
         if ([next isEqualToString:@"EOS"]){
             break;
         }
+        if ([next isEqualToString:@"。"] && [result length] > 20){
+            result = [NSString stringWithFormat:@"%@%@",result,next];
+            break;
+        }
         result = [NSString stringWithFormat:@"%@%@",result,next];
         previous = next;
     }
     [db close];
+    if ([result length]==0){
+        return @"メェ〜。";
+    }
     return result;
 }
 
@@ -86,7 +104,7 @@ void learnFromText(NSString* morphTargetText){
     
     NSLinguisticTagger *tagger = [[NSLinguisticTagger alloc] initWithTagSchemes:schemes
                                                                         options:0];
-    NSString* targetText = escapeDangerousChars(morphTargetText);
+    NSString* targetText = deleteNoises(morphTargetText);
     [tagger setString:targetText];
     
     NSArray*    paths = NSSearchPathForDirectoriesInDomains( NSDocumentDirectory, NSUserDomainMask, YES );
@@ -107,7 +125,9 @@ void learnFromText(NSString* morphTargetText){
          updateBigramValue(db, previousEntity, currentEntity);
          previousEntity = currentEntity;
      }];
-    updateBigramValue(db, previousEntity, @"EOS");
+    if (![previousEntity isEqualToString:@"BOS"]){
+        updateBigramValue(db, previousEntity, @"EOS");
+    }
     [db close];
 }
 @end

@@ -12,4 +12,5 @@
 @interface TextAnalyzer : NSObject
 NSString* generateSentence(void);
 void learnFromText(NSString* morphTargetText);
+void deleteAllData(FMDatabase *db);
 @end
