@@ -24,6 +24,8 @@
         imgYokoFace = [UIImage imageNamed:@"yoko_03.png"];
         imgMaeFace = [UIImage imageNamed:@"_kao.png"];
         imgGakkariFace = [UIImage imageNamed:@"yagi_hukigen.png"];
+        imgMgmg = [UIImage imageNamed:@"yagi_kao_mgmg.png"];
+        imgPaku = [UIImage imageNamed:@"yagi_kao_a.png"];
         
         imgFace.image = imgYokoFace;
         
@@ -43,6 +45,10 @@
         //最初にどっちに動かすかの設定
         imgFrntRightLeg.tag = 1;
         imgBackRightLeg.tag = 1;
+        
+        //顔のフラグ
+        kaoFlag = 0;
+        kaisuu = 0;
         
         [self addSubview:imgBackRightLeg];
         [self addSubview:imgBody];
@@ -89,6 +95,64 @@
     
 }
 
+
+
+#pragma mark - 食べる
+
+#define kutiakeruTime 1
+#define mogKurikaesi 7
+#define mogKankaku 0.5
+- (void)eatFood
+{
+    imgFace.image = imgPaku;
+    [self performSelector:@selector(mogmog) withObject:nil afterDelay:kutiakeruTime];
+    
+}
+
+- (void)mogmog
+{
+    timer = [NSTimer scheduledTimerWithTimeInterval:mogKankaku
+                                             target:self
+                                           selector:@selector(repeatMog)
+                                           userInfo:nil
+                                            repeats:YES];
+    
+    
+             
+}
+
+- (void)repeatMog
+{
+    switch (kaoFlag) {
+        case 0:
+            imgFace.image = imgMgmg;
+            kaoFlag = 1;
+            kaisuu++;
+            break;
+            
+        case 1:
+            
+            imgFace.image = imgMaeFace;
+            kaoFlag = 0;
+            kaisuu++;
+            break;
+            
+        default:
+            break;
+    }
+    
+    if (kaisuu == mogKurikaesi)
+    {
+        [timer invalidate];
+        imgFace.image = imgYokoFace;
+        kaisuu = 0;
+    }
+    
+}
+
+
+             
+#pragma mark -
 #define rad M_PI/180
 - (void)walkRotation:(UIImageView *)imgView
 {

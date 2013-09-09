@@ -26,11 +26,19 @@
 		374D797D17D8552B00FAE80C /* bubbleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 374D797C17D8552B00FAE80C /* bubbleView.m */; };
 		375137BE17D976150069A12C /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 375137BD17D976150069A12C /* Accounts.framework */; };
 		375137C017D9761F0069A12C /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 375137BF17D9761F0069A12C /* Social.framework */; };
+		37778AFA17DC6DA7004F51A5 /* NSString+STTwitter.m in Sources */ = {isa = PBXBuildFile; fileRef = 37778AEB17DC6DA7004F51A5 /* NSString+STTwitter.m */; };
+		37778AFB17DC6DA7004F51A5 /* STHTTPRequest+STTwitter.m in Sources */ = {isa = PBXBuildFile; fileRef = 37778AED17DC6DA7004F51A5 /* STHTTPRequest+STTwitter.m */; };
+		37778AFC17DC6DA7004F51A5 /* STTwitterAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 37778AF017DC6DA7004F51A5 /* STTwitterAPI.m */; };
+		37778AFD17DC6DA7004F51A5 /* STTwitterAppOnly.m in Sources */ = {isa = PBXBuildFile; fileRef = 37778AF217DC6DA7004F51A5 /* STTwitterAppOnly.m */; };
+		37778AFE17DC6DA7004F51A5 /* STTwitterHTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 37778AF417DC6DA7004F51A5 /* STTwitterHTML.m */; };
+		37778AFF17DC6DA7004F51A5 /* STTwitterOAuth.m in Sources */ = {isa = PBXBuildFile; fileRef = 37778AF617DC6DA7004F51A5 /* STTwitterOAuth.m */; };
+		37778B0017DC6DA7004F51A5 /* STTwitterOS.m in Sources */ = {isa = PBXBuildFile; fileRef = 37778AF817DC6DA7004F51A5 /* STTwitterOS.m */; };
+		37778B0317DC6DB1004F51A5 /* STHTTPRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 37778B0217DC6DB1004F51A5 /* STHTTPRequest.m */; };
+		37778B0517DC6DFA004F51A5 /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37778B0417DC6DFA004F51A5 /* Twitter.framework */; };
+		37CAC1F517DD83D300854D4D /* yagi_kao_a.png in Resources */ = {isa = PBXBuildFile; fileRef = 37CAC1F317DD83D300854D4D /* yagi_kao_a.png */; };
+		37CAC1F617DD83D300854D4D /* yagi_kao_mgmg.png in Resources */ = {isa = PBXBuildFile; fileRef = 37CAC1F417DD83D300854D4D /* yagi_kao_mgmg.png */; };
 		37D0611E17DB421700F94E30 /* _doutai.png in Resources */ = {isa = PBXBuildFile; fileRef = 37D0611917DB421700F94E30 /* _doutai.png */; };
 		37D0611F17DB421700F94E30 /* _kao.png in Resources */ = {isa = PBXBuildFile; fileRef = 37D0611A17DB421700F94E30 /* _kao.png */; };
-		37D0612017DB421700F94E30 /* _maeAshi.png in Resources */ = {isa = PBXBuildFile; fileRef = 37D0611B17DB421700F94E30 /* _maeAshi.png */; };
-		37D0612117DB421700F94E30 /* _ushiroAsh.png in Resources */ = {isa = PBXBuildFile; fileRef = 37D0611C17DB421700F94E30 /* _ushiroAsh.png */; };
-		37D0612217DB421700F94E30 /* _usiroashi.png in Resources */ = {isa = PBXBuildFile; fileRef = 37D0611D17DB421700F94E30 /* _usiroashi.png */; };
 		37D0612517DB422300F94E30 /* YagiView.m in Sources */ = {isa = PBXBuildFile; fileRef = 37D0612417DB422300F94E30 /* YagiView.m */; };
 		37D0612917DB469C00F94E30 /* maeAshi.png in Resources */ = {isa = PBXBuildFile; fileRef = 37D0612617DB469C00F94E30 /* maeAshi.png */; };
 		37D0612A17DB469C00F94E30 /* ushiroAsh.png in Resources */ = {isa = PBXBuildFile; fileRef = 37D0612717DB469C00F94E30 /* ushiroAsh.png */; };
@@ -74,11 +82,29 @@
 		374D797C17D8552B00FAE80C /* bubbleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bubbleView.m; sourceTree = "<group>"; };
 		375137BD17D976150069A12C /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		375137BF17D9761F0069A12C /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
+		37778AEA17DC6DA7004F51A5 /* NSString+STTwitter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+STTwitter.h"; path = "STTwitter/NSString+STTwitter.h"; sourceTree = "<group>"; };
+		37778AEB17DC6DA7004F51A5 /* NSString+STTwitter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+STTwitter.m"; path = "STTwitter/NSString+STTwitter.m"; sourceTree = "<group>"; };
+		37778AEC17DC6DA7004F51A5 /* STHTTPRequest+STTwitter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "STHTTPRequest+STTwitter.h"; path = "STTwitter/STHTTPRequest+STTwitter.h"; sourceTree = "<group>"; };
+		37778AED17DC6DA7004F51A5 /* STHTTPRequest+STTwitter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "STHTTPRequest+STTwitter.m"; path = "STTwitter/STHTTPRequest+STTwitter.m"; sourceTree = "<group>"; };
+		37778AEE17DC6DA7004F51A5 /* STTwitter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = STTwitter.h; path = STTwitter/STTwitter.h; sourceTree = "<group>"; };
+		37778AEF17DC6DA7004F51A5 /* STTwitterAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = STTwitterAPI.h; path = STTwitter/STTwitterAPI.h; sourceTree = "<group>"; };
+		37778AF017DC6DA7004F51A5 /* STTwitterAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = STTwitterAPI.m; path = STTwitter/STTwitterAPI.m; sourceTree = "<group>"; };
+		37778AF117DC6DA7004F51A5 /* STTwitterAppOnly.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = STTwitterAppOnly.h; path = STTwitter/STTwitterAppOnly.h; sourceTree = "<group>"; };
+		37778AF217DC6DA7004F51A5 /* STTwitterAppOnly.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = STTwitterAppOnly.m; path = STTwitter/STTwitterAppOnly.m; sourceTree = "<group>"; };
+		37778AF317DC6DA7004F51A5 /* STTwitterHTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = STTwitterHTML.h; path = STTwitter/STTwitterHTML.h; sourceTree = "<group>"; };
+		37778AF417DC6DA7004F51A5 /* STTwitterHTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = STTwitterHTML.m; path = STTwitter/STTwitterHTML.m; sourceTree = "<group>"; };
+		37778AF517DC6DA7004F51A5 /* STTwitterOAuth.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = STTwitterOAuth.h; path = STTwitter/STTwitterOAuth.h; sourceTree = "<group>"; };
+		37778AF617DC6DA7004F51A5 /* STTwitterOAuth.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = STTwitterOAuth.m; path = STTwitter/STTwitterOAuth.m; sourceTree = "<group>"; };
+		37778AF717DC6DA7004F51A5 /* STTwitterOS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = STTwitterOS.h; path = STTwitter/STTwitterOS.h; sourceTree = "<group>"; };
+		37778AF817DC6DA7004F51A5 /* STTwitterOS.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = STTwitterOS.m; path = STTwitter/STTwitterOS.m; sourceTree = "<group>"; };
+		37778AF917DC6DA7004F51A5 /* STTwitterProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = STTwitterProtocol.h; path = STTwitter/STTwitterProtocol.h; sourceTree = "<group>"; };
+		37778B0117DC6DB1004F51A5 /* STHTTPRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = STHTTPRequest.h; path = STTwitter/Vendor/STHTTPRequest.h; sourceTree = "<group>"; };
+		37778B0217DC6DB1004F51A5 /* STHTTPRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = STHTTPRequest.m; path = STTwitter/Vendor/STHTTPRequest.m; sourceTree = "<group>"; };
+		37778B0417DC6DFA004F51A5 /* Twitter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Twitter.framework; path = System/Library/Frameworks/Twitter.framework; sourceTree = SDKROOT; };
+		37CAC1F317DD83D300854D4D /* yagi_kao_a.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = yagi_kao_a.png; path = YImages/yagi_kao_a.png; sourceTree = "<group>"; };
+		37CAC1F417DD83D300854D4D /* yagi_kao_mgmg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = yagi_kao_mgmg.png; path = YImages/yagi_kao_mgmg.png; sourceTree = "<group>"; };
 		37D0611917DB421700F94E30 /* _doutai.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = _doutai.png; path = YImages/_doutai.png; sourceTree = "<group>"; };
 		37D0611A17DB421700F94E30 /* _kao.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = _kao.png; path = YImages/_kao.png; sourceTree = "<group>"; };
-		37D0611B17DB421700F94E30 /* _maeAshi.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = _maeAshi.png; path = YImages/_maeAshi.png; sourceTree = "<group>"; };
-		37D0611C17DB421700F94E30 /* _ushiroAsh.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = _ushiroAsh.png; path = YImages/_ushiroAsh.png; sourceTree = "<group>"; };
-		37D0611D17DB421700F94E30 /* _usiroashi.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = _usiroashi.png; path = YImages/_usiroashi.png; sourceTree = "<group>"; };
 		37D0612317DB422300F94E30 /* YagiView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YagiView.h; sourceTree = "<group>"; };
 		37D0612417DB422300F94E30 /* YagiView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YagiView.m; sourceTree = "<group>"; };
 		37D0612617DB469C00F94E30 /* maeAshi.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = maeAshi.png; path = YImages/maeAshi.png; sourceTree = "<group>"; };
@@ -108,6 +134,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				37778B0517DC6DFA004F51A5 /* Twitter.framework in Frameworks */,
 				4A63EA9F17D890F400C93F86 /* libsqlite3.0.dylib in Frameworks */,
 				375137C017D9761F0069A12C /* Social.framework in Frameworks */,
 				375137BE17D976150069A12C /* Accounts.framework in Frameworks */,
@@ -141,6 +168,7 @@
 		374D792817D822CF00FAE80C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				37778B0417DC6DFA004F51A5 /* Twitter.framework */,
 				375137BF17D9761F0069A12C /* Social.framework */,
 				375137BD17D976150069A12C /* Accounts.framework */,
 				374D792917D822D000FAE80C /* UIKit.framework */,
@@ -181,6 +209,8 @@
 		374D795A17D8291E00FAE80C /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				37CAC1F317DD83D300854D4D /* yagi_kao_a.png */,
+				37CAC1F417DD83D300854D4D /* yagi_kao_mgmg.png */,
 				37D0616017DC1E7200F94E30 /* yagi_hukigen.png */,
 				37D0612C17DB5BAD00F94E30 /* yoko_03.png */,
 				37D0612617DB469C00F94E30 /* maeAshi.png */,
@@ -188,9 +218,6 @@
 				37D0612817DB469C00F94E30 /* usiroashi_03.png */,
 				37D0611917DB421700F94E30 /* _doutai.png */,
 				37D0611A17DB421700F94E30 /* _kao.png */,
-				37D0611B17DB421700F94E30 /* _maeAshi.png */,
-				37D0611C17DB421700F94E30 /* _ushiroAsh.png */,
-				37D0611D17DB421700F94E30 /* _usiroashi.png */,
 				374D795B17D8291E00FAE80C /* gort.png */,
 				374D795C17D8291E00FAE80C /* grassland.jpeg */,
 				374D795D17D8291E00FAE80C /* signBoard.png */,
@@ -201,6 +228,7 @@
 		374D797917D8550600FAE80C /* SubClass */ = {
 			isa = PBXGroup;
 			children = (
+				37778AE917DC6D92004F51A5 /* STTwitter */,
 				37D0615D17DB647000F94E30 /* CMPopTipView.h */,
 				37D0615E17DB647100F94E30 /* CMPopTipView.m */,
 				37D0612317DB422300F94E30 /* YagiView.h */,
@@ -222,6 +250,31 @@
 				374D797217D8463800FAE80C /* FoodUIViewController.xib */,
 			);
 			name = ViewController;
+			sourceTree = "<group>";
+		};
+		37778AE917DC6D92004F51A5 /* STTwitter */ = {
+			isa = PBXGroup;
+			children = (
+				37778B0117DC6DB1004F51A5 /* STHTTPRequest.h */,
+				37778B0217DC6DB1004F51A5 /* STHTTPRequest.m */,
+				37778AEA17DC6DA7004F51A5 /* NSString+STTwitter.h */,
+				37778AEB17DC6DA7004F51A5 /* NSString+STTwitter.m */,
+				37778AEC17DC6DA7004F51A5 /* STHTTPRequest+STTwitter.h */,
+				37778AED17DC6DA7004F51A5 /* STHTTPRequest+STTwitter.m */,
+				37778AEE17DC6DA7004F51A5 /* STTwitter.h */,
+				37778AEF17DC6DA7004F51A5 /* STTwitterAPI.h */,
+				37778AF017DC6DA7004F51A5 /* STTwitterAPI.m */,
+				37778AF117DC6DA7004F51A5 /* STTwitterAppOnly.h */,
+				37778AF217DC6DA7004F51A5 /* STTwitterAppOnly.m */,
+				37778AF317DC6DA7004F51A5 /* STTwitterHTML.h */,
+				37778AF417DC6DA7004F51A5 /* STTwitterHTML.m */,
+				37778AF517DC6DA7004F51A5 /* STTwitterOAuth.h */,
+				37778AF617DC6DA7004F51A5 /* STTwitterOAuth.m */,
+				37778AF717DC6DA7004F51A5 /* STTwitterOS.h */,
+				37778AF817DC6DA7004F51A5 /* STTwitterOS.m */,
+				37778AF917DC6DA7004F51A5 /* STTwitterProtocol.h */,
+			);
+			name = STTwitter;
 			sourceTree = "<group>";
 		};
 		4A63EAA017D96F2D00C93F86 /* lib */ = {
@@ -305,14 +358,13 @@
 				374D797417D8463800FAE80C /* FoodUIViewController.xib in Resources */,
 				37D0611E17DB421700F94E30 /* _doutai.png in Resources */,
 				37D0611F17DB421700F94E30 /* _kao.png in Resources */,
-				37D0612017DB421700F94E30 /* _maeAshi.png in Resources */,
-				37D0612117DB421700F94E30 /* _ushiroAsh.png in Resources */,
-				37D0612217DB421700F94E30 /* _usiroashi.png in Resources */,
 				37D0612917DB469C00F94E30 /* maeAshi.png in Resources */,
 				37D0612A17DB469C00F94E30 /* ushiroAsh.png in Resources */,
 				37D0612B17DB469C00F94E30 /* usiroashi_03.png in Resources */,
 				37D0612D17DB5BAD00F94E30 /* yoko_03.png in Resources */,
 				37D0616117DC1E7200F94E30 /* yagi_hukigen.png in Resources */,
+				37CAC1F517DD83D300854D4D /* yagi_kao_a.png in Resources */,
+				37CAC1F617DD83D300854D4D /* yagi_kao_mgmg.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -336,6 +388,14 @@
 				4A63EB9D17D9BD5300C93F86 /* TextAnalyzer.m in Sources */,
 				37D0612517DB422300F94E30 /* YagiView.m in Sources */,
 				37D0615F17DB647100F94E30 /* CMPopTipView.m in Sources */,
+				37778AFA17DC6DA7004F51A5 /* NSString+STTwitter.m in Sources */,
+				37778AFB17DC6DA7004F51A5 /* STHTTPRequest+STTwitter.m in Sources */,
+				37778AFC17DC6DA7004F51A5 /* STTwitterAPI.m in Sources */,
+				37778AFD17DC6DA7004F51A5 /* STTwitterAppOnly.m in Sources */,
+				37778AFE17DC6DA7004F51A5 /* STTwitterHTML.m in Sources */,
+				37778AFF17DC6DA7004F51A5 /* STTwitterOAuth.m in Sources */,
+				37778B0017DC6DA7004F51A5 /* STTwitterOS.m in Sources */,
+				37778B0317DC6DB1004F51A5 /* STHTTPRequest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -373,6 +433,7 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Ippei Otsuka (JZW5DJYPD8)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -388,6 +449,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				ONLY_ACTIVE_ARCH = YES;
+				PROVISIONING_PROFILE = "17790BCE-6B94-437E-8EDA-DBE8C147FFF0";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -404,6 +466,7 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Ippei Otsuka (JZW5DJYPD8)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -412,6 +475,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				PROVISIONING_PROFILE = "17790BCE-6B94-437E-8EDA-DBE8C147FFF0";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -420,10 +484,12 @@
 		374D794A17D822D000FAE80C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer: Akinori Ishii (8MDZYR5AYQ)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Tubuyagi/Tubuyagi-Prefix.pch";
 				INFOPLIST_FILE = "Tubuyagi/Tubuyagi-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "8B648EFB-CED0-4B02-9EEB-77B8B91A672C";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -431,10 +497,12 @@
 		374D794B17D822D000FAE80C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer: Akinori Ishii (8MDZYR5AYQ)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Tubuyagi/Tubuyagi-Prefix.pch";
 				INFOPLIST_FILE = "Tubuyagi/Tubuyagi-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "8B648EFB-CED0-4B02-9EEB-77B8B91A672C";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

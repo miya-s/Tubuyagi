@@ -13,11 +13,12 @@
 
 @interface FoodUIViewController : UIViewController<UITableViewDataSource, UITableViewDelegate>
 {
-    NSArray *tweets;
+//    NSArray *tweets;
 }
 @property (strong, nonatomic) IBOutlet UITableView *foodTableView;
 @property (nonatomic, retain) id<FoodViewControllerDelegate> delegate;
 @property (nonatomic, retain) NSArray *twitterAccounts;
+@property (nonatomic, retain) NSArray *tweets;
 //@property (nonatomic, retain) NSArray *tweets;
 @property (strong, nonatomic) IBOutlet UILabel *lblTitle;
 

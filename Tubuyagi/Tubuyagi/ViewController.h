@@ -17,16 +17,15 @@
 {
     BOOL timerFlag;
     UILabel *lblYagiTweet;
-    UIButton *btnYagi;
-    NSMutableArray *visiblePopTipViews;
+    UIButton *btnYagi;                  //ヤギをタッチした時
+    NSMutableArray *visiblePopTipViews; //ヤギの発言
     NSTimer *timer;
-//    NSArray *twitterAccounts;
-//    NSArray *tweets;
+    NSArray *tweets;
+    NSString *userName;
+    FoodUIViewController *fvc;
 }
 @property (strong, nonatomic) IBOutlet UILabel *strYagiName;
-//@property (strong, nonatomic) IBOutlet UILabel *strYagiTweet;
 @property (strong, nonatomic) bubbleView *bblView;
-//@property (weak, nonatomic) IBOutlet UIImageView *imgViewYagi;
 @property (nonatomic, retain) ACAccountStore *accountStore;
 @property (nonatomic, retain) NSArray *twitterAccounts;
 @property (nonatomic, retain) YagiView *yagiView;
