@@ -20,7 +20,7 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
-        NSSet *aSet = [NSSet setWithArray:showDeletableWords()];
+        NSSet *aSet = [NSSet setWithArray:showLearnLog()];
         arrDeleteWord = [aSet allObjects];
 //        NSLog(@"あｊふぁいえじあおｗｊふぁじぇを　%@", arrDeleteWord);
     }
@@ -32,7 +32,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     NSLog(@"Delete Word %@", showDeletableWords());
-    NSSet *aSet = [NSSet setWithArray:showDeletableWords()];
+    NSSet *aSet = [NSSet setWithArray:showLearnLog()];
     arrDeleteWord = [aSet allObjects];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
@@ -116,7 +116,8 @@
 {
     switch (buttonIndex) {
         case 0:
-            deleteWord(selectedCell.textLabel.text);
+//            deleteWord(selectedCell.textLabel.text);
+            forgetFromText(selectedCell.textLabel.text);
             NSLog(@"cell %@", selectedCell.textLabel.text);
             [self dismissViewControllerAnimated:YES completion:^(void){}];
             break;
@@ -124,6 +125,32 @@
         default:
             break;
     }
+}
+
+//セルの高さ
+- (float)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSLog(@"heightForRowAtIndexPath");
+    if (arrDeleteWord) {
+        
+        UITableViewCell *cell = [self tableView:self.tableView cellForRowAtIndexPath:indexPath];
+        CGSize bounds = CGSizeMake(self.view.frame.size.width, self.view.frame.size.height);
+        UIFont *font = cell.textLabel.font;
+        NSLog(@"%@", font);
+        //textLabelのサイズ
+        CGSize size = [cell.textLabel.text sizeWithFont:cell.textLabel.font
+                                      constrainedToSize:bounds
+                                          lineBreakMode:NSLineBreakByWordWrapping];
+//        NSLog(@"%@", cell.textLabel);
+//        NSLog(@"%@", NSStringFromCGSize(size));
+        //detailTextLabelのサイズ
+//        CGSize detailSize = [[arrDeleteWord objectAtIndex:indexPath.row] sizeWithFont: cell.detailTextLabel.font
+//                                                                                       constrainedToSize: bounds
+//                                                                                           lineBreakMode: NSLineBreakByWordWrapping];//UILineBreakModeCharacterWrap];
+//        NSLog(@"%f",size.height + detailSize.width);
+        return size.height + 20;
+    }
+    return 44;
 }
 
 @end

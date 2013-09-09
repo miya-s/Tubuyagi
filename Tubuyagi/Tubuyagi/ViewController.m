@@ -81,8 +81,17 @@
 
 - (IBAction)chooseFood:(UIButton *)sender {
     
-    [self presentViewController:fvc animated:YES completion:nil];
+    UITabBarController *tabc = [[UITabBarController alloc] init];
+    
+//    [self presentViewController:fvc animated:YES completion:nil];
     fvc.lblTitle.text = userName;
+    
+    ManualInputViewController *mivc = [[ManualInputViewController alloc] initWithNibName:@"ManualInputViewController" bundle:nil];
+//    [self presentViewController:mivc animated:YES completion:nil];
+    NSArray *views = [NSArray arrayWithObjects:fvc, mivc, nil];
+    [tabc setViewControllers:views];
+    
+    [self presentViewController:tabc animated:YES completion:nil];
     
     [self initialize];
 }
@@ -97,11 +106,13 @@
                                                     delegate:self
                                            cancelButtonTitle:@"やめる"
                                       destructiveButtonTitle:nil
-                                           otherButtonTitles:@"すべて忘れさせる", @"単語を忘れさせる", nil];
+                                           otherButtonTitles:@"すべて忘れさせる", @"つぶやきを忘れさせる", nil];
     [as showInView:self.view];
 }
 
 - (IBAction)showFavorite:(id)sender {
+    
+    [self alert];
 }
 
 

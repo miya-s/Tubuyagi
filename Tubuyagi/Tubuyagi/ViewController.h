@@ -11,6 +11,7 @@
 #import <Social/Social.h>
 #import "FoodUIViewController.h"
 #import "DeleteWordTableViewController.h"
+#import "ManualInputViewController.h"
 #import "bubbleView.h"
 #import "YagiView.h"
 
