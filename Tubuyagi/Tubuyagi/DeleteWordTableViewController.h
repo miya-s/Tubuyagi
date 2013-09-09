@@ -8,9 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
-@interface DeleteWordTableViewController : UIViewController<UITableViewDataSource, UITableViewDelegate>
+@interface DeleteWordTableViewController : UIViewController<UITableViewDataSource, UITableViewDelegate,
+                    UIAlertViewDelegate>
 {
     NSArray *arrDeleteWord;
+    UITableViewCell *selectedCell;
 }
 @property (strong, nonatomic) IBOutlet UITableView *tableView;
 - (IBAction)backMainView:(id)sender;

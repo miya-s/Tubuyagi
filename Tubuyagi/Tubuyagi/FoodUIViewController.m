@@ -30,48 +30,37 @@
     return self;
 }
 
+- (void)_setHeaderViewHidden:(BOOL)hidden animated:(BOOL)animated
+{
+    CGFloat topOffset = 0.0;
+    if (hidden) {
+        topOffset = -self.headerView.frame.size.height;
+    }
+    if (animated) {
+        [UIView animateWithDuration:0.2 animations:^{
+            self.foodTableView.contentInset = UIEdgeInsetsMake(topOffset, 0, 0, 0);
+        }];
+    } else{
+        self.foodTableView.contentInset = UIEdgeInsetsMake(topOffset, 0, 0, 0);
+    }
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     
     NSLog(@"ViewDidLoad");
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-    //    if (_twitterAccounts.count == 0) return;
     
-//    NSURL *url = [NSURL URLWithString:@"https://api.twitter.com/1.1/statuses/home_timeline.json"];
-//    SLRequest *request = [SLRequest requestForServiceType:SLServiceTypeTwitter
-//                                            requestMethod:SLRequestMethodGET
-//                                                      URL:url
-//                                               parameters:nil];
-//    // Use first twitter account.
-//    [request setAccount:[_twitterAccounts objectAtIndex:0]];
-//    [request performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
-//        dispatch_async(dispatch_get_main_queue(), ^{
-//            NSUInteger statusCode = urlResponse.statusCode;
-//            if (200 <= statusCode && statusCode < 300) {
-//                tweets = [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil];
-//                [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-////                [self performSelector:@selector(reloadData) withObject:self.foodTableView afterDelay:1.0];
-//                [self.foodTableView reloadData];
-//            } else {
-//                NSDictionary *twitterErrorRoot = [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil];
-//                NSArray *twitterErrors = [twitterErrorRoot objectForKey:@"errors"];
-//                if (twitterErrors.count > 0) {
-//                    NSLog(@"%@",[[twitterErrors objectAtIndex:0] objectForKey:@"message"]);
-//                } else {
-//                    NSLog(@"Failed to get tweets.");
-//                    
-//                }
-//            }
-//        });
-//    }];
+    self.lblTitle.text = @"";
     
-    self.lblTitle.text = @"認証できていません";
-    NSLog(@"titel is %@", self.lblTitle);
+    //HeaderView
+    self.foodTableView.tableHeaderView = self.headerView;
+    [self _setHeaderViewHidden:YES animated:NO];
+    [self.headerView setState:HeaderViewStateHidden];
     
     //twtterデータの取得
-    [self getTwitterInformation];
+//    [self getTwitterInformation];
 }
 
 - (void)didReceiveMemoryWarning
@@ -105,8 +94,8 @@
 {
 //    self.statuses = @[];
 //    self.statusLabel.text = @"";
-    [self.foodTableView reloadData];
-    
+//    [self.foodTableView reloadData];
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
     STTwitterAPI *twitter = [STTwitterAPI twitterAPIOSWithFirstAccount];
     
     [twitter verifyCredentialsWithSuccessBlock:^(NSString *username) {
@@ -122,8 +111,12 @@
 //                               self.statusLabel.text = [NSString stringWithFormat:@"@%@", username];
                                
                                self.tweets = statuses;
-                               
+                               [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+                               self.headerView.state = HeaderViewStateHidden;
+                               [self.headerView setUpdatedDate:[NSDate date]];
+                               [self _setHeaderViewHidden:YES animated:YES];
                                [self.foodTableView reloadData];
+                               
                                
                            } errorBlock:^(NSError *error) {
                                NSLog(@"%@", [error localizedDescription]);
@@ -217,5 +210,41 @@
     }
     return 44;
 }
+
+
+#pragma mark - UIScrolViewDelegate
+
+#define PULLDOWN_MARGINE -15.0f
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    if (self.headerView.state == HeaderViewStateStopping) {
+        return;
+    }
+    
+    CGFloat threshold = self.headerView.frame.size.height;
+    
+    if ( PULLDOWN_MARGINE <= scrollView.contentOffset.y &&
+        scrollView.contentOffset.y < threshold) {
+        self.headerView.state = HeaderViewStatePullingDown;
+    } else if (scrollView.contentOffset.y < PULLDOWN_MARGINE){
+        self.headerView.state = HeaderViewStateOveredThreshold;
+    } else{
+        self.headerView.state = HeaderViewStateHidden;
+    }
+    
+}
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
+{
+    if (self.headerView.state == HeaderViewStateOveredThreshold) {
+        self.headerView.state = HeaderViewStateStopping;
+        [self _setHeaderViewHidden:NO animated:YES];
+        
+        [self performSelector:@selector(getTwitterInformation) withObject:nil afterDelay:0.1];
+        //        [self.delegate refleshMainView];
+    }
+}
+
 
 @end

@@ -14,7 +14,8 @@
 #import "bubbleView.h"
 #import "YagiView.h"
 
-@interface ViewController : UIViewController<FoodViewControllerDelegate, UIActionSheetDelegate>
+@interface ViewController : UIViewController<FoodViewControllerDelegate, UIActionSheetDelegate,
+                                                UIAlertViewDelegate>
 {
     BOOL timerFlag;
     UILabel *lblYagiTweet;

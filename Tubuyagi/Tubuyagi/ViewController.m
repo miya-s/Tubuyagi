@@ -12,7 +12,8 @@
 #import "TextAnalyzer.h"
 #import "STTwitter.h"
 
-
+#define alertStrTweet 10
+#define alertDeleteAllData 11
 @interface ViewController ()
 
 @end
@@ -102,13 +103,20 @@
 - (IBAction)showFavorite:(id)sender {
 }
 
+
+
 - (IBAction)shareTweet:(UIButton *)sender {
     
     NSString *strShare = [NSString stringWithFormat:@"「%@」のつぶやきを共有しますか？？", strCurrTweet];
     if (!strCurrTweet) {
         strShare = @"つぶやぎをタップして\nしゃべらせよう！";
     }
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"発言の共有" message:strShare delegate:self cancelButtonTitle:@"OK" otherButtonTitles:@"キャンセル", nil];
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"発言の共有"
+                                                    message:strShare
+                                                   delegate:self
+                                          cancelButtonTitle:@"OK"
+                                          otherButtonTitles:@"キャンセル", nil];
+    alert.tag = 10;
     [alert show];
 }
 
@@ -178,6 +186,7 @@
     //STTwitter
 //    [self.foodTableView reloadData];
     
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
     STTwitterAPI *twitter = [STTwitterAPI twitterAPIOSWithFirstAccount];
     
     [twitter verifyCredentialsWithSuccessBlock:^(NSString *username) {
@@ -191,13 +200,20 @@
                                
                                NSLog(@"-- statuses: %@", statuses);
                                
-                               //                               self.statusLabel.text = [NSString stringWithFormat:@"@%@", username];
-                               fvc.lblTitle.text = username;
-//                               NSLog(@"%@", username);
+                               //取得内容の保存
                                tweets = statuses;
                                fvc.tweets = tweets;
+                               
+                               //データ取得したら更新
                                [fvc.foodTableView reloadData];
+                               
+                               //ユーザー名の保存
+                               NSUserDefaults *df = [NSUserDefaults standardUserDefaults];
+                               [df setObject:username forKey:@"TDUserName"];
                                userName = [NSString stringWithFormat:@"%@のタイムライン", username];
+                               
+                               //読みこみの表示の解除
+                               [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
                                
                            } errorBlock:^(NSError *error) {
                                NSLog(@"%@", [error localizedDescription]);
@@ -242,11 +258,12 @@
 #pragma mark - UIActionSheetDelegate
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"忘却完了" message:@"全ての単語を忘れさせました" delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"忘却完了" message:@"全ての単語を忘れさせてもいいですか？？" delegate:self cancelButtonTitle:@"OK" otherButtonTitles: @"キャンセル", nil];
+    alert.tag = alertDeleteAllData;
     DeleteWordTableViewController *dtvc = [[DeleteWordTableViewController alloc] initWithNibName:@"DeleteWordTableViewController" bundle:nil];
     switch (buttonIndex) {
         case 0:
-            deleteAllData();
+//            deleteAllData();
             [alert show];
             break;
             
@@ -255,6 +272,29 @@
             break;
         
         default:
+            break;
+    }
+}
+
+#pragma mark - UIAlertViewDelegate
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    switch (alertView.tag) {
+        case alertStrTweet:
+            
+            break;
+            
+        case alertDeleteAllData:
+            switch (buttonIndex) {
+                case 0:
+                    deleteAllData();
+                    NSLog(@"全消去");
+                    break;
+            
+                default:
+                    break;
+            }
+            default:
             break;
     }
 }

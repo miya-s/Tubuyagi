@@ -22,7 +22,7 @@
         // Custom initialization
         NSSet *aSet = [NSSet setWithArray:showDeletableWords()];
         arrDeleteWord = [aSet allObjects];
-        NSLog(@"あｊふぁいえじあおｗｊふぁじぇを　%@", arrDeleteWord);
+//        NSLog(@"あｊふぁいえじあおｗｊふぁじぇを　%@", arrDeleteWord);
     }
     return self;
 }
@@ -32,7 +32,8 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     NSLog(@"Delete Word %@", showDeletableWords());
-    
+    NSSet *aSet = [NSSet setWithArray:showDeletableWords()];
+    arrDeleteWord = [aSet allObjects];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
 }
@@ -97,10 +98,32 @@
 //    [self.delegate setTweetString:selectedCell.textLabel.text];
 //    
 //    learnFromText(selectedCell.textLabel.text);
+
     
+    selectedCell = [self.tableView cellForRowAtIndexPath:indexPath];
+    NSString *strAlert = [NSString stringWithFormat:@"「%@」を忘れさせてもいいですか？？", selectedCell.textLabel.text];
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"単語の削除"
+                                                    message:strAlert
+                                                   delegate:self
+                                          cancelButtonTitle:@"OK"
+                                          otherButtonTitles:@"キャンセル", nil];
+    [alert show];
+
     
-    [self dismissViewControllerAnimated:YES completion:nil];
-    
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    switch (buttonIndex) {
+        case 0:
+            deleteWord(selectedCell.textLabel.text);
+            NSLog(@"cell %@", selectedCell.textLabel.text);
+            [self dismissViewControllerAnimated:YES completion:^(void){}];
+            break;
+            
+        default:
+            break;
+    }
 }
 
 @end
