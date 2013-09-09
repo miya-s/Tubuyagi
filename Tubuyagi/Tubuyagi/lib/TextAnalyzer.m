@@ -31,8 +31,10 @@ NSString* deleteNoises(NSString *str){
     NSError *err = NULL;
     regexp = [NSRegularExpression regularExpressionWithPattern:@"(RT @.*?:|#[^ ]*|http(s)?://[/\\w-\\./?%&=]*)" options:0 error:&err];
     result = [regexp stringByReplacingMatchesInString:result options:0 range:NSMakeRange(0, [result length]) withTemplate:@""];
-    regexp = [NSRegularExpression regularExpressionWithPattern:@"(@[\\w_0-9]*|RT|（|）|\\(|\\)|「|」|\\[|\\]|\\+|\\=|\\<|\\>|\\.|\\,|\\-|\\*|\\&|\\^|【|】|\"|\'|『|』|”|“|‘|’|:)" options:0 error:&err];
+    regexp = [NSRegularExpression regularExpressionWithPattern:@"(@[\\w_0-9]*|RT|\\+|\\=|\\<|\\>|\\.|\\,|\\-|\\*|\\&|\\^|\"|\'|”|“|‘|’|:)" options:0 error:&err];
     result = [regexp stringByReplacingMatchesInString:result options:0 range:NSMakeRange(0, [result length]) withTemplate:@""];
+    regexp = [NSRegularExpression regularExpressionWithPattern:@"(）|\\)|」|\\]|】|（|\\(|「|\\[|』|【|『)" options:0 error:&err];
+    result = [regexp stringByReplacingMatchesInString:result options:0 range:NSMakeRange(0, [result length]) withTemplate:@"　"];
     return result;
 }
 
@@ -115,24 +117,31 @@ NSString* generateSentence(void){
     NSString* previous = @"BOS";
     NSString* result =@"";
     FMDatabase* db    = getDB(databaseName);
-    
+
     [db open];
+    int trial = 0;
     while (true){
-        NSString* next = generateNextWord(db, previous);
-        if ([next isEqualToString:@"EOS"]){
-            break;
-        }
-        if ([next isEqualToString:@"。"] && [result length] > 20){
+        while (true){
+            NSString* next = generateNextWord(db, previous);
+            if ([next isEqualToString:@"EOS"]){
+                break;
+            }
+            if ([next isEqualToString:@"。"] && [result length] > 20){
+                result = [NSString stringWithFormat:@"%@%@",result,next];
+                break;
+            }
             result = [NSString stringWithFormat:@"%@%@",result,next];
-            break;
+            previous = next;
         }
-        result = [NSString stringWithFormat:@"%@%@",result,next];
-        previous = next;
+        if ([result length] < 3 && trial < 4){
+            trial += 1;
+            continue;
+        }
+        break;
     }
     [db close];
-    
-    if ([result length] < 3){
-        return @"メェ〜。";
+    if ([result length] < 2){
+        result = @"メェ〜。";
     }
     showDeletableWords();
     return result;
@@ -147,7 +156,7 @@ void learnFromText(NSString* morphTargetText){
     NSLinguisticTagger *tagger = [[NSLinguisticTagger alloc] initWithTagSchemes:schemes
                                                                         options:0];
     NSString* targetText = deleteNoises(morphTargetText);
-    if ([targetText length] < 2){
+    if ([targetText length] < 5){
         //短いやつけす
         return;
     }
