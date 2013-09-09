@@ -10,6 +10,8 @@
 
 @interface BasicRequest : NSObject
 
-NSString *randStringWithMaxLength(NSInteger max);
+NSString *randStringWithLength(int length);
+bool addUser(void);
+bool addPost(NSString *content);
 
 @end

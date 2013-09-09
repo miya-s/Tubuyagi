@@ -21,8 +21,14 @@
     [self.window makeKeyAndVisible];
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
 
-    if ([ud objectForKey:@"TDRandomPassword"] == NULL) {
-        [ud setObject: randStringWithMaxLength(20) forKey:@"TDRandomPassword"];
+    NSMutableDictionary *defaults = [NSMutableDictionary dictionary];
+    [defaults setObject:randStringWithLength(20) forKey:@"TDRandomPassword"];  // をKEY_Iというキーの初期値は99
+    [defaults setObject:@"サイバーくん" forKey:@"TDUserName"];
+    [defaults setObject:@"つぶやぎ" forKey:@"TDYagiName"];
+    [ud registerDefaults:defaults];
+    
+    if (![ud objectForKey:@"TDSentPassword"]) {
+        addUser();
     }
     return YES;
 }
