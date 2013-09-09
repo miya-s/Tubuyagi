@@ -10,13 +10,20 @@
 
 @interface YagiView : UIView
 {
+    int kaoFlag;
+    int kaisuu;
     UIImageView *imgFace,*imgBody,
                 *imgFrntRightLeg, *imgFrntLeftLeg,
                 *imgBackRightLeg, *imgBackLeftLeg;
     
-    UIImage *imgYokoFace,*imgMaeFace,*imgGakkariFace;
+    UIImage *imgYokoFace,*imgMaeFace,*imgGakkariFace,
+            *imgMgmg, *imgPaku;
+    
+    NSTimer *timer;
 }
 
 - (void)stopWalk:(BOOL)hukigen;
 - (void)walkRestart;
+- (void)eatFood;
 @end
+

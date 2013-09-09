@@ -258,7 +258,7 @@
 						<reference key="destination" ref="372490531"/>
 						<int key="IBEventType">7</int>
 					</object>
-					<int key="connectionID">157</int>
+					<int key="connectionID">326</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchEventConnection" key="connection">
@@ -357,7 +357,7 @@
 								<float key="scoringTypeFloat">29</float>
 								<int key="contentType">3</int>
 							</object>
-							<object class="IBNSLayoutConstraint" id="1009072739">
+							<object class="IBNSLayoutConstraint" id="570394216">
 								<reference key="firstItem" ref="714856287"/>
 								<int key="firstAttribute">5</int>
 								<int key="relation">0</int>
@@ -373,7 +373,7 @@
 								<float key="scoringTypeFloat">9</float>
 								<int key="contentType">3</int>
 							</object>
-							<object class="IBNSLayoutConstraint" id="732997413">
+							<object class="IBNSLayoutConstraint" id="849655892">
 								<reference key="firstItem" ref="774585933"/>
 								<int key="firstAttribute">4</int>
 								<int key="relation">0</int>
@@ -389,7 +389,7 @@
 								<float key="scoringTypeFloat">9</float>
 								<int key="contentType">3</int>
 							</object>
-							<object class="IBNSLayoutConstraint" id="324740834">
+							<object class="IBNSLayoutConstraint" id="219850086">
 								<reference key="firstItem" ref="802578987"/>
 								<int key="firstAttribute">5</int>
 								<int key="relation">0</int>
@@ -405,7 +405,7 @@
 								<float key="scoringTypeFloat">9</float>
 								<int key="contentType">3</int>
 							</object>
-							<object class="IBNSLayoutConstraint" id="605079929">
+							<object class="IBNSLayoutConstraint" id="853993296">
 								<reference key="firstItem" ref="802578987"/>
 								<int key="firstAttribute">3</int>
 								<int key="relation">0</int>
@@ -793,22 +793,22 @@
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">317</int>
-						<reference key="object" ref="732997413"/>
+						<reference key="object" ref="849655892"/>
 						<reference key="parent" ref="774585933"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">318</int>
-						<reference key="object" ref="605079929"/>
+						<reference key="object" ref="853993296"/>
 						<reference key="parent" ref="774585933"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">321</int>
-						<reference key="object" ref="1009072739"/>
+						<reference key="object" ref="570394216"/>
 						<reference key="parent" ref="774585933"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">322</int>
-						<reference key="object" ref="324740834"/>
+						<reference key="object" ref="219850086"/>
 						<reference key="parent" ref="774585933"/>
 					</object>
 				</array>
@@ -868,10 +868,10 @@
 					<reference ref="328859899"/>
 					<reference ref="820607592"/>
 					<reference ref="588680038"/>
-					<reference ref="605079929"/>
-					<reference ref="324740834"/>
-					<reference ref="732997413"/>
-					<reference ref="1009072739"/>
+					<reference ref="853993296"/>
+					<reference ref="219850086"/>
+					<reference ref="849655892"/>
+					<reference ref="570394216"/>
 					<reference ref="467159514"/>
 					<reference ref="65157265"/>
 					<reference ref="746852487"/>
@@ -894,7 +894,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">322</int>
+			<int key="maxID">326</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -910,10 +910,15 @@
 					<string key="className">ViewController</string>
 					<string key="superclassName">UIViewController</string>
 					<dictionary class="NSMutableDictionary" key="actions">
+						<string key="chooseFood2:">id</string>
 						<string key="chooseFood:">UIButton</string>
 						<string key="setConfig:">UIButton</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
+						<object class="IBActionInfo" key="chooseFood2:">
+							<string key="name">chooseFood2:</string>
+							<string key="candidateClassName">id</string>
+						</object>
 						<object class="IBActionInfo" key="chooseFood:">
 							<string key="name">chooseFood:</string>
 							<string key="candidateClassName">UIButton</string>
