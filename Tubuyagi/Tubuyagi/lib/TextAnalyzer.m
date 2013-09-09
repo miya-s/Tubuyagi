@@ -13,10 +13,10 @@
 NSString*   sqlAddBigram = @"INSERT INTO bigram VALUES (%@, %@, %d)";
 NSString*   sqlSelectBigram = @"SELECT * FROM bigram WHERE pre = %@ AND post = %@;";
 NSString*   sqlDeleteBigram = @"DELETE FROM bigram WHERE pre = %@ AND post = %@;";
-NSString*   sqlDeleteWord = @"DELETE FROM bigram WHERE pre = %@;DELETE * FROM bigram WHERE post = %@;";
 NSString*   sqlSelectBigramSet = @"SELECT * FROM bigram WHERE pre = %@";
 NSString*   sqlUpdateBigram = @"UPDATE bigram SET count = %d WHERE pre = %@ AND post = %@;";
 NSString*   databaseName = @"bi-gram.db";
+NSString*   logDatabaseName = @"tweet-log.db";
 
 FMDatabase* getDB(NSString * dbname){
     NSArray*    paths = NSSearchPathForDirectoriesInDomains( NSDocumentDirectory, NSUserDomainMask, YES );
@@ -69,10 +69,30 @@ NSMutableArray* showDeletableWords(void){
     return result;
 }
 
+NSMutableArray* showLearnLog(void){
+    FMDatabase* learnLogDb    = getDB(logDatabaseName);
+    NSMutableArray *result = [NSMutableArray array];
+    [learnLogDb open];
+    FMResultSet* sqlResults = [learnLogDb executeQuery:@"SELECT * FROM learn_log"];
+
+    while ([sqlResults next]){
+        NSString *log = [sqlResults stringForColumn:@"content"];
+        [result addObject:log];
+    }
+    [learnLogDb close];
+
+    return result;
+}
+
+
 void deleteWord(NSString* word){
     FMDatabase* db    = getDB(databaseName);
     [db open];
-    [db executeQueryWithFormat:sqlDeleteWord, word, word];
+
+    [db executeQueryWithFormat:@"DELETE FROM bigram WHERE pre = %@", word];
+    [db executeQueryWithFormat:@"DELETE FROM bigram WHERE post = %@", word];
+    NSLog(@"%@", [db lastError]);
+    NSLog(@"%@", word);
     [db close];
 }
 
@@ -155,12 +175,21 @@ void learnFromText(NSString* morphTargetText){
     
     NSLinguisticTagger *tagger = [[NSLinguisticTagger alloc] initWithTagSchemes:schemes
                                                                         options:0];
+
+    
+    
     NSString* targetText = deleteNoises(morphTargetText);
     if ([targetText length] < 5){
-        //短いやつけす
         return;
     }
     [tagger setString:targetText];
+    
+    
+    FMDatabase* learnLogDb    = getDB(logDatabaseName);
+    [learnLogDb open];
+    [learnLogDb executeUpdate:@"CREATE TABLE IF NOT EXISTS learn_log (content TEXT NOT NULL);"];
+    [learnLogDb executeUpdateWithFormat: @"INSERT INTO learn_log VALUES (%@)",morphTargetText];
+    [learnLogDb close];
     
     FMDatabase* db    = getDB(databaseName);
     NSString*   sqlCreateTable = @"CREATE TABLE IF NOT EXISTS bigram (pre TEXT NOT NULL, post TEXT NOT NULL, count INTEGER NOT NULL);";
@@ -190,4 +219,7 @@ void learnFromText(NSString* morphTargetText){
     }
     [db close];
 }
+
+
+
 @end
