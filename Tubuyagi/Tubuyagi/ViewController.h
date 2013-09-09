@@ -10,6 +10,7 @@
 #import <Accounts/Accounts.h>
 #import <Social/Social.h>
 #import "FoodUIViewController.h"
+#import "DeleteWordTableViewController.h"
 #import "bubbleView.h"
 #import "YagiView.h"
 
@@ -21,7 +22,7 @@
     NSMutableArray *visiblePopTipViews; //ヤギの発言
     NSTimer *timer;
     NSArray *tweets;
-    NSString *userName, *strTweet;
+    NSString *userName, *strCurrTweet;
     FoodUIViewController *fvc;
 }
 @property (strong, nonatomic) IBOutlet UILabel *strYagiName;

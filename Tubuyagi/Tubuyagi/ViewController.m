@@ -104,8 +104,8 @@
 
 - (IBAction)shareTweet:(UIButton *)sender {
     
-    NSString *strShare = [NSString stringWithFormat:@"「%@」のつぶやきを共有しますか？？", strTweet];
-    if (!strTweet) {
+    NSString *strShare = [NSString stringWithFormat:@"「%@」のつぶやきを共有しますか？？", strCurrTweet];
+    if (!strCurrTweet) {
         strShare = @"つぶやぎをタップして\nしゃべらせよう！";
     }
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"発言の共有" message:strShare delegate:self cancelButtonTitle:@"OK" otherButtonTitles:@"キャンセル", nil];
@@ -141,8 +141,8 @@
     [self dismissAllPopTipViews];
 
     //吹き出し
-    strTweet = [NSString stringWithFormat:@"%@", generateSentence()];
-    CMPopTipView *popTipView = [[CMPopTipView alloc] initWithMessage:strTweet];
+    strCurrTweet = [NSString stringWithFormat:@"%@", generateSentence()];
+    CMPopTipView *popTipView = [[CMPopTipView alloc] initWithMessage:strCurrTweet];
 //    popTipView.delegate = self;
     popTipView.animation = 0;
     popTipView.has3DStyle = 0;
@@ -243,6 +243,7 @@
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"忘却完了" message:@"全ての単語を忘れさせました" delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+    DeleteWordTableViewController *dtvc = [[DeleteWordTableViewController alloc] initWithNibName:@"DeleteWordTableViewController" bundle:nil];
     switch (buttonIndex) {
         case 0:
             deleteAllData();
@@ -250,8 +251,7 @@
             break;
             
         case 1:
-            NSLog(@"%@", showDeletableWords());
-            [self alert];
+            [self presentViewController:dtvc animated:YES completion:^(void){}];
             break;
         
         default:

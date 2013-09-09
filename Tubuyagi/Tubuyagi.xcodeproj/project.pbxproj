@@ -37,6 +37,8 @@
 		37778B0517DC6DFA004F51A5 /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37778B0417DC6DFA004F51A5 /* Twitter.framework */; };
 		37CAC1F517DD83D300854D4D /* yagi_kao_a.png in Resources */ = {isa = PBXBuildFile; fileRef = 37CAC1F317DD83D300854D4D /* yagi_kao_a.png */; };
 		37CAC1F617DD83D300854D4D /* yagi_kao_mgmg.png in Resources */ = {isa = PBXBuildFile; fileRef = 37CAC1F417DD83D300854D4D /* yagi_kao_mgmg.png */; };
+		37CAC1FA17DDA6BB00854D4D /* DeleteWordTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37CAC1F817DDA6BB00854D4D /* DeleteWordTableViewController.m */; };
+		37CAC1FB17DDA6BB00854D4D /* DeleteWordTableViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 37CAC1F917DDA6BB00854D4D /* DeleteWordTableViewController.xib */; };
 		37D0611E17DB421700F94E30 /* _doutai.png in Resources */ = {isa = PBXBuildFile; fileRef = 37D0611917DB421700F94E30 /* _doutai.png */; };
 		37D0611F17DB421700F94E30 /* _kao.png in Resources */ = {isa = PBXBuildFile; fileRef = 37D0611A17DB421700F94E30 /* _kao.png */; };
 		37D0612517DB422300F94E30 /* YagiView.m in Sources */ = {isa = PBXBuildFile; fileRef = 37D0612417DB422300F94E30 /* YagiView.m */; };
@@ -103,6 +105,9 @@
 		37778B0417DC6DFA004F51A5 /* Twitter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Twitter.framework; path = System/Library/Frameworks/Twitter.framework; sourceTree = SDKROOT; };
 		37CAC1F317DD83D300854D4D /* yagi_kao_a.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = yagi_kao_a.png; path = YImages/yagi_kao_a.png; sourceTree = "<group>"; };
 		37CAC1F417DD83D300854D4D /* yagi_kao_mgmg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = yagi_kao_mgmg.png; path = YImages/yagi_kao_mgmg.png; sourceTree = "<group>"; };
+		37CAC1F717DDA6BB00854D4D /* DeleteWordTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeleteWordTableViewController.h; sourceTree = "<group>"; };
+		37CAC1F817DDA6BB00854D4D /* DeleteWordTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DeleteWordTableViewController.m; sourceTree = "<group>"; };
+		37CAC1F917DDA6BB00854D4D /* DeleteWordTableViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DeleteWordTableViewController.xib; sourceTree = "<group>"; };
 		37D0611917DB421700F94E30 /* _doutai.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = _doutai.png; path = YImages/_doutai.png; sourceTree = "<group>"; };
 		37D0611A17DB421700F94E30 /* _kao.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = _kao.png; path = YImages/_kao.png; sourceTree = "<group>"; };
 		37D0612317DB422300F94E30 /* YagiView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YagiView.h; sourceTree = "<group>"; };
@@ -248,6 +253,9 @@
 				374D797017D8463800FAE80C /* FoodUIViewController.h */,
 				374D797117D8463800FAE80C /* FoodUIViewController.m */,
 				374D797217D8463800FAE80C /* FoodUIViewController.xib */,
+				37CAC1F717DDA6BB00854D4D /* DeleteWordTableViewController.h */,
+				37CAC1F817DDA6BB00854D4D /* DeleteWordTableViewController.m */,
+				37CAC1F917DDA6BB00854D4D /* DeleteWordTableViewController.xib */,
 			);
 			name = ViewController;
 			sourceTree = "<group>";
@@ -365,6 +373,7 @@
 				37D0616117DC1E7200F94E30 /* yagi_hukigen.png in Resources */,
 				37CAC1F517DD83D300854D4D /* yagi_kao_a.png in Resources */,
 				37CAC1F617DD83D300854D4D /* yagi_kao_mgmg.png in Resources */,
+				37CAC1FB17DDA6BB00854D4D /* DeleteWordTableViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -396,6 +405,7 @@
 				37778AFF17DC6DA7004F51A5 /* STTwitterOAuth.m in Sources */,
 				37778B0017DC6DA7004F51A5 /* STTwitterOS.m in Sources */,
 				37778B0317DC6DB1004F51A5 /* STHTTPRequest.m in Sources */,
+				37CAC1FA17DDA6BB00854D4D /* DeleteWordTableViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

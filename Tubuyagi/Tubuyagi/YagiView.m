@@ -111,6 +111,7 @@
 
 - (void)mogmog
 {
+    kaisuu = 0;
     timer = [NSTimer scheduledTimerWithTimeInterval:mogKankaku
                                              target:self
                                            selector:@selector(repeatMog)

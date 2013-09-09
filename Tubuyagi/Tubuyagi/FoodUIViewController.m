@@ -9,6 +9,7 @@
 #import "FoodUIViewController.h"
 #import "TextAnalyzer.h"
 #import "STTwitter.h"
+#import "DeleteWordTableViewController.h"
 
 @interface FoodUIViewController ()
 
@@ -163,7 +164,7 @@
             cell.textLabel.font = [UIFont systemFontOfSize:[UIFont systemFontSize]];
             cell.textLabel.numberOfLines = 0;
             cell.detailTextLabel.font = [UIFont systemFontOfSize:[UIFont systemFontSize]];
-            
+//            cell.selectionStyle = UITableViewCellSelectionStyleNone;
             
             
             //tweetとユーザー名取得
@@ -185,7 +186,9 @@
     learnFromText(selectedCell.textLabel.text);
     
 
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self dismissViewControllerAnimated:YES completion:^(void){
+        [self.foodTableView deselectRowAtIndexPath:indexPath animated:NO];
+    }];
     
 }
 
