@@ -254,6 +254,11 @@ void forgetFromText(NSString* text){
     }
     [tagger setString:targetText];
     
+    FMDatabase* learnLogDb    = getDB(logDatabaseName);
+    [learnLogDb open];
+    [learnLogDb executeUpdateWithFormat: @"DELETE FROM learn_log WHERE content = %@",text];
+    [learnLogDb close];
+    
     FMDatabase* db    = getDB(databaseName);
     [db open];
     __block NSString *previousEntity = @"BOS";
