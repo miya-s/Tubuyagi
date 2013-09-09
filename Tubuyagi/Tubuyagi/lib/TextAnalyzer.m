@@ -30,9 +30,9 @@ NSString* deleteNoises(NSString *str){
     NSRegularExpression *regexp;
     NSError *err = NULL;
     regexp = [NSRegularExpression regularExpressionWithPattern:@"(RT @.*?:|#[^ ]*|http(s)?://[/\\w-\\./?%&=]*)" options:0 error:&err];
-    result = [regexp stringByReplacingMatchesInString:result options:0 range:NSMakeRange(0, [result length]) withTemplate:@" "];
+    result = [regexp stringByReplacingMatchesInString:result options:0 range:NSMakeRange(0, [result length]) withTemplate:@""];
     regexp = [NSRegularExpression regularExpressionWithPattern:@"(@[\\w_0-9]*|RT|（|）|\\(|\\)|「|」|\\[|\\]|\\+|\\=|\\<|\\>|\\.|\\,|\\-|\\*|\\&|\\^|【|】|\"|\'|『|』|”|“|‘|’|:)" options:0 error:&err];
-    result = [regexp stringByReplacingMatchesInString:result options:0 range:NSMakeRange(0, [result length]) withTemplate:@" "];
+    result = [regexp stringByReplacingMatchesInString:result options:0 range:NSMakeRange(0, [result length]) withTemplate:@""];
     return result;
 }
 
@@ -51,11 +51,13 @@ NSMutableArray* showDeletableWords(void){
     int i = 0;
     while ([sqlResults next] && i < 20){
         NSString* targetPreWord = [sqlResults stringForColumn:@"pre"];
+
+        if ([result indexOfObject:targetPreWord] != NSNotFound || [targetPreWord length] < 2){
+            continue;
+        }
         FMResultSet* res = [db executeQuery:@"SELECT COUNT(*) FROM bigram WHERE post = ?",targetPreWord];
         [res next];
-        int count = [res intForColumn:@"COUNT(*)"];
-        
-        if (count > 1){
+        if ([res intForColumn:@"COUNT(*)"] > 1){
             [result addObject:targetPreWord];
             i+=1;
         }
@@ -78,7 +80,7 @@ void updateBigramValue(FMDatabase *db, NSString* previous, NSString* current){
     BOOL isThereTargetBigram = [sqlResult next];
     int value;
     
-    if ([previous isEqualToString:@"。"]){
+    if ([current isEqualToString:@"EOS"]){
         value = 10;
     } else {
         value = 1;
@@ -164,7 +166,14 @@ void learnFromText(NSString* morphTargetText){
                       usingBlock:
      ^(NSString *tag, NSRange tokenRange, NSRange sentenceRange, BOOL *stop) {
          NSString *currentEntity = [targetText substringWithRange:tokenRange];
-         updateBigramValue(db, previousEntity, currentEntity);
+         if ([previousEntity isEqualToString:@"　"]){
+             updateBigramValue(db, @"BOS", currentEntity);
+         } else if ([currentEntity isEqualToString:@"　"]){
+             updateBigramValue(db, previousEntity, @"EOS");
+         } else {
+             updateBigramValue(db, previousEntity, currentEntity);             
+         }
+
          previousEntity = currentEntity;
      }];
     if (![previousEntity isEqualToString:@"BOS"]){

@@ -7,7 +7,7 @@
 //
 
 #import "AppDelegate.h"
-
+#import "BasicRequest.h"
 #import "ViewController.h"
 
 @implementation AppDelegate
@@ -19,6 +19,11 @@
     self.viewController = [[ViewController alloc] initWithNibName:@"ViewController" bundle:nil];
     self.window.rootViewController = self.viewController;
     [self.window makeKeyAndVisible];
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+
+    if ([ud objectForKey:@"TDRandomPassword"] == NULL) {
+        [ud setObject: randStringWithMaxLength(20) forKey:@"TDRandomPassword"];
+    }
     return YES;
 }
 
