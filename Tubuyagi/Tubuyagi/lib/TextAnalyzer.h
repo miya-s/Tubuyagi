@@ -12,6 +12,7 @@
 @interface TextAnalyzer : NSObject
 NSString* generateSentence(void);
 void learnFromText(NSString* morphTargetText);
+void forgetFromText(NSString* text);
 void deleteAllData(void);
 NSMutableArray* showDeletableWords(void);
 NSMutableArray* showLearnLog(void);

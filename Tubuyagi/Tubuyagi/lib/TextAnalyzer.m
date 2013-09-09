@@ -115,6 +115,27 @@ void updateBigramValue(FMDatabase *db, NSString* previous, NSString* current){
     }
 }
 
+void reduceBigramValue(FMDatabase *db, NSString* previous, NSString* current){
+    FMResultSet* sqlResult = [db executeQueryWithFormat:sqlSelectBigram, previous, current];
+    BOOL isThereTargetBigram = [sqlResult next];
+    int value;
+    
+    if ([current isEqualToString:@"EOS"]){
+        value = -10;
+    } else {
+        value = -1;
+    }
+    if (isThereTargetBigram){
+        int count = [sqlResult intForColumn:@"count"];
+        if (count + value <= 0){
+            [db executeUpdateWithFormat:sqlDeleteBigram, previous, current];
+        } else {
+            [db executeUpdateWithFormat:sqlUpdateBigram, count + value, previous, current];
+        }
+    } else {
+    }
+}
+
 NSString* generateNextWord(FMDatabase *db, NSString *previous){
     FMResultSet* sqlResult = [db executeQueryWithFormat:sqlSelectBigramSet, previous];
     int sumOfCase = 0;
@@ -220,6 +241,43 @@ void learnFromText(NSString* morphTargetText){
     [db close];
 }
 
+
+//TODO: miyahara learnFromTextを変えたらこっちも変える必要あり。うまく関数にわけると解決可能
+void forgetFromText(NSString* text){
+    NSArray *schemes = @[_scheme_];
+    
+    NSLinguisticTagger *tagger = [[NSLinguisticTagger alloc] initWithTagSchemes:schemes
+                                                                        options:0];
+    NSString* targetText = deleteNoises(text);
+    if ([targetText length] < 5){
+        return;
+    }
+    [tagger setString:targetText];
+    
+    FMDatabase* db    = getDB(databaseName);
+    [db open];
+    __block NSString *previousEntity = @"BOS";
+    [tagger enumerateTagsInRange:NSMakeRange(0, targetText.length)
+                          scheme:_scheme_
+                         options:0
+                      usingBlock:
+     ^(NSString *tag, NSRange tokenRange, NSRange sentenceRange, BOOL *stop) {
+         NSString *currentEntity = [targetText substringWithRange:tokenRange];
+         if ([previousEntity isEqualToString:@"　"]){
+             reduceBigramValue(db, @"BOS", currentEntity);
+         } else if ([currentEntity isEqualToString:@"　"]){
+             reduceBigramValue(db, previousEntity, @"EOS");
+         } else {
+             reduceBigramValue(db, previousEntity, currentEntity);
+         }
+         
+         previousEntity = currentEntity;
+     }];
+    if (![previousEntity isEqualToString:@"BOS"]){
+        reduceBigramValue(db, previousEntity, @"EOS");
+    }
+    [db close];
+}
 
 
 @end
