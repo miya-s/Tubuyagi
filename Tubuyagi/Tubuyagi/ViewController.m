@@ -11,6 +11,7 @@
 #import "CMPopTipView.h"
 #import "TextAnalyzer.h"
 #import "STTwitter.h"
+#import "BasicRequest.h"
 
 #define alertStrTweet 10
 #define alertDeleteAllData 11
@@ -279,9 +280,17 @@
 #pragma mark - UIAlertViewDelegate
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
+    
     switch (alertView.tag) {
         case alertStrTweet:
-            
+            switch (buttonIndex) {
+                case 0:
+                    addPost(strCurrTweet);
+                    break;
+                    
+                default:
+                    break;
+            }
             break;
             
         case alertDeleteAllData:
