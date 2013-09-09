@@ -29,7 +29,9 @@ NSString* deleteNoises(NSString *str){
 }
 
 void deleteAllData(FMDatabase *db){
-    
+    [db close];
+    [db open];
+    [db executeUpdateWithFormat:@"DROP TABLE bigram;"];
 }
 
 void updateBigramValue(FMDatabase *db, NSString* previous, NSString* current){
