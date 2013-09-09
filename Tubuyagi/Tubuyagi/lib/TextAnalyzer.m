@@ -25,7 +25,6 @@ NSString* deleteNoises(NSString *str){
     result = [regexp stringByReplacingMatchesInString:result options:0 range:NSMakeRange(0, [result length]) withTemplate:@" "];
     regexp = [NSRegularExpression regularExpressionWithPattern:@"(@[\\w_0-9]*|RT|（|）|\\(|\\)|「|」|\\[|\\]|\\+|\\=|\\<|\\>|\\.|\\,|\\-|\\*|\\&|\\^|【|】|\"|\'|『|』)" options:0 error:&err];
     result = [regexp stringByReplacingMatchesInString:result options:0 range:NSMakeRange(0, [result length]) withTemplate:@" "];
-    
     return result;
 }
 
