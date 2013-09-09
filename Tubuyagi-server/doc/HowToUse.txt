@@ -1,0 +1,15 @@
+apiの使い方
+http://tubu-yagi.appspot.com/を使ってください
+api/add_userでユーザを追加し
+api/add_postでつぶやきを追加し
+json/recentで最近のn件からはじめてm件を取得します（ヘッダでmとnを指定、デフォはn=0,m=20）
+json/topで最多ワラ（お気にい入り）n件からはじめてm件を取得します（ヘッダでmとnを指定、デフォはn=0,m=20）
+
+
+
+テスト用のGoogle App Engine環境の建て方
+
+https://developers.google.com/appengine/downloads.html?hl=ja#Google_App_Engine_SDK_for_Python
+から落とす
+右クリックか
+Add Existing Application
