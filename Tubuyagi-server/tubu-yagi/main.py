@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import webapp2
 import cgi
 import datetime
@@ -42,7 +43,8 @@ class main_page(webapp2.RequestHandler):
         self.response.write(
             '<html>'
                 '<body>'
-                    '<a href="/api/">api page</a>')
+                    '<a href="/api/">api page</a>'
+            )
         self.response.write('</body></html>')
 
 class api_page(webapp2.RequestHandler):
@@ -50,8 +52,11 @@ class api_page(webapp2.RequestHandler):
         self.response.write(
             '<html>'
                 '<body>'
-                   '<a href="/api/add_post">add post</a>')
+                   '<a href="/api/add_post">add post</a></br>'
+                   '<a href="/api/add_user">add user</a>'
+            )
 
+        self.response.write('<h1>Post一覧</h1>')
         TubuyagiPosts = db.GqlQuery("select * from TubuyagiPost order by date desc limit 10")
 
         self.response.write('<ul>')
@@ -61,6 +66,16 @@ class api_page(webapp2.RequestHandler):
                 .format(user_name=post.user_name.encode("utf-8"),yagi_name=post.yagi_name.encode("utf-8"),content=post.content.encode("utf-8"),wara=post.wara,date=post.date,key=post.key().id()))
 
         self.response.write('</ul>')
+        self.response.write('<h1>user一覧</h1>')
+        users = db.GqlQuery("select * from User order by date desc limit 10")
+        self.response.write('<ul>')
+
+        for user in users:
+            self.response.write('<li>USERNAME: {user_name};WARA:{wara}; DATE:{date}; key: {key};</li>'
+                .format(user_name=user.user_name.encode("utf-8"),wara=user.wara,date=user.date,key=user.key().id()))
+
+        self.response.write('</ul>')
+
         self.response.write('</body></html>')
 
 
