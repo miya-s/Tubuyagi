@@ -64,11 +64,11 @@ BOOL useTWRequests(void) {
 - (BOOL)hasAccessToTwitter {
     
 #if TARGET_OS_IPHONE
-    if(NSClassFromString(@"SLComposeViewController")) { // since iOS 6
-        return [SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter];
-    } else {
-        return [TWTweetComposeViewController canSendTweet]; // iOS 5
-    }
+//    if(NSClassFromString(@"SLComposeViewController")) { // since iOS 6
+    return [SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter];
+//    } else {
+//        return [TWTweetComposeViewController canSendTweet]; // iOS 5
+//    }
 #else
     return YES; // error will be detected later
 #endif
@@ -118,8 +118,9 @@ BOOL useTWRequests(void) {
 
     if(useTWRequests()) {
 #if TARGET_OS_IPHONE
-        [self.accountStore requestAccessToAccountsWithType:accountType
-                                     withCompletionHandler:accountStoreRequestCompletionHandler];
+        [self.accountStore requestAccessToAccountsWithType:accountType options:0 completion:accountStoreRequestCompletionHandler];
+         //requestAccessToAccountsWithType:accountType
+//                                     withCompletionHandler:accountStoreRequestCompletionHandler];
 #endif
     } else {
         [self.accountStore requestAccessToAccountsWithType:accountType
