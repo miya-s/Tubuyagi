@@ -13,4 +13,6 @@
 NSString* generateSentence(void);
 void learnFromText(NSString* morphTargetText);
 void deleteAllData(void);
+NSMutableArray* showDeletableWords(void);
+void deleteWord(NSString *word);
 @end

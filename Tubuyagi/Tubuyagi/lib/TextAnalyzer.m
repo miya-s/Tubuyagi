@@ -12,6 +12,8 @@
 
 NSString*   sqlAddBigram = @"INSERT INTO bigram VALUES (%@, %@, %d)";
 NSString*   sqlSelectBigram = @"SELECT * FROM bigram WHERE pre = %@ AND post = %@;";
+NSString*   sqlDeleteBigram = @"DELETE FROM bigram WHERE pre = %@ AND post = %@;";
+NSString*   sqlDeleteWord = @"DELETE FROM bigram WHERE pre = %@;DELETE * FROM bigram WHERE post = %@;";
 NSString*   sqlSelectBigramSet = @"SELECT * FROM bigram WHERE pre = %@";
 NSString*   sqlUpdateBigram = @"UPDATE bigram SET count = %d WHERE pre = %@ AND post = %@;";
 NSString*   databaseName = @"bi-gram.db";
@@ -22,26 +24,54 @@ FMDatabase* getDB(NSString * dbname){
     FMDatabase* db    = [FMDatabase databaseWithPath:[dir stringByAppendingPathComponent:dbname]];
     return db;
 }
-    
+
 NSString* deleteNoises(NSString *str){
-    //あとでRT後の部分とか消したり
     NSString *result = [str stringByReplacingOccurrencesOfString:@"\n" withString:@" "];
     NSRegularExpression *regexp;
     NSError *err = NULL;
     regexp = [NSRegularExpression regularExpressionWithPattern:@"(RT @.*?:|#[^ ]*|http(s)?://[/\\w-\\./?%&=]*)" options:0 error:&err];
     result = [regexp stringByReplacingMatchesInString:result options:0 range:NSMakeRange(0, [result length]) withTemplate:@" "];
-    regexp = [NSRegularExpression regularExpressionWithPattern:@"(@[\\w_0-9]*|RT|（|）|\\(|\\)|「|」|\\[|\\]|\\+|\\=|\\<|\\>|\\.|\\,|\\-|\\*|\\&|\\^|【|】|\"|\'|『|』)" options:0 error:&err];
+    regexp = [NSRegularExpression regularExpressionWithPattern:@"(@[\\w_0-9]*|RT|（|）|\\(|\\)|「|」|\\[|\\]|\\+|\\=|\\<|\\>|\\.|\\,|\\-|\\*|\\&|\\^|【|】|\"|\'|『|』|”|“|‘|’|:)" options:0 error:&err];
     result = [regexp stringByReplacingMatchesInString:result options:0 range:NSMakeRange(0, [result length]) withTemplate:@" "];
     return result;
 }
 
 void deleteAllData(void){
     FMDatabase* db    = getDB(databaseName);
-
-    [db close];
     [db open];
     [db executeUpdateWithFormat:@"DROP TABLE bigram;"];
+    [db close];
 }
+
+NSMutableArray* showDeletableWords(void){
+    FMDatabase* db    = getDB(databaseName);
+    NSMutableArray *result = [NSMutableArray array];
+    [db open];
+    FMResultSet* sqlResults = [db executeQuery:@"SELECT * FROM bigram ORDER BY count DESC"];
+    int i = 0;
+    while ([sqlResults next] && i < 20){
+        NSString* targetPreWord = [sqlResults stringForColumn:@"pre"];
+        FMResultSet* res = [db executeQuery:@"SELECT COUNT(*) FROM bigram WHERE post = ?",targetPreWord];
+        [res next];
+        int count = [res intForColumn:@"COUNT(*)"];
+        
+        if (count > 1){
+            [result addObject:targetPreWord];
+            i+=1;
+        }
+    }
+    [db close];
+    NSLog(@"deletable : %@",result);
+    return result;
+}
+
+void deleteWord(NSString* word){
+    FMDatabase* db    = getDB(databaseName);
+    [db open];
+    [db executeQueryWithFormat:sqlDeleteWord, word, word];
+    [db close];
+}
+
 
 void updateBigramValue(FMDatabase *db, NSString* previous, NSString* current){
     FMResultSet* sqlResult = [db executeQueryWithFormat:sqlSelectBigram, previous, current];
@@ -98,9 +128,11 @@ NSString* generateSentence(void){
         previous = next;
     }
     [db close];
-    if ([result length]==0){
+    
+    if ([result length] < 3){
         return @"メェ〜。";
     }
+    showDeletableWords();
     return result;
 }
 
@@ -113,6 +145,10 @@ void learnFromText(NSString* morphTargetText){
     NSLinguisticTagger *tagger = [[NSLinguisticTagger alloc] initWithTagSchemes:schemes
                                                                         options:0];
     NSString* targetText = deleteNoises(morphTargetText);
+    if ([targetText length] < 2){
+        //短いやつけす
+        return;
+    }
     [tagger setString:targetText];
     
     FMDatabase* db    = getDB(databaseName);
