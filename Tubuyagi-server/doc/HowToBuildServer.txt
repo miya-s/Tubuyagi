@@ -1,7 +1,0 @@
-テスト用のGoogle App Engine環境の建て方
-
-https://developers.google.com/appengine/downloads.html?hl=ja#Google_App_Engine_SDK_for_Python
-から落とす
-
-右クリックか
-Add Existing Application
