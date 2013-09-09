@@ -66,6 +66,8 @@
     lblYagiTweet.frame = CGRectMake(40, 330, 280, 52);
     lblYagiTweet.alpha = 0.0;
     timerFlag = YES;
+    
+    [self dismissAllPopTipViews];
 }
 
 - (void)didReceiveMemoryWarning
@@ -79,11 +81,35 @@
     
     [self presentViewController:fvc animated:YES completion:nil];
     fvc.lblTitle.text = userName;
+    
+    [self initialize];
 }
 
 - (IBAction)setConfig:(UIButton *)sender {
     NSLog(@"setConfig");
     [self alert];
+}
+
+- (IBAction)forgetWord:(UIButton *)sender {
+    UIActionSheet *as = [[UIActionSheet alloc] initWithTitle:nil
+                                                    delegate:self
+                                           cancelButtonTitle:@"やめる"
+                                      destructiveButtonTitle:nil
+                                           otherButtonTitles:@"すべて忘れさせる", @"単語を忘れさせる", nil];
+    [as showInView:self.view];
+}
+
+- (IBAction)showFavorite:(id)sender {
+}
+
+- (IBAction)shareTweet:(UIButton *)sender {
+    
+    NSString *strShare = [NSString stringWithFormat:@"「%@」のつぶやきを共有しますか？？", strTweet];
+    if (!strTweet) {
+        strShare = @"つぶやぎをタップして\nしゃべらせよう！";
+    }
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"発言の共有" message:strShare delegate:self cancelButtonTitle:@"OK" otherButtonTitles:@"キャンセル", nil];
+    [alert show];
 }
 
 
@@ -115,7 +141,8 @@
     [self dismissAllPopTipViews];
 
     //吹き出し
-    CMPopTipView *popTipView = [[CMPopTipView alloc] initWithMessage:generateSentence()];
+    strTweet = [NSString stringWithFormat:@"%@", generateSentence()];
+    CMPopTipView *popTipView = [[CMPopTipView alloc] initWithMessage:strTweet];
 //    popTipView.delegate = self;
     popTipView.animation = 0;
     popTipView.has3DStyle = 0;
@@ -210,5 +237,25 @@
     [_yagiView stopWalk:YES];
     [self performSelector:@selector(judgdeWalkRestart) withObject:nil afterDelay:2.4];
     
+}
+
+#pragma mark - UIActionSheetDelegate
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"忘却完了" message:@"全ての単語を忘れさせました" delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+    switch (buttonIndex) {
+        case 0:
+            deleteAllData();
+            [alert show];
+            break;
+            
+        case 1:
+            NSLog(@"%@", showDeletableWords());
+            [self alert];
+            break;
+        
+        default:
+            break;
+    }
 }
 @end

@@ -13,7 +13,7 @@
 #import "bubbleView.h"
 #import "YagiView.h"
 
-@interface ViewController : UIViewController<FoodViewControllerDelegate>
+@interface ViewController : UIViewController<FoodViewControllerDelegate, UIActionSheetDelegate>
 {
     BOOL timerFlag;
     UILabel *lblYagiTweet;
@@ -21,7 +21,7 @@
     NSMutableArray *visiblePopTipViews; //ヤギの発言
     NSTimer *timer;
     NSArray *tweets;
-    NSString *userName;
+    NSString *userName, *strTweet;
     FoodUIViewController *fvc;
 }
 @property (strong, nonatomic) IBOutlet UILabel *strYagiName;
@@ -32,4 +32,7 @@
 
 - (IBAction)chooseFood:(UIButton *)sender;
 - (IBAction)setConfig:(UIButton *)sender;
+- (IBAction)forgetWord:(UIButton *)sender;
+- (IBAction)showFavorite:(id)sender;
+- (IBAction)shareTweet:(UIButton *)sender;
 @end
