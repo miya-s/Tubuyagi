@@ -16,6 +16,13 @@ NSString*   sqlSelectBigramSet = @"SELECT * FROM bigram WHERE pre = %@";
 NSString*   sqlUpdateBigram = @"UPDATE bigram SET count = %d WHERE pre = %@ AND post = %@;";
 NSString*   databaseName = @"bi-gram.db";
 
+FMDatabase* getDB(NSString * dbname){
+    NSArray*    paths = NSSearchPathForDirectoriesInDomains( NSDocumentDirectory, NSUserDomainMask, YES );
+    NSString*   dir   = [paths objectAtIndex:0];
+    FMDatabase* db    = [FMDatabase databaseWithPath:[dir stringByAppendingPathComponent:dbname]];
+    return db;
+}
+    
 NSString* deleteNoises(NSString *str){
     //あとでRT後の部分とか消したり
     NSString *result = [str stringByReplacingOccurrencesOfString:@"\n" withString:@" "];
@@ -28,7 +35,9 @@ NSString* deleteNoises(NSString *str){
     return result;
 }
 
-void deleteAllData(FMDatabase *db){
+void deleteAllData(void){
+    FMDatabase* db    = getDB(databaseName);
+
     [db close];
     [db open];
     [db executeUpdateWithFormat:@"DROP TABLE bigram;"];
@@ -73,9 +82,7 @@ NSString* generateNextWord(FMDatabase *db, NSString *previous){
 NSString* generateSentence(void){
     NSString* previous = @"BOS";
     NSString* result =@"";
-    NSArray*    paths = NSSearchPathForDirectoriesInDomains( NSDocumentDirectory, NSUserDomainMask, YES );
-    NSString*   dir   = [paths objectAtIndex:0];
-    FMDatabase* db    = [FMDatabase databaseWithPath:[dir stringByAppendingPathComponent:databaseName]];
+    FMDatabase* db    = getDB(databaseName);
     
     [db open];
     while (true){
@@ -108,9 +115,7 @@ void learnFromText(NSString* morphTargetText){
     NSString* targetText = deleteNoises(morphTargetText);
     [tagger setString:targetText];
     
-    NSArray*    paths = NSSearchPathForDirectoriesInDomains( NSDocumentDirectory, NSUserDomainMask, YES );
-    NSString*   dir   = [paths objectAtIndex:0];
-    FMDatabase* db    = [FMDatabase databaseWithPath:[dir stringByAppendingPathComponent:databaseName]];
+    FMDatabase* db    = getDB(databaseName);
     NSString*   sqlCreateTable = @"CREATE TABLE IF NOT EXISTS bigram (pre TEXT NOT NULL, post TEXT NOT NULL, count INTEGER NOT NULL);";
     
     [db open];
