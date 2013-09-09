@@ -8,10 +8,12 @@
 
 #import <UIKit/UIKit.h>
 #import <Social/Social.h>
+#import "HeaderView.h"
 
 @protocol FoodViewControllerDelegate;
 
-@interface FoodUIViewController : UIViewController<UITableViewDataSource, UITableViewDelegate>
+@interface FoodUIViewController : UIViewController<UITableViewDataSource, UITableViewDelegate,
+                                                        UIScrollViewDelegate>
 {
 //    NSArray *tweets;
 }
@@ -20,6 +22,7 @@
 @property (nonatomic, retain) NSArray *twitterAccounts;
 @property (nonatomic, retain) NSArray *tweets;
 //@property (nonatomic, retain) NSArray *tweets;
+@property (strong, nonatomic) IBOutlet HeaderView *headerView;
 @property (strong, nonatomic) IBOutlet UILabel *lblTitle;
 
 - (IBAction)backMainView:(id)sender;
