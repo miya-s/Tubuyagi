@@ -152,7 +152,7 @@
 		4A63EAAA17D96F7000C93F86 /* FMResultSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FMResultSet.h; path = lib/FMResultSet.h; sourceTree = "<group>"; };
 		4A63EAAB17D96F7000C93F86 /* FMResultSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FMResultSet.m; path = lib/FMResultSet.m; sourceTree = "<group>"; };
 		4A63EB9B17D9BD5300C93F86 /* TextAnalyzer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TextAnalyzer.h; path = lib/TextAnalyzer.h; sourceTree = "<group>"; };
-		4A63EB9C17D9BD5300C93F86 /* TextAnalyzer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TextAnalyzer.m; path = lib/TextAnalyzer.m; sourceTree = "<group>"; };
+		4A63EB9C17D9BD5300C93F86 /* TextAnalyzer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = TextAnalyzer.m; path = lib/TextAnalyzer.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		4A6FF2DF17DDA71500410BF5 /* BasicRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BasicRequest.h; path = lib/BasicRequest.h; sourceTree = "<group>"; };
 		4A6FF2E017DDA71500410BF5 /* BasicRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BasicRequest.m; path = lib/BasicRequest.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */

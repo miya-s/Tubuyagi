@@ -14,7 +14,7 @@
 #import "BasicRequest.h"
 
 #define alertStrTweet 10
-#define alertDeleteAllData 11
+#define alertDeleteAllBigramData 11
 @interface ViewController ()
 
 @end
@@ -277,7 +277,7 @@
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"忘却完了" message:@"全ての単語を忘れさせてもいいですか？？" delegate:self cancelButtonTitle:@"OK" otherButtonTitles: @"キャンセル", nil];
-    alert.tag = alertDeleteAllData;
+    alert.tag = alertDeleteAllBigramData;
     DeleteWordTableViewController *dtvc = [[DeleteWordTableViewController alloc] initWithNibName:@"DeleteWordTableViewController" bundle:nil];
     switch (buttonIndex) {
         case 0:
@@ -302,7 +302,7 @@
         case alertStrTweet:
             switch (buttonIndex) {
                 case 0:
-                    addPost(strCurrTweet);
+                    addWaraToMyTubuyaki(strCurrTweet);
                     break;
                     
                 default:
@@ -310,10 +310,10 @@
             }
             break;
             
-        case alertDeleteAllData:
+        case alertDeleteAllBigramData:
             switch (buttonIndex) {
                 case 0:
-                    deleteAllData();
+                    deleteAllBigramData();
                     NSLog(@"全消去");
                     break;
             

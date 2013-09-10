@@ -13,7 +13,9 @@
 NSString *randStringWithLength(int length);
 bool addUser(void);
 bool addPost(NSString *content);
-
 NSArray *getJSONRecents(int cursor, int num);
 NSArray *getJSONTops(int cursor, int num);
+bool addWara(long long post_id);
+bool addWaraToMyTubuyaki(NSString *content);
+bool addWaraToOthersTubuyaki(NSString *content,NSDate *date);
 @end
