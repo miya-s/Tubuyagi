@@ -112,7 +112,9 @@
 
 - (IBAction)showFavorite:(id)sender {
     
-    [self alert];
+    FavoriteViewController *fvvc = [[FavoriteViewController alloc] initWithNibName:@"FavoriteViewController" bundle:nil];
+    [self presentViewController:fvvc animated:YES completion:nil];
+//    [self alert];
 }
 
 

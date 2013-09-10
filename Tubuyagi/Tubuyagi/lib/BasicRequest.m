@@ -3,7 +3,7 @@
 //  Tubuyagi
 //
 //  Created by 宮原聡 on 2013/09/09.
-//  Copyright (c) 2013年 Genki Ishibashi. All rights reserved.
+//  Copyright (c) 2013年 Team IshiHara All rights reserved.
 //
 
 #import "BasicRequest.h"
