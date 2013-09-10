@@ -43,6 +43,14 @@ void deleteAllData(void){
     [db open];
     [db executeUpdateWithFormat:@"DROP TABLE bigram;"];
     [db close];
+    deleteAllLog();
+}
+
+void deleteAllLog(void){
+    FMDatabase* db    = getDB(logDatabaseName);
+    [db open];
+    [db executeUpdateWithFormat:@"DROP TABLE learn_log;"];
+    [db close];
 }
 
 NSMutableArray* showDeletableWords(void){
@@ -200,7 +208,7 @@ void learnFromText(NSString* morphTargetText){
     
     
     NSString* targetText = deleteNoises(morphTargetText);
-    if ([targetText length] < 5){
+    if ([targetText length] < 3){
         return;
     }
     [tagger setString:targetText];
@@ -249,7 +257,7 @@ void forgetFromText(NSString* text){
     NSLinguisticTagger *tagger = [[NSLinguisticTagger alloc] initWithTagSchemes:schemes
                                                                         options:0];
     NSString* targetText = deleteNoises(text);
-    if ([targetText length] < 5){
+    if ([targetText length] < 3){
         return;
     }
     [tagger setString:targetText];
