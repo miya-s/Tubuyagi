@@ -85,21 +85,22 @@ bool addPost(NSString *content){
     return outcome;
 }
 
-NSDictionary *getJSON(NSString *url){
+NSArray *getJSON(NSString *url){
     NSMutableURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url]];
     NSData *json_data = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
     NSError *error=nil;
     
     
-    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:json_data options:NSJSONReadingAllowFragments error:&error];
+    NSArray *dict = [NSJSONSerialization JSONObjectWithData:json_data options:NSJSONReadingAllowFragments error:&error];
     return dict;
 }
 
-NSDictionary *getJSONRecents(int cursor, int num){
+NSArray *getJSONRecents(int cursor, int num){
+    
     return getJSON([NSString stringWithFormat: @"http://tubu-yagi.appspot.com/json/recent?cursor=%d&num=%d", cursor, num]);
 }
 
-NSDictionary *getJSONTops(int cursor, int num){
+NSArray *getJSONTops(int cursor, int num){
     return getJSON([NSString stringWithFormat: @"http://tubu-yagi.appspot.com/json/top?cursor=%d&num=%d", cursor, num]);
 }
 

@@ -14,6 +14,6 @@ NSString *randStringWithLength(int length);
 bool addUser(void);
 bool addPost(NSString *content);
 
-NSDictionary *getJSONRecents(int cursor, int num);
-NSDictionary *getJSONTops(int cursor, int num);
+NSArray *getJSONRecents(int cursor, int num);
+NSArray *getJSONTops(int cursor, int num);
 @end

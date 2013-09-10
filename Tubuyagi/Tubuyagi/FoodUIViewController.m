@@ -205,6 +205,7 @@
         CGSize detailSize = [[[self getTextOrUserName:@"user"] objectAtIndex:indexPath.row] sizeWithFont: cell.detailTextLabel.font
                                                 constrainedToSize: bounds
                                                     lineBreakMode: NSLineBreakByWordWrapping];//UILineBreakModeCharacterWrap];
+//        NSLog(@"detail size %@", NSStringFromCGSize(detailSize));
         NSLog(@"%f",size.height + detailSize.width);
         return size.height + detailSize.height + 20;
     }

@@ -540,13 +540,13 @@
 		374D794A17D822D000FAE80C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer: Akinori Ishii (8MDZYR5AYQ)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Ippei Otsuka (JZW5DJYPD8)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Tubuyagi/Tubuyagi-Prefix.pch";
 				INFOPLIST_FILE = "Tubuyagi/Tubuyagi-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "8B648EFB-CED0-4B02-9EEB-77B8B91A672C";
+				PROVISIONING_PROFILE = "17790BCE-6B94-437E-8EDA-DBE8C147FFF0";
 				SDKROOT = iphoneos6.1;
 				WRAPPER_EXTENSION = app;
 			};
@@ -555,13 +555,13 @@
 		374D794B17D822D000FAE80C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Akinori Ishii (5AJXMU3W4X)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Ippei Otsuka (JZW5DJYPD8)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Tubuyagi/Tubuyagi-Prefix.pch";
 				INFOPLIST_FILE = "Tubuyagi/Tubuyagi-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "17790BCE-6B94-437E-8EDA-DBE8C147FFF0";
 				SDKROOT = iphoneos6.1;
 				WRAPPER_EXTENSION = app;
 			};

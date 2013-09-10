@@ -7,6 +7,7 @@
 //
 
 #import "FavoriteViewController.h"
+#import "BasicRequest.h"
 
 @interface FavoriteViewController ()
 
@@ -29,6 +30,15 @@
     // Do any additional setup after loading the view from its nib.
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
+    
+    //データの取得
+//    favTweets = getJSONTops(0, 20);
+//    NSDictionary *dic = [favTweets objectForKey:@"0"];
+//    NSLog(@"dic %@", self.favTweet);
+//    NSString *userName = [[self.favTweet objectForKey:@"1"] objectForKey:@"content"];
+//    NSLog(@"username %@", userName);
+    [self.tableView reloadData];
+
 }
 
 - (void)didReceiveMemoryWarning
@@ -62,16 +72,31 @@
 {
     //    NSLog(@"cellForRowAtIndexPath");
     
-    NSString *strCellIdentifier = [NSString stringWithFormat:@"%d", indexPath.row];
-    NSString *CellIdentifier = strCellIdentifier;
+//    NSString *strCellIdentifier = [NSString stringWithFormat:@"%d", indexPath.row];
+    NSString *CellIdentifier = @"Cell";//strCellIdentifier;
     
     FavoriteCustomVIewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         cell = [[FavoriteCustomVIewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-
         
+//        NSString *num = [NSString stringWithFormat:@"%d", indexPath.row];
+        
+        
+    
+        if (self.favTweet){
+            NSString *tweet = [[self.favTweet objectAtIndex:indexPath.row] objectForKey:@"content"];
+            NSString *strYagiName = [[self.favTweet objectAtIndex:indexPath.row] objectForKey:@"yagi_name"];
+
+            cell.lblTweet.text = tweet;
+            cell.lblYagiName.text = strYagiName;
+//            [cell layoutView];
+//            [self.tableView reloadData];
+//          [cell.lblYagiName sizeThatFits:cell.lblYagiName.bounds.size];
+
+        }
     }
     
+
     return cell;
 }
 
@@ -97,22 +122,23 @@
     
 }
 
+#define margin 8
 //セルの高さ
 - (float)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-//    NSLog(@"heightForRowAtIndexPath");
-//    if (arrDeleteWord) {
-//        
-//        UITableViewCell *cell = [self tableView:self.tableView cellForRowAtIndexPath:indexPath];
-//        CGSize bounds = CGSizeMake(self.view.frame.size.width, self.view.frame.size.height);
-//        UIFont *font = cell.textLabel.font;
-//        NSLog(@"%@", font);
-//        //textLabelのサイズ
-//        CGSize size = [cell.textLabel.text sizeWithFont:cell.textLabel.font
-//                                      constrainedToSize:bounds
-//                                          lineBreakMode:NSLineBreakByWordWrapping];
-//        return size.height + 20;
-//    }
-    return 8*2 + 50 + 22;
+    NSLog(@"heightForRowAtIndexPath");
+    if (self.favTweet) {
+        
+        FavoriteCustomVIewCell *aCell = [[FavoriteCustomVIewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"];
+        CGSize bounds = CGSizeMake(aCell.lblTweet.frame.size.width, 1000);
+        UIFont *font = aCell.textLabel.font;
+        NSLog(@"font desu %@", font);
+        //textLabelのサイズ
+        CGSize size = [aCell.lblTweet.text sizeWithFont:aCell.lblTweet.font
+                                      constrainedToSize:bounds
+                                          lineBreakMode:NSLineBreakByWordWrapping];
+        return size.height + margin * 3 + 80;
+    }
+    return 8*2 + 50 + 22 +15;
 }
 @end

@@ -27,6 +27,13 @@
     return self;
 }
 
+- (void)createObjedt
+{
+    
+}
+
+
+#define favBtnWidth 80
 - (void)layoutView
 {
     //ヤギの画像
@@ -46,19 +53,44 @@
     //ヤギの名前
     CGRect lblNameRect = CGRectMake(margin, margin + 50, img_ato.size.width, 10);
     _lblYagiName = [[UILabel alloc] initWithFrame:lblNameRect];
-    _lblYagiName.text = @"つぶヤギ";
+//    _lblYagiName.text = @"つぶヤギ";
     _lblYagiName.font = [UIFont systemFontOfSize:[UIFont smallSystemFontSize]];
     [self addSubview:_lblYagiName];
     
     //ヤギの発言
-    CGRect lblTweetRect = CGRectMake(margin * 2 + img_ato.size.width , margin, self.frame.size.width - (margin * 3 + img_ato.size.width), self.frame.size.height - margin * 2);
+    //発言のサイズ取得
+//    CGSize bounds = CGSizeMake(self.frame.size.width - (margin * 3 + img_ato.size.width), 1000 );
+//    UIFont *font = [UIFont systemFontOfSize:[UIFont systemFontSize]];
+//    //textLabelのサイズ
+//    CGSize lblTweetSize = [_lblTweet.text sizeWithFont:font
+//                             constrainedToSize:bounds
+//                                 lineBreakMode:NSLineBreakByWordWrapping];
+    CGRect lblTweetRect = CGRectMake(margin * 2 + img_ato.size.width , margin, self.frame.size.width - (margin * 3 + img_ato.size.width), self.bounds.size.height );
     _lblTweet = [[UILabel alloc] initWithFrame:lblTweetRect];
-    _lblTweet.text = @"呪文をいいます。";
-    for (int i = 0; i < 100; i++) {
-        [_lblTweet.text stringByAppendingString:@"粒ヤギ"];
-        NSLog(@"string %@", _lblTweet.text);
-    }
+//    _lblTweet.backgroundColor = [UIColor blueColor];
+    _lblTweet.font = [UIFont fontWithName:@"Helvetica" size:12];
+//    _lblTweet.text = @"呪文をいいます。";
+    _lblTweet.lineBreakMode = NSLineBreakByTruncatingTail;
+    [_lblTweet setNumberOfLines:0];
+    _lblTweet.font = _lblTweet.font;
     [self addSubview:_lblTweet];
+    
+    
+    //お気に入り・笑いボタン
+    CGRect btnFavRect = CGRectMake(lblTweetRect.origin.x + lblTweetRect.size.width - favBtnWidth, lblTweetRect.origin.y + lblTweetRect.size.height + margin, favBtnWidth, 30);
+    btnFavorite = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+
+    btnFavorite.frame = btnFavRect;
+    [btnFavorite setTitle:@"お気に入り" forState:UIControlStateNormal];
+    [self addSubview:btnFavorite];
+    [btnFavorite addTarget:self action:@selector(pushButton:) forControlEvents:UIControlEventTouchUpInside];
+    
+    
+}
+
+- (void)pushButton:(UIButton *)btn
+{
+    NSLog(@"favorite");
     
 }
 

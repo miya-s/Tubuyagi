@@ -10,8 +10,11 @@
 #import "FavoriteCustomVIewCell.h"
 
 @interface FavoriteViewController : UIViewController<UITableViewDataSource,UITableViewDelegate>
-
+{
+//    NSDictionary *favTweets;
+}
 @property (strong, nonatomic) IBOutlet UITableView *tableView;
+@property (nonatomic, retain) NSArray *favTweet;
 
 - (IBAction)backMainView:(id)sender;
 

@@ -9,9 +9,14 @@
 #import <UIKit/UIKit.h>
 
 @interface FavoriteCustomVIewCell : UITableViewCell
+{
+    UIButton *btnFavorite;
+}
+
 
 @property (nonatomic, retain) UIImageView *yagiImageView;
 @property (nonatomic, retain) UILabel *lblYagiName;
 @property (nonatomic, retain) UILabel *lblTweet;
 
+-(void)layoutView;
 @end
