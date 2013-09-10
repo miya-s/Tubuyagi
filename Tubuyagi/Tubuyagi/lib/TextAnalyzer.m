@@ -16,7 +16,7 @@ NSString*   sqlDeleteBigram = @"DELETE FROM bigram WHERE pre = %@ AND post = %@;
 NSString*   sqlSelectBigramSet = @"SELECT * FROM bigram WHERE pre = %@";
 NSString*   sqlUpdateBigram = @"UPDATE bigram SET count = %d WHERE pre = %@ AND post = %@;";
 NSString*   databaseName = @"bi-gram.db";
-NSString*   logDatabaseName = @"tweet-log.db";
+NSString*   learnLogDatabaseName = @"tweet-log.db";
 
 FMDatabase* getDB(NSString * dbname){
     NSArray*    paths = NSSearchPathForDirectoriesInDomains( NSDocumentDirectory, NSUserDomainMask, YES );
@@ -24,6 +24,15 @@ FMDatabase* getDB(NSString * dbname){
     FMDatabase* db    = [FMDatabase databaseWithPath:[dir stringByAppendingPathComponent:dbname]];
     return db;
 }
+
+FMDatabase* getBigramDB(void){
+    return getDB(databaseName);
+}
+
+FMDatabase* getLearnLogDB(void){
+    return getDB(learnLogDatabaseName);
+}
+
 
 NSString* deleteNoises(NSString *str){
     NSString *result = [str stringByReplacingOccurrencesOfString:@"\n" withString:@" "];
@@ -39,22 +48,22 @@ NSString* deleteNoises(NSString *str){
 }
 
 void deleteAllData(void){
-    FMDatabase* db    = getDB(databaseName);
+    FMDatabase* db    = getBigramDB();
     [db open];
     [db executeUpdateWithFormat:@"DROP TABLE bigram;"];
     [db close];
-    deleteAllLog();
+    deleteAllLearnLog();
 }
 
-void deleteAllLog(void){
-    FMDatabase* db    = getDB(logDatabaseName);
+void deleteAllLearnLog(void){
+    FMDatabase* db    = getLearnLogDB();
     [db open];
     [db executeUpdateWithFormat:@"DROP TABLE learn_log;"];
     [db close];
 }
 
 NSMutableArray* showDeletableWords(void){
-    FMDatabase* db    = getDB(databaseName);
+    FMDatabase* db    = getBigramDB();
     NSMutableArray *result = [NSMutableArray array];
     [db open];
     FMResultSet* sqlResults = [db executeQuery:@"SELECT * FROM bigram ORDER BY count DESC"];
@@ -78,7 +87,7 @@ NSMutableArray* showDeletableWords(void){
 }
 
 NSMutableArray* showLearnLog(void){
-    FMDatabase* learnLogDb    = getDB(logDatabaseName);
+    FMDatabase* learnLogDb    = getLearnLogDB();
     NSMutableArray *result = [NSMutableArray array];
     [learnLogDb open];
     FMResultSet* sqlResults = [learnLogDb executeQuery:@"SELECT * FROM learn_log"];
@@ -94,7 +103,7 @@ NSMutableArray* showLearnLog(void){
 
 
 void deleteWord(NSString* word){
-    FMDatabase* db    = getDB(databaseName);
+    FMDatabase* db    = getBigramDB();
     [db open];
 
     [db executeQueryWithFormat:@"DELETE FROM bigram WHERE pre = %@", word];
@@ -165,7 +174,7 @@ NSString* generateNextWord(FMDatabase *db, NSString *previous){
 NSString* generateSentence(void){
     NSString* previous = @"BOS";
     NSString* result =@"";
-    FMDatabase* db    = getDB(databaseName);
+    FMDatabase* db    = getBigramDB();
 
     [db open];
     int trial = 0;
@@ -214,13 +223,13 @@ void learnFromText(NSString* morphTargetText){
     [tagger setString:targetText];
     
     
-    FMDatabase* learnLogDb    = getDB(logDatabaseName);
+    FMDatabase* learnLogDb    = getLearnLogDB();
     [learnLogDb open];
     [learnLogDb executeUpdate:@"CREATE TABLE IF NOT EXISTS learn_log (content TEXT NOT NULL);"];
     [learnLogDb executeUpdateWithFormat: @"INSERT INTO learn_log VALUES (%@)",morphTargetText];
     [learnLogDb close];
     
-    FMDatabase* db    = getDB(databaseName);
+    FMDatabase* db    = getBigramDB();
     NSString*   sqlCreateTable = @"CREATE TABLE IF NOT EXISTS bigram (pre TEXT NOT NULL, post TEXT NOT NULL, count INTEGER NOT NULL);";
     
     [db open];
@@ -262,12 +271,12 @@ void forgetFromText(NSString* text){
     }
     [tagger setString:targetText];
     
-    FMDatabase* learnLogDb    = getDB(logDatabaseName);
+    FMDatabase* learnLogDb    = getLearnLogDB();
     [learnLogDb open];
     [learnLogDb executeUpdateWithFormat: @"DELETE FROM learn_log WHERE content = %@",text];
     [learnLogDb close];
     
-    FMDatabase* db    = getDB(databaseName);
+    FMDatabase* db    = getBigramDB();
     [db open];
     __block NSString *previousEntity = @"BOS";
     [tagger enumerateTagsInRange:NSMakeRange(0, targetText.length)

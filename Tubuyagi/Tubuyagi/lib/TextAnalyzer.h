@@ -14,7 +14,7 @@ NSString* generateSentence(void);
 void learnFromText(NSString* morphTargetText);
 void forgetFromText(NSString* text);
 void deleteAllData(void);
-void deleteAllLog(void);
+void deleteAllLearnLog(void);
 NSMutableArray* showDeletableWords(void);
 NSMutableArray* showLearnLog(void);
 void deleteWord(NSString *word);

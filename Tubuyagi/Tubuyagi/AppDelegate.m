@@ -30,7 +30,6 @@
     if (![ud objectForKey:@"TDSentPassword"]) {
         addUser();
     }
-    NSLog(@"%@",getJSONTops(2,2));
     return YES;
 }
 
