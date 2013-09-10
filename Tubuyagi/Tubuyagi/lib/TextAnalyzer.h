@@ -19,6 +19,7 @@ bool isThereWara(NSString* content);
 NSMutableArray* showDeletableWords(void);
 NSMutableArray* showLearnLog(void);
 NSMutableArray* showWaraLog(void);
-void addWaraLog(NSString *content);
+void addWaraLog(NSString *content,NSDate *date);
+void addMyWaraLog(NSString *content);
 void deleteWord(NSString *word);
 @end

@@ -16,6 +16,11 @@ class TubuyagiPost(db.Model):
     wara = db.IntegerProperty()
     date = db.DateTimeProperty()
 
+class Wara(db.Model):
+    user_name = db.StringProperty()
+    post_id = db.IntegerProperty()
+    date = db.DateTimeProperty()
+
 class User(db.Model):
     user_name = db.StringProperty()
     wara = db.IntegerProperty()
@@ -31,6 +36,9 @@ def TubuyagiPostKey():
 
 def UserKey():
     return db.Key.from_path('User','default_user')
+
+def WaraKey():
+    return db.Key.from_path('Wara','default_wara')
 
 def TubuyagiById(id):
     return TubuyagiPost.get_by_id(id,parent=TubuyagiPostKey())
@@ -194,6 +202,45 @@ class add_user(webapp2.RequestHandler):
         self.response.out.write(json.dumps({"result":"success"}))        
 
 
+class add_wara(webapp2.RequestHandler):
+    def get(self):
+        self.response.write(
+            '<html>'
+                '<body>'
+                '<form action="/api/add_wara" method="POST">'
+                    'USER_NAME:<input type=text name=user_name value=""/>'
+                    '<br>RANDOM PASS:<input type=text name=random_pass value=""/>'
+                    '<br>POST ID:<input type=text name=post_id value=""/>'                    
+                    '<br><input type=submit text="submit"/>'
+                '</form>'
+                '</body>'
+            '</html>')
+
+    def post(self):
+        user_name = self.request.get('user_name')
+        random_pass = self.request.get('random_pass')
+        post_id = int(self.request.get('post_id'))
+        newwara = Wara(parent=WaraKey())
+        #post = TubuyagiById(post_id)
+        user = db.GqlQuery("select * from User where user_name = '%s'" % user_name).get()
+        if not user.auth(random_pass):
+            self.response.out.write(json.dumps({"result":"fail"}))
+            return            
+        newwara.user_name = user_name
+        newwara.post_id = post_id
+        newwara.date = datetime.datetime.now() + datetime.timedelta(hours=9)
+        newwara.put()
+
+        post = TubuyagiById(post_id)
+        post.wara += 1
+        post.put()
+        target_user = db.GqlQuery("select * from User where user_name = '%s'" % post.user_name).get()
+        target_user.wara += 1
+        target_user.put()
+        self.response.out.write(json.dumps({"result":"success"}))        
+        return 
+
+
 ##jsons##
 
 def output_list(self,query):
@@ -207,23 +254,23 @@ def output_list(self,query):
 
         TubuyagiPosts = db.GqlQuery(query).fetch(limit=num, offset=cursor)
 
-        recents = {}
-        i = 0
+        recents = []
         for post in TubuyagiPosts:
-            i += 1
-            recents[i] = {}
-            recents[i]["user_name"] = post.user_name
-            recents[i]["yagi_name"] = post.yagi_name
-            recents[i]["content"] = post.content
-            recents[i]["wara"] = post.wara
-            recents[i]["date"] = post.date.strftime('%Y/%m/%d %H:%M:%S') 
+            dic = {}
+            dic["user_name"] = post.user_name
+            dic["yagi_name"] = post.yagi_name
+            dic["content"] = post.content
+            dic["wara"] = post.wara
+            dic["date"] = post.date.strftime('%Y/%m/%d %H:%M:%S') 
+            dic["id"] = post.key().id()
+            recents.append(dic)
 
         self.response.out.write(json.dumps(recents))        
 
 
 class json_recent(webapp2.RequestHandler):
     def get(self):
-        output_list(self,"select * from TubuyagiPost order by wara desc")
+        output_list(self,"select * from TubuyagiPost order by date desc")
 
 class json_top(webapp2.RequestHandler):
     def get(self):
@@ -233,6 +280,7 @@ class json_top(webapp2.RequestHandler):
 app = webapp2.WSGIApplication([ ('/', main_page),
                                 ('/api/',api_page),
                                 ('/api/add_post',add_post),
+                                ('/api/add_wara',add_wara),
                                 ('/api/edit_post',edit_post),
                                 ('/api/delete_post',delete_post),
                                 ('/api/add_user',add_user),

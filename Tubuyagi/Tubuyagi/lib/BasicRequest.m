@@ -86,14 +86,51 @@ bool addPost(NSString *content){
     return outcome;
 }
 
+bool addWara(long long post_id){
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    NSURL *url = [NSURL URLWithString:@"http://tubu-yagi.appspot.com/api/add_wara"];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    [request setHTTPMethod:@"POST"];
+    [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
+    
+    NSString *reqBody = [NSString stringWithFormat: @"user_name=%@&random_pass=%@&post_id=%lld", [ud stringForKey: @"TDUserName"], [ud stringForKey: @"TDRandomPassword"],post_id];
+    NSLog(@"reqBody: %@", reqBody);
+    
+    [request setHTTPBody:[reqBody dataUsingEncoding:NSUTF8StringEncoding]];
+    
+    
+    __block NSString *result;
+    __block BOOL outcome;
+    [NSURLConnection sendAsynchronousRequest:request
+                                       queue:[NSOperationQueue mainQueue]
+     
+                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                               if (data) {
+                                   result = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+                                   NSLog(@"result: %@", result);
+                                   outcome = true;
+                               } else {
+                                   NSLog(@"error: %@", error);
+                                   outcome = false;
+                               }
+                           }];
+    return outcome;
+}
+
+
 bool addWaraToMyTubuyaki(NSString *content){
     if (isThereWara(content)) return false;
     bool outcome = addPost(content);
     if (outcome){
-        addWaraLog(content);
-        NSLog(@"waralog : %@",showWaraLog());
+        addMyWaraLog(content);
     }
     return outcome;
+}
+
+bool addWaraToOthersTubuyaki(NSString *content,NSDate *date){
+    if (isThereWara(content)) return false;
+    addWaraLog(content,date);
+    return true;
 }
 
 NSDictionary *getJSON(NSString *url){

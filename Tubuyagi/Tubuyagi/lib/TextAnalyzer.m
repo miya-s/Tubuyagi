@@ -234,7 +234,6 @@ NSString* generateSentence(void){
 #define _scheme_ NSLinguisticTagSchemeTokenType
 
 void learnFromText(NSString* morphTargetText){
-    
     NSArray *schemes = @[_scheme_];
     
     NSLinguisticTagger *tagger = [[NSLinguisticTagger alloc] initWithTagSchemes:schemes
@@ -327,12 +326,15 @@ void forgetFromText(NSString* text){
     [db close];
 }
 
-void addWaraLog(NSString *content){
+void addWaraLog(NSString *content,NSDate *date){
     FMDatabase* waraLogDb    = getWaraLogDB();
     [waraLogDb open];
     [waraLogDb executeUpdate:@"CREATE TABLE IF NOT EXISTS wara_log (content TEXT NOT NULL, wara INTEGER, date TEXT);"];//TODO miyahara ここの設計要検討
-    [waraLogDb executeUpdateWithFormat: @"INSERT INTO wara_log VALUES (%@, 0, %@)",content, [NSDate date]];
+    [waraLogDb executeUpdateWithFormat: @"INSERT INTO wara_log VALUES (%@, 0, %@)",content, date];
     [waraLogDb close];
 }
 
+void addMyWaraLog(NSString *content){
+    addWaraLog(content, [NSDate date]);
+}
 @end
