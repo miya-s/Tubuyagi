@@ -62,7 +62,7 @@ class api_page(webapp2.RequestHandler):
         self.response.write('<ul>')
 
         for post in TubuyagiPosts:
-            self.response.write('<li>USERNAME: {user_name};YAGINAME: {yagi_name}; WARA:{wara}; DATE:{date}; key: {key};<a href="/api/edit_post?id={key}">Edit</a></li>'
+            self.response.write('<li>USERNAME: {user_name};YAGINAME: {yagi_name};CONTENT: {content}; WARA:{wara}; DATE:{date}; key: {key};<a href="/api/edit_post?id={key}">Edit</a></li>'
                 .format(user_name=post.user_name.encode("utf-8"),yagi_name=post.yagi_name.encode("utf-8"),content=post.content.encode("utf-8"),wara=post.wara,date=post.date,key=post.key().id()))
 
         self.response.write('</ul>')
@@ -214,6 +214,7 @@ def output_list(self,query):
             recents[i] = {}
             recents[i]["user_name"] = post.user_name
             recents[i]["yagi_name"] = post.yagi_name
+            recents[i]["content"] = post.content
             recents[i]["wara"] = post.wara
             recents[i]["date"] = post.date.strftime('%Y/%m/%d %H:%M:%S') 
 

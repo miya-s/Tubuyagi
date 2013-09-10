@@ -15,8 +15,9 @@ NSString*   sqlSelectBigram = @"SELECT * FROM bigram WHERE pre = %@ AND post = %
 NSString*   sqlDeleteBigram = @"DELETE FROM bigram WHERE pre = %@ AND post = %@;";
 NSString*   sqlSelectBigramSet = @"SELECT * FROM bigram WHERE pre = %@";
 NSString*   sqlUpdateBigram = @"UPDATE bigram SET count = %d WHERE pre = %@ AND post = %@;";
-NSString*   databaseName = @"bi-gram.db";
+NSString*   bigramDatabaseName = @"bi-gram.db";
 NSString*   learnLogDatabaseName = @"tweet-log.db";
+NSString*   waraLogDatabaseName = @"wara-log.db";
 
 FMDatabase* getDB(NSString * dbname){
     NSArray*    paths = NSSearchPathForDirectoriesInDomains( NSDocumentDirectory, NSUserDomainMask, YES );
@@ -26,13 +27,16 @@ FMDatabase* getDB(NSString * dbname){
 }
 
 FMDatabase* getBigramDB(void){
-    return getDB(databaseName);
+    return getDB(bigramDatabaseName);
 }
 
 FMDatabase* getLearnLogDB(void){
     return getDB(learnLogDatabaseName);
 }
 
+FMDatabase* getWaraLogDB(void){
+    return getDB(waraLogDatabaseName);
+}
 
 NSString* deleteNoises(NSString *str){
     NSString *result = [str stringByReplacingOccurrencesOfString:@"\n" withString:@" "];
@@ -47,7 +51,7 @@ NSString* deleteNoises(NSString *str){
     return result;
 }
 
-void deleteAllData(void){
+void deleteAllBigramData(void){
     FMDatabase* db    = getBigramDB();
     [db open];
     [db executeUpdateWithFormat:@"DROP TABLE bigram;"];
@@ -61,6 +65,7 @@ void deleteAllLearnLog(void){
     [db executeUpdateWithFormat:@"DROP TABLE learn_log;"];
     [db close];
 }
+
 
 NSMutableArray* showDeletableWords(void){
     FMDatabase* db    = getBigramDB();
@@ -82,25 +87,40 @@ NSMutableArray* showDeletableWords(void){
         }
     }
     [db close];
-    NSLog(@"deletable : %@",result);
     return result;
 }
 
-NSMutableArray* showLearnLog(void){
-    FMDatabase* learnLogDb    = getLearnLogDB();
+NSMutableArray* showDBContents(FMDatabase* db, NSString *db_name){
     NSMutableArray *result = [NSMutableArray array];
-    [learnLogDb open];
-    FMResultSet* sqlResults = [learnLogDb executeQuery:@"SELECT * FROM learn_log"];
-
+    [db open];
+    FMResultSet* sqlResults = [db executeQuery:[NSString stringWithFormat: @"SELECT * FROM %@;", db_name]];
     while ([sqlResults next]){
         NSString *log = [sqlResults stringForColumn:@"content"];
         [result addObject:log];
     }
-    [learnLogDb close];
-
+    [db close];
+    
     return result;
 }
 
+NSMutableArray* showLearnLog(void){
+    FMDatabase *db = getLearnLogDB();
+    return showDBContents(db, @"learn_log");
+}
+
+NSMutableArray* showWaraLog(void){
+    FMDatabase *db = getWaraLogDB();
+    return showDBContents(db, @"wara_log");
+}
+
+bool isThereWara(NSString* content){
+    FMDatabase* db    = getWaraLogDB();
+    [db open];
+    FMResultSet* sqlResults = [db executeQuery:@"SELECT * FROM wara_log WHERE content = ?",content];
+    bool res = [sqlResults next];
+    [db close];
+    return res;
+}
 
 void deleteWord(NSString* word){
     FMDatabase* db    = getBigramDB();
@@ -199,9 +219,15 @@ NSString* generateSentence(void){
     }
     [db close];
     if ([result length] < 2){
-        result = @"メェ〜。";
+        return @"メェ〜。";
     }
-    showDeletableWords();
+    
+    FMDatabase* waraLogDb    = getWaraLogDB();
+    [waraLogDb open];
+    [waraLogDb executeUpdate:@"CREATE TABLE IF NOT EXISTS wara_log (content TEXT NOT NULL, wara INTEGER NOT NULL, );"];
+    [waraLogDb executeUpdateWithFormat: @"INSERT INTO wara_log VALUES (%@)",result];
+    [waraLogDb close];
+    
     return result;
 }
 
@@ -301,5 +327,12 @@ void forgetFromText(NSString* text){
     [db close];
 }
 
+void addWaraLog(NSString *content){
+    FMDatabase* waraLogDb    = getWaraLogDB();
+    [waraLogDb open];
+    [waraLogDb executeUpdate:@"CREATE TABLE IF NOT EXISTS wara_log (content TEXT NOT NULL, wara INTEGER, date TEXT);"];//TODO miyahara ここの設計要検討
+    [waraLogDb executeUpdateWithFormat: @"INSERT INTO wara_log VALUES (%@, 0, %@)",content, [NSDate date]];
+    [waraLogDb close];
+}
 
 @end

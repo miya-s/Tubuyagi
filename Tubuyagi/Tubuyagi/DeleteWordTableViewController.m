@@ -31,7 +31,6 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    NSLog(@"Delete Word %@", showDeletableWords());
     NSSet *aSet = [NSSet setWithArray:showLearnLog()];
     arrDeleteWord = [aSet allObjects];
     self.tableView.delegate = self;

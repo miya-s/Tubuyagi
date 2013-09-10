@@ -13,9 +13,12 @@
 NSString* generateSentence(void);
 void learnFromText(NSString* morphTargetText);
 void forgetFromText(NSString* text);
-void deleteAllData(void);
+void deleteAllBigramData(void);
 void deleteAllLearnLog(void);
+bool isThereWara(NSString* content);
 NSMutableArray* showDeletableWords(void);
 NSMutableArray* showLearnLog(void);
+NSMutableArray* showWaraLog(void);
+void addWaraLog(NSString *content);
 void deleteWord(NSString *word);
 @end

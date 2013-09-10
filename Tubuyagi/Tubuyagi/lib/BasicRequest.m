@@ -7,6 +7,7 @@
 //
 
 #import "BasicRequest.h"
+#import "TextAnalyzer.h"
 
 @implementation BasicRequest
 
@@ -85,12 +86,20 @@ bool addPost(NSString *content){
     return outcome;
 }
 
+bool addWaraToMyTubuyaki(NSString *content){
+    if (isThereWara(content)) return false;
+    bool outcome = addPost(content);
+    if (outcome){
+        addWaraLog(content);
+        NSLog(@"waralog : %@",showWaraLog());
+    }
+    return outcome;
+}
+
 NSDictionary *getJSON(NSString *url){
     NSMutableURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url]];
     NSData *json_data = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
     NSError *error=nil;
-    
-    
     NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:json_data options:NSJSONReadingAllowFragments error:&error];
     return dict;
 }
