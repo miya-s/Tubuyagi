@@ -17,7 +17,7 @@
 #import "YagiView.h"
 
 @interface ViewController : UIViewController<FoodViewControllerDelegate, UIActionSheetDelegate,
-                                                UIAlertViewDelegate>
+                                                UIAlertViewDelegate, DeleteWordTabelViewControllerDelegate>
 {
     BOOL timerFlag;
     UILabel *lblYagiTweet;

@@ -22,6 +22,11 @@
 @implementation ViewController
 //@synthesize bblView = _bblView;
 
+- (BOOL)shouldAutorotate
+{
+    return NO;
+}
+
 - (void)viewDidLoad
 {
     NSLog(@"ViewDidLoad");
@@ -194,8 +199,8 @@
     timerFlag = NO;
 
     
-#warning 直す
-    [_yagiView dischargeWord];
+//#warning 直す
+//    [_yagiView allFoget];
 }
 
 
@@ -284,6 +289,7 @@
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"忘却完了" message:@"全ての単語を忘れさせてもいいですか？？" delegate:self cancelButtonTitle:@"OK" otherButtonTitles: @"キャンセル", nil];
     alert.tag = alertDeleteAllBigramData;
     DeleteWordTableViewController *dtvc = [[DeleteWordTableViewController alloc] initWithNibName:@"DeleteWordTableViewController" bundle:nil];
+    dtvc.delegate = self;
     switch (buttonIndex) {
         case 0:
 //            deleteAllData();
@@ -310,6 +316,9 @@
                     if (![ud objectForKey:@"TDSentPassword"]) {
                         addUser();
                     }
+                    if (!strCurrTweet) {
+                        break;
+                    }
                     addWaraToMyTubuyaki(strCurrTweet);
                     break;
                     
@@ -322,6 +331,7 @@
             switch (buttonIndex) {
                 case 0:
                     deleteAllBigramData();
+                    [_yagiView allFoget];
                     NSLog(@"全消去");
                     break;
             
@@ -331,5 +341,28 @@
             default:
             break;
     }
+}
+
+- (void)tableView:(UITableView *)tableView
+  willDisplayCell:(UITableViewCell *)cell
+forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    // For even
+    if (indexPath.row % 2 == 0) {
+        cell.backgroundColor = [UIColor whiteColor];
+    }
+    // For odd
+    else {
+        cell.backgroundColor = [UIColor colorWithHue:0.61
+                                          saturation:0.09
+                                          brightness:0.99
+                                               alpha:1.0];
+    }
+}
+
+#pragma mark - DeleteWordTabeleViewControllerDelegate
+- (void)wordDelete
+{
+    [_yagiView dischargeWord];
 }
 @end

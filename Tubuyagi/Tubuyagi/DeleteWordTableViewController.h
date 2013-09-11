@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol DeleteWordTabelViewControllerDelegate;
+
 @interface DeleteWordTableViewController : UIViewController<UITableViewDataSource, UITableViewDelegate,
                     UIAlertViewDelegate>
 {
@@ -15,5 +17,12 @@
     UITableViewCell *selectedCell;
 }
 @property (strong, nonatomic) IBOutlet UITableView *tableView;
+@property (nonatomic, retain) id<DeleteWordTabelViewControllerDelegate> delegate;
 - (IBAction)backMainView:(id)sender;
+@end
+
+@protocol DeleteWordTabelViewControllerDelegate <NSObject>
+
+- (void)wordDelete;
+
 @end

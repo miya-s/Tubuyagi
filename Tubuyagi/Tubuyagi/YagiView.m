@@ -22,7 +22,7 @@
         imgFrntRightLeg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"maeAshi.png"]];
         imgBackLeftLeg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ushiroAsh.png"]];
         imgBackRightLeg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"usiroashi_03.png"]];
-        
+        imgTarai = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"tarai.png"]];
         imgKamikuzu = [[UIImageView alloc] initWithFrame:CGRectMake(fakePoint.x, fakePoint.y, 20, 20)];
         imgKamikuzu.image = [UIImage imageNamed:@"kamikuzu.png"];
         
@@ -31,6 +31,7 @@
         imgGakkariFace = [UIImage imageNamed:@"yagi_hukigen.png"];
         imgMgmg = [UIImage imageNamed:@"yagi_kao_mgmg.png"];
         imgPaku = [UIImage imageNamed:@"yagi_kao_a.png"];
+        imgKaoTrai = [UIImage imageNamed:@"yagi_kao_tarai.png"];
         
         imgFace.image = imgYokoFace;
         
@@ -47,6 +48,9 @@
         imgBackRightLeg.center = CGPointMake(170, 154);
         imgBackLeftLeg.center = CGPointMake(190, 152);
         imgKamikuzu.center = CGPointMake(200, 150);
+        imgTarai.center = CGPointMake(57.5, -104);
+
+        imgTarai.alpha = 0.0;
         
         //最初にどっちに動かすかの設定
         imgFrntRightLeg.tag = 1;
@@ -63,7 +67,12 @@
         [self addSubview:imgFrntRightLeg];
         [self addSubview:imgFrntLeftLeg];
         [self addSubview:imgFace];
+        [self addSubview:imgTarai];
         
+        //音の準備
+        NSString *path = [[NSBundle mainBundle] pathForResource:@"tarai" ofType:@"wav"];
+        NSURL *url = [NSURL fileURLWithPath:path];
+       AudioServicesCreateSystemSoundID((__bridge_retained CFURLRef)url, &soudID);
         
         [self walk];
     }
@@ -211,6 +220,33 @@
                          } completion:^(BOOL finished){
                              imgKamikuzu.center = CGPointMake(200, 150);
                          }];
+    }];
+}
+
+- (void)allFoget
+{
+    imgTarai.alpha = 1.0;
+    [UIView animateWithDuration:0.4 animations:^(void){
+        imgTarai.center = CGPointMake(imgFace.center.x , imgFace.center.y - 50);
+    } completion:^(BOOL finished){
+        [UIView animateWithDuration:0.4 animations:^(void){
+            AudioServicesPlaySystemSound(soudID);
+            imgFace.image = imgKaoTrai;
+            CGPoint endPoint = imgTarai.center;
+            endPoint.x += 60;
+            endPoint.y -= 20;
+            imgTarai.center = endPoint;
+            imgTarai.transform = CGAffineTransformMakeRotation(45 * M_PI / 180);
+            [UIView animateWithDuration:1.0 animations:^(void){
+                imgTarai.alpha = 0.0;
+            }completion:^(BOOL finished){                
+                imgTarai.transform = CGAffineTransformIdentity;
+                imgTarai.center = CGPointMake(57.5, -104);
+                imgFace.image = imgYokoFace;
+            }];
+        } completion:^(BOOL finished){
+
+        }];
     }];
 }
 /*

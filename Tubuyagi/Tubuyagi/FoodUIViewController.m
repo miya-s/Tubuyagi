@@ -26,6 +26,7 @@
 //        self.foodTableView.dataSource = self;
         
     }
+    self.view.backgroundColor = [UIColor redColor];
     NSLog(@"init");
     return self;
 }
@@ -153,11 +154,10 @@
     if (cell == nil) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
         if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-//            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
             cell.textLabel.font = [UIFont systemFontOfSize:[UIFont systemFontSize]];
             cell.textLabel.numberOfLines = 0;
             cell.detailTextLabel.font = [UIFont systemFontOfSize:[UIFont systemFontSize]];
-//            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+
             
             
             //tweetとユーザー名取得
@@ -165,6 +165,7 @@
             cell.detailTextLabel.text = [[self getTextOrUserName:@"user"] objectAtIndex:indexPath.row];
         }
     }
+    
     
     return cell;
 }
