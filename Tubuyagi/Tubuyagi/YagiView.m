@@ -15,12 +15,17 @@
     self = [super initWithFrame:frame];
     if (self) {
         // Initialization code
+        CGPoint fakePoint = CGPointZero;
         imgFace = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"_kao.png"]];
         imgBody = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"_doutai.png"]];
         imgFrntLeftLeg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"maeAshi.png"]];
         imgFrntRightLeg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"maeAshi.png"]];
         imgBackLeftLeg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ushiroAsh.png"]];
         imgBackRightLeg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"usiroashi_03.png"]];
+        
+        imgKamikuzu = [[UIImageView alloc] initWithFrame:CGRectMake(fakePoint.x, fakePoint.y, 20, 20)];
+        imgKamikuzu.image = [UIImage imageNamed:@"kamikuzu.png"];
+        
         imgYokoFace = [UIImage imageNamed:@"yoko_03.png"];
         imgMaeFace = [UIImage imageNamed:@"_kao.png"];
         imgGakkariFace = [UIImage imageNamed:@"yagi_hukigen.png"];
@@ -41,6 +46,7 @@
         imgFrntLeftLeg.center = CGPointMake(130, 157);
         imgBackRightLeg.center = CGPointMake(170, 154);
         imgBackLeftLeg.center = CGPointMake(190, 152);
+        imgKamikuzu.center = CGPointMake(200, 150);
         
         //最初にどっちに動かすかの設定
         imgFrntRightLeg.tag = 1;
@@ -50,12 +56,14 @@
         kaoFlag = 0;
         kaisuu = 0;
         
+        [self addSubview:imgKamikuzu];
         [self addSubview:imgBackRightLeg];
         [self addSubview:imgBody];
         [self addSubview:imgBackLeftLeg];
         [self addSubview:imgFrntRightLeg];
         [self addSubview:imgFrntLeftLeg];
         [self addSubview:imgFace];
+        
         
         [self walk];
     }
@@ -185,6 +193,25 @@
                              [self walkRotation:imgView];
                          }];
     }
+}
+
+- (void)dischargeWord
+{
+//    [UIView setAnimationCurve:UIViewAnimationCurveEaseIn];
+    [UIView animateWithDuration:0.5 animations:^(void){
+        CGPoint fallPoint = imgKamikuzu.center;
+        fallPoint.y += 40;
+        imgKamikuzu.center = fallPoint;
+    } completion:^(BOOL finished){
+        [UIView animateWithDuration:2.0
+                         animations:^(void){
+                             CGPoint movePoint = imgKamikuzu.center;
+                             movePoint.x += 60;
+                             imgKamikuzu.center = movePoint;
+                         } completion:^(BOOL finished){
+                             imgKamikuzu.center = CGPointMake(200, 150);
+                         }];
+    }];
 }
 /*
 // Only override drawRect: if you perform custom drawing.

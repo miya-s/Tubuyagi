@@ -110,14 +110,15 @@
     //    learnFromText(selectedCell.textLabel.text);
     
     
-//    selectedCell = [self.tableView cellForRowAtIndexPath:indexPath];
+    selectedCell = [self.tableView cellForRowAtIndexPath:indexPath];
+    NSLog(@"click tubuyaki %@", selectedCell.lblTweet);
 //    NSString *strAlert = [NSString stringWithFormat:@"「%@」を忘れさせてもいいですか？？", selectedCell.textLabel.text];
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"単語の削除"
-                                                    message:@"おす"
-                                                   delegate:self
-                                          cancelButtonTitle:@"OK"
-                                          otherButtonTitles:@"キャンセル", nil];
-    [alert show];
+//    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"単語の削除"
+//                                                    message:@"おす"
+//                                                   delegate:self
+//                                          cancelButtonTitle:@"OK"
+//                                          otherButtonTitles:@"キャンセル", nil];
+//    [alert show];
     
     
 }
@@ -132,7 +133,7 @@
         FavoriteCustomVIewCell *aCell = [[FavoriteCustomVIewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"];
         CGSize bounds = CGSizeMake(aCell.lblTweet.frame.size.width, 1000);
         UIFont *font = aCell.textLabel.font;
-        NSLog(@"font desu %@", font);
+//        NSLog(@"font desu %@", font);
         //textLabelのサイズ
         CGSize size = [aCell.lblTweet.text sizeWithFont:aCell.lblTweet.font
                                       constrainedToSize:bounds
