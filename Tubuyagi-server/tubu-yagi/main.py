@@ -277,7 +277,10 @@ def output_list(self,query):
         recents = []
         for post in TubuyagiPosts:
             dic = {}
-            dic["user_name"] = post.get_user().user_name
+            if post.get_user():
+                dic["user_name"] = post.get_user().user_name
+            else:
+                dic["user_name"] = u"(unknown)"
             dic["yagi_name"] = post.yagi_name
             dic["content"] = post.content
             dic["wara"] = post.wara
