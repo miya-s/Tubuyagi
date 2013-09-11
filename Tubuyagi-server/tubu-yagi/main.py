@@ -10,27 +10,28 @@ from google.appengine.ext import db
 from google.appengine.api import users
 
 class TubuyagiPost(db.Model):
-    user_name = db.StringProperty()
+    random_pass = db.StringProperty()
     yagi_name = db.StringProperty()
     content = db.StringProperty()
     wara = db.IntegerProperty()
     date = db.DateTimeProperty()
+    def get_user(self):
+        return userByRandomPass(self.random_pass)
 
 class Wara(db.Model):
-    user_name = db.StringProperty()
+    random_pass = db.StringProperty()
     post_id = db.IntegerProperty()
     date = db.DateTimeProperty()
+    def get_user(self):
+        return userByRandomPass(self.random_pass)
 
+#TODO: yagi_nameはuserに持たせるべき？
 class User(db.Model):
     user_name = db.StringProperty()
     wara = db.IntegerProperty()
     random_pass = db.StringProperty()
     date = db.DateTimeProperty()
-    def auth(self, given_pass):
-        return (given_pass == self.random_pass)
     
-
-
 def TubuyagiPostKey():
     return db.Key.from_path('Tubuyagi','default_blog')
 
@@ -43,6 +44,22 @@ def WaraKey():
 def TubuyagiById(id):
     return TubuyagiPost.get_by_id(id,parent=TubuyagiPostKey())
 
+def modifyUserName(user, new_user_name):
+    user.user_name = new_user_name
+    user.put()
+
+def checkUser(user_name, random_pass):
+    user = db.GqlQuery("select * from User where random_pass = '%s'" % random_pass).get()
+    if not user:
+        return None
+    if not user.user_name == user_name:
+        modifyUserName(user, user_name)
+    return user 
+
+def userByRandomPass(random_pass):
+    user = db.GqlQuery("select * from User where random_pass = '%s'" % random_pass).get()
+    return user 
+    
 
 ##################################################
 
@@ -70,8 +87,9 @@ class api_page(webapp2.RequestHandler):
         self.response.write('<ul>')
 
         for post in TubuyagiPosts:
+            user = post.get_user()
             self.response.write('<li>USERNAME: {user_name};YAGINAME: {yagi_name};CONTENT: {content}; WARA:{wara}; DATE:{date}; key: {key};<a href="/api/edit_post?id={key}">Edit</a></li>'
-                .format(user_name=post.user_name.encode("utf-8"),yagi_name=post.yagi_name.encode("utf-8"),content=post.content.encode("utf-8"),wara=post.wara,date=post.date,key=post.key().id()))
+                .format(user_name=user.user_name.encode("utf-8"),yagi_name=post.yagi_name.encode("utf-8"),content=post.content.encode("utf-8"),wara=post.wara,date=post.date,key=post.key().id()))
 
         self.response.write('</ul>')
         self.response.write('<h1>user一覧</h1>')
@@ -107,12 +125,11 @@ class add_post(webapp2.RequestHandler):
         content = self.request.get('content')
         random_pass = self.request.get('random_pass')
         
-        user = db.GqlQuery("select * from User where user_name = '" + user_name + "'").get()
-        if not user.auth(random_pass):
-            self.response.out.write(json.dumps({"result":"fail"})) 
+        if not checkUser(user_name, random_pass):
+            self.response.out.write(json.dumps({"result":"fail"}))
             return
         newpost = TubuyagiPost(parent=TubuyagiPostKey())
-        newpost.user_name = user_name
+        newpost.random_pass = random_pass
         newpost.yagi_name = yagi_name
         newpost.content = content
         newpost.wara = 0
@@ -124,6 +141,7 @@ class edit_post(webapp2.RequestHandler):
     def get(self):
         id = int(self.request.get('id'))
         newpost = TubuyagiById(id)
+        user = newpost.get_user
         self.response.write(
             '<html>'
                 '<body>'
@@ -143,7 +161,7 @@ class edit_post(webapp2.RequestHandler):
                 '</form>'
                 '</body>'
             '</html>'
-            .format(user_name=newpost.user_name.encode("utf-8"),yagi_name=newpost.yagi_name.encode("utf-8"),content=newpost.content.encode("utf-8"),wara=newpost.wara,id=newpost.key().id()))
+            .format(user_name=user.user_name.encode("utf-8"),yagi_name=newpost.yagi_name.encode("utf-8"),content=newpost.content.encode("utf-8"),wara=newpost.wara,id=newpost.key().id()))
     def post(self):
         user_name = self.request.get('user_name')
         yagi_name = self.request.get('yagi_name')
@@ -152,11 +170,10 @@ class edit_post(webapp2.RequestHandler):
         wara = self.request.get('wara')
         id = int(self.request.get('id'))
         newpost = TubuyagiById(id)
-        user = db.GqlQuery("select * from User where user_name = '%s'" % user_name).get()
-        if not user.auth(random_pass):
+        if not checkUser(user_name, random_pass):
             self.response.out.write(json.dumps({"result":"fail"}))
             return
-        newpost.user_name = user_name
+        newpost.random_pass = random_pass
         newpost.yagi_name = yagi_name
         newpost.content = content
         newpost.wara = int(wara)
@@ -168,9 +185,10 @@ class delete_post(webapp2.RequestHandler):
     def post(self):
         id = int(self.request.get('id'))
         newpost = TubuyagiById(id)
-        user = db.GqlQuery("select * from User where user_name = '%s'" % newpost.user_name).get()
         random_pass = self.request.get('random_pass')
-        if user.auth(random_pass):
+
+        user = newpost.get_user()
+        if checkUser(user.user_name, random_pass):
             newpost.delete()
             self.response.out.write(json.dumps({"result":"success"}))
         else:
@@ -193,6 +211,9 @@ class add_user(webapp2.RequestHandler):
     def post(self):
         user_name = self.request.get('user_name')
         random_pass = self.request.get('random_pass')
+        if checkUser(user_name, random_pass):
+            self.response.out.write(json.dumps({"result":"the user is already made( name may be changed)"}))
+            return
         newuser = User(parent=UserKey())
         newuser.user_name = user_name
         newuser.random_pass = random_pass
@@ -222,11 +243,10 @@ class add_wara(webapp2.RequestHandler):
         post_id = int(self.request.get('post_id'))
         newwara = Wara(parent=WaraKey())
         #post = TubuyagiById(post_id)
-        user = db.GqlQuery("select * from User where user_name = '%s'" % user_name).get()
-        if not user.auth(random_pass):
-            self.response.out.write(json.dumps({"result":"fail"}))
-            return            
-        newwara.user_name = user_name
+        if not checkUser(user_name, random_pass):
+            self.response.out.write(json.dumps({"result":"failed"}))
+            return
+        newwara.random_pass = random_pass
         newwara.post_id = post_id
         newwara.date = datetime.datetime.now() + datetime.timedelta(hours=9)
         newwara.put()
@@ -234,7 +254,7 @@ class add_wara(webapp2.RequestHandler):
         post = TubuyagiById(post_id)
         post.wara += 1
         post.put()
-        target_user = db.GqlQuery("select * from User where user_name = '%s'" % post.user_name).get()
+        target_user = post.get_user()
         target_user.wara += 1
         target_user.put()
         self.response.out.write(json.dumps({"result":"success"}))        
@@ -257,7 +277,7 @@ def output_list(self,query):
         recents = []
         for post in TubuyagiPosts:
             dic = {}
-            dic["user_name"] = post.user_name
+            dic["user_name"] = post.get_user().user_name
             dic["yagi_name"] = post.yagi_name
             dic["content"] = post.content
             dic["wara"] = post.wara
