@@ -1202,8 +1202,8 @@
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 		<dictionary class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
-			<string key="grassland.jpeg">{225, 225}</string>
-			<string key="signBoard.png">{137, 205}</string>
+			<string key="grassland.jpeg">{16, 16}</string>
+			<string key="signBoard.png">{16, 16}</string>
 		</dictionary>
 		<bool key="IBDocument.UseAutolayout">YES</bool>
 		<string key="IBCocoaTouchPluginVersion">2083</string>

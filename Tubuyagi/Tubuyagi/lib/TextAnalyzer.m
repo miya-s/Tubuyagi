@@ -284,7 +284,7 @@ void learnFromText(NSString* morphTargetText){
 }
 
 
-//TODO: miyahara learnFromTextを変えたらこっちも変える必要あり。うまく関数にわけると解決可能
+#warning miyahara learnFromTextを変えたらこっちも変える必要あり。うまく関数にわけると解決可能
 void forgetFromText(NSString* text){
     NSArray *schemes = @[_scheme_];
     
@@ -329,7 +329,8 @@ void forgetFromText(NSString* text){
 void addWaraLog(NSString *content,NSDate *date){
     FMDatabase* waraLogDb    = getWaraLogDB();
     [waraLogDb open];
-    [waraLogDb executeUpdate:@"CREATE TABLE IF NOT EXISTS wara_log (content TEXT NOT NULL, wara INTEGER, date TEXT);"];//TODO miyahara ここの設計要検討
+    [waraLogDb executeUpdate:@"CREATE TABLE IF NOT EXISTS wara_log (content TEXT NOT NULL, wara INTEGER, date TEXT);"];
+#warning  miyahara ここの設計要検討
     [waraLogDb executeUpdateWithFormat: @"INSERT INTO wara_log VALUES (%@, 0, %@)",content, date];
     [waraLogDb close];
 }

@@ -19,7 +19,7 @@ NSString *randStringWithLength(int length) {
     return [[NSString alloc] initWithCharacters:letter length:length];
 }
 NSInteger randBetween(NSInteger min, NSInteger max) {
-    return (random() % (max - min + 1)) + min;
+    return (arc4random() % (max - min + 1)) + min;
 }
 
 bool addUser(void){
