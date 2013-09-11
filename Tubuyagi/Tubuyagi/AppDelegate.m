@@ -26,10 +26,10 @@
     [defaults setObject:@"サイバーくん" forKey:@"TDUserName"];
     [defaults setObject:@"つぶやぎ" forKey:@"TDYagiName"];
     [ud registerDefaults:defaults];
-    
-    if (![ud objectForKey:@"TDSentPassword"]) {
-        addUser();
-    }
+
+#warning 毎回送る必要はない→名前変更時と、初回起動時と、twitter認証時
+    addUser();
+
     return YES;
 }
 
