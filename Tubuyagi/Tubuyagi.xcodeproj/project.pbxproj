@@ -429,10 +429,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				374D793417D822D000FAE80C /* InfoPlist.strings in Resources */,
-<<<<<<< HEAD
-=======
 				374D793E17D822D000FAE80C /* Default@2x.png in Resources */,
->>>>>>> 0e135e44e0d19c92622477b85560a150fb957d34
 				374D794017D822D000FAE80C /* Default-568h@2x.png in Resources */,
 				374D794617D822D000FAE80C /* ViewController.xib in Resources */,
 				374D795E17D8291E00FAE80C /* gort.png in Resources */,
@@ -460,12 +457,9 @@
 				4A8B068117E0438E00B408BB /* Default.png in Resources */,
 				4A8B068317E0481D00B408BB /* icon.png in Resources */,
 				4A8B068517E0484300B408BB /* icon-mini.png in Resources */,
-<<<<<<< HEAD
 				3741854917E0505D00D68688 /* startbutton.png in Resources */,
 				3741854B17E07D0000D68688 /* paper.png in Resources */,
-=======
 				4AA1DEB117E050630023B26E /* Default-568h@2x.png in Resources */,
->>>>>>> 0e135e44e0d19c92622477b85560a150fb957d34
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

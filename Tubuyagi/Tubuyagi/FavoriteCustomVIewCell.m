@@ -92,7 +92,8 @@
 - (void)pushButton:(UIButton *)btn
 {
     NSLog(@"wara");
-    addWaraToOthersTubuyaki(self.lblTweet.text, [NSDate date]);
+#warning post_idを引数として取る
+//    addWaraToOthersTubuyaki(self.lblTweet.text, [NSDate date]);
     
     
     
