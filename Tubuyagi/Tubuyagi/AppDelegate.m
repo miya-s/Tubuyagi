@@ -22,10 +22,13 @@
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
 
     NSMutableDictionary *defaults = [NSMutableDictionary dictionary];
-    [defaults setObject:randStringWithLength(20) forKey:@"TDRandomPassword"];  // をKEY_Iというキーの初期値は99
     [defaults setObject:@"サイバーくん" forKey:@"TDUserName"];
     [defaults setObject:@"つぶやぎ" forKey:@"TDYagiName"];
     [ud registerDefaults:defaults];
+
+    if (![ud objectForKey:@"TDSentPassword"]){
+        [ud setObject:randStringWithLength(20) forKey:@"TDRandomPassword"];
+    }
 
 #warning 毎回送る必要はない→名前変更時と、初回起動時と、twitter認証時
     addUser();
