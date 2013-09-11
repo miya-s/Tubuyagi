@@ -3,3 +3,4 @@
 !*.xcworkspace/contents.xcworkspacedata
 *xcodeproj/project.pbxproj/*xcuserdata*
 .DS_Store
+Tubuyagi/Tubuyagi.xcodeproj/project.xcworkspace/xcuserdata/*.xcuserdatad/UserInterfaceState.xcuserstate
