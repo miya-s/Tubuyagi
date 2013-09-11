@@ -14,7 +14,8 @@
     int kaisuu;
     UIImageView *imgFace,*imgBody,
                 *imgFrntRightLeg, *imgFrntLeftLeg,
-                *imgBackRightLeg, *imgBackLeftLeg;
+                *imgBackRightLeg, *imgBackLeftLeg,
+                *imgKamikuzu;
     
     UIImage *imgYokoFace,*imgMaeFace,*imgGakkariFace,
             *imgMgmg, *imgPaku;
@@ -25,5 +26,6 @@
 - (void)stopWalk:(BOOL)hukigen;
 - (void)walkRestart;
 - (void)eatFood;
+- (void)dischargeWord;
 @end
 

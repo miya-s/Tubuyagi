@@ -12,6 +12,7 @@
 @interface FavoriteViewController : UIViewController<UITableViewDataSource,UITableViewDelegate>
 {
 //    NSDictionary *favTweets;
+    FavoriteCustomVIewCell *selectedCell;
 }
 @property (strong, nonatomic) IBOutlet UITableView *tableView;
 @property (nonatomic, retain) NSArray *favTweet;

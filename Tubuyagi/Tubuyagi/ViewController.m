@@ -32,11 +32,13 @@
     _yagiView = [[YagiView alloc] initWithFrame:yagiRect];
     [self.view addSubview:_yagiView];
     
+    
     //ヤギを押した時のボタン
     btnYagi = [UIButton buttonWithType:UIButtonTypeCustom];
     btnYagi.frame = yagiRect;
     [btnYagi addTarget:self action:@selector(tweetYagi) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:btnYagi];
+    
     
     //PopTipViewの管理
     visiblePopTipViews = [NSMutableArray array];
@@ -191,6 +193,9 @@
                                    repeats:NO];
     timerFlag = NO;
 
+    
+#warning 直す
+    [_yagiView dischargeWord];
 }
 
 
@@ -297,11 +302,14 @@
 #pragma mark - UIAlertViewDelegate
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
     switch (alertView.tag) {
         case alertStrTweet:
             switch (buttonIndex) {
                 case 0:
+                    if (![ud objectForKey:@"TDSentPassword"]) {
+                        addUser();
+                    }
                     addWaraToMyTubuyaki(strCurrTweet);
                     break;
                     
