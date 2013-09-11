@@ -115,10 +115,10 @@
 {
     switch (buttonIndex) {
         case 0:
-//            deleteWord(selectedCell.textLabel.text);
+
             forgetFromText(selectedCell.textLabel.text);
-            NSLog(@"cell %@", selectedCell.textLabel.text);
             [self dismissViewControllerAnimated:YES completion:^(void){}];
+            [self.delegate wordDelete];
             break;
             
         default:

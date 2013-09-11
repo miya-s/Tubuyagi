@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		3741853E17DFFF3300D68688 /* kamikuzu.png in Resources */ = {isa = PBXBuildFile; fileRef = 3741853D17DFFF3300D68688 /* kamikuzu.png */; };
+		3741854017E02E7D00D68688 /* tarai.png in Resources */ = {isa = PBXBuildFile; fileRef = 3741853F17E02E7D00D68688 /* tarai.png */; };
+		3741854217E0393E00D68688 /* yagi_kao_tarai.png in Resources */ = {isa = PBXBuildFile; fileRef = 3741854117E0393E00D68688 /* yagi_kao_tarai.png */; };
+		3741854517E03D7600D68688 /* tarai.wav in Resources */ = {isa = PBXBuildFile; fileRef = 3741854417E03D7600D68688 /* tarai.wav */; };
+		3741854717E0408C00D68688 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3741854617E0408C00D68688 /* AudioToolbox.framework */; };
 		374D792A17D822D000FAE80C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 374D792917D822D000FAE80C /* UIKit.framework */; };
 		374D792C17D822D000FAE80C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 374D792B17D822D000FAE80C /* Foundation.framework */; };
 		374D792E17D822D000FAE80C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 374D792D17D822D000FAE80C /* CoreGraphics.framework */; };
@@ -73,6 +77,10 @@
 
 /* Begin PBXFileReference section */
 		3741853D17DFFF3300D68688 /* kamikuzu.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = kamikuzu.png; path = YImages/kamikuzu.png; sourceTree = "<group>"; };
+		3741853F17E02E7D00D68688 /* tarai.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = tarai.png; path = YImages/tarai.png; sourceTree = "<group>"; };
+		3741854117E0393E00D68688 /* yagi_kao_tarai.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = yagi_kao_tarai.png; path = YImages/yagi_kao_tarai.png; sourceTree = "<group>"; };
+		3741854417E03D7600D68688 /* tarai.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = tarai.wav; path = Audio/tarai.wav; sourceTree = "<group>"; };
+		3741854617E0408C00D68688 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		374D792617D822CF00FAE80C /* Tubuyagi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tubuyagi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		374D792917D822D000FAE80C /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		374D792B17D822D000FAE80C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -172,6 +180,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3741854717E0408C00D68688 /* AudioToolbox.framework in Frameworks */,
 				37778B0517DC6DFA004F51A5 /* Twitter.framework in Frameworks */,
 				4A63EA9F17D890F400C93F86 /* libsqlite3.0.dylib in Frameworks */,
 				375137C017D9761F0069A12C /* Social.framework in Frameworks */,
@@ -185,11 +194,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3741854317E03D5D00D68688 /* Audio */ = {
+			isa = PBXGroup;
+			children = (
+				3741854417E03D7600D68688 /* tarai.wav */,
+			);
+			name = Audio;
+			sourceTree = "<group>";
+		};
 		374D791D17D822CF00FAE80C = {
 			isa = PBXGroup;
 			children = (
 				4A8B068417E0484300B408BB /* icon-mini.png */,
 				4A8B068217E0481D00B408BB /* icon.png */,
+				3741854617E0408C00D68688 /* AudioToolbox.framework */,
 				4A8B068017E0438E00B408BB /* Default.png */,
 				4A8B067E17E042EF00B408BB /* Default@2x.png */,
 				4A63EA9E17D890F400C93F86 /* libsqlite3.0.dylib */,
@@ -223,6 +241,7 @@
 		374D792F17D822D000FAE80C /* Tubuyagi */ = {
 			isa = PBXGroup;
 			children = (
+				3741854317E03D5D00D68688 /* Audio */,
 				4A63EAA017D96F2D00C93F86 /* lib */,
 				374D797A17D8551500FAE80C /* ViewController */,
 				374D797917D8550600FAE80C /* SubClass */,
@@ -251,6 +270,8 @@
 		374D795A17D8291E00FAE80C /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				3741854117E0393E00D68688 /* yagi_kao_tarai.png */,
+				3741853F17E02E7D00D68688 /* tarai.png */,
 				3741853D17DFFF3300D68688 /* kamikuzu.png */,
 				37CAC24017DEDDE400854D4D /* yagiSample.png */,
 				37CAC1FC17DDB66B00854D4D /* arrow.png */,
@@ -431,6 +452,9 @@
 				37CAC23C17DED99900854D4D /* FavoriteViewController.xib in Resources */,
 				37CAC24117DEDDE400854D4D /* yagiSample.png in Resources */,
 				3741853E17DFFF3300D68688 /* kamikuzu.png in Resources */,
+				3741854017E02E7D00D68688 /* tarai.png in Resources */,
+				3741854217E0393E00D68688 /* yagi_kao_tarai.png in Resources */,
+				3741854517E03D7600D68688 /* tarai.wav in Resources */,
 				4A8B067F17E042EF00B408BB /* Default@2x.png in Resources */,
 				4A8B068117E0438E00B408BB /* Default.png in Resources */,
 				4A8B068317E0481D00B408BB /* icon.png in Resources */,

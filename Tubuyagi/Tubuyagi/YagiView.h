@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <AudioToolbox/AudioToolbox.h>
 
 @interface YagiView : UIView
 {
@@ -15,17 +16,22 @@
     UIImageView *imgFace,*imgBody,
                 *imgFrntRightLeg, *imgFrntLeftLeg,
                 *imgBackRightLeg, *imgBackLeftLeg,
-                *imgKamikuzu;
+                *imgKamikuzu, *imgTarai;
     
     UIImage *imgYokoFace,*imgMaeFace,*imgGakkariFace,
-            *imgMgmg, *imgPaku;
+            *imgMgmg, *imgPaku, *imgKaoTrai;
     
     NSTimer *timer;
+    
+    //音関連
+    SystemSoundID soudID;
+    SystemSoundID fail;
 }
 
 - (void)stopWalk:(BOOL)hukigen;
 - (void)walkRestart;
 - (void)eatFood;
 - (void)dischargeWord;
+- (void)allFoget;
 @end
 
