@@ -151,9 +151,10 @@ bool addWaraToMyTubuyaki(NSString *content){
     return outcome;
 }
 
-bool addWaraToOthersTubuyaki(NSString *content,NSDate *date){
+bool addWaraToOthersTubuyaki(long long post_id, NSString *content,NSDate *date){
     if (isThereWara(content)) return false;
     addWaraLog(content,date);
+    addWara(post_id);
     return true;
 }
 

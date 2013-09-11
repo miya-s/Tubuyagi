@@ -20,6 +20,7 @@
 		374D793417D822D000FAE80C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 374D793217D822D000FAE80C /* InfoPlist.strings */; };
 		374D793617D822D000FAE80C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 374D793517D822D000FAE80C /* main.m */; };
 		374D793A17D822D000FAE80C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 374D793917D822D000FAE80C /* AppDelegate.m */; };
+		374D793E17D822D000FAE80C /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 374D793D17D822D000FAE80C /* Default@2x.png */; };
 		374D794017D822D000FAE80C /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 374D793F17D822D000FAE80C /* Default-568h@2x.png */; };
 		374D794317D822D000FAE80C /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 374D794217D822D000FAE80C /* ViewController.m */; };
 		374D794617D822D000FAE80C /* ViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 374D794417D822D000FAE80C /* ViewController.xib */; };
@@ -71,6 +72,7 @@
 		4A8B068117E0438E00B408BB /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A8B068017E0438E00B408BB /* Default.png */; };
 		4A8B068317E0481D00B408BB /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A8B068217E0481D00B408BB /* icon.png */; };
 		4A8B068517E0484300B408BB /* icon-mini.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A8B068417E0484300B408BB /* icon-mini.png */; };
+		4AA1DEB117E050630023B26E /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4AA1DEAE17E04EC80023B26E /* Default-568h@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -170,6 +172,7 @@
 		4A8B068017E0438E00B408BB /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		4A8B068217E0481D00B408BB /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
 		4A8B068417E0484300B408BB /* icon-mini.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-mini.png"; sourceTree = "<group>"; };
+		4AA1DEAE17E04EC80023B26E /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -202,6 +205,7 @@
 		374D791D17D822CF00FAE80C = {
 			isa = PBXGroup;
 			children = (
+				4AA1DEAE17E04EC80023B26E /* Default-568h@2x.png */,
 				4A8B068417E0484300B408BB /* icon-mini.png */,
 				4A8B068217E0481D00B408BB /* icon.png */,
 				4A8B068017E0438E00B408BB /* Default.png */,
@@ -425,6 +429,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				374D793417D822D000FAE80C /* InfoPlist.strings in Resources */,
+<<<<<<< HEAD
+=======
+				374D793E17D822D000FAE80C /* Default@2x.png in Resources */,
+>>>>>>> 0e135e44e0d19c92622477b85560a150fb957d34
 				374D794017D822D000FAE80C /* Default-568h@2x.png in Resources */,
 				374D794617D822D000FAE80C /* ViewController.xib in Resources */,
 				374D795E17D8291E00FAE80C /* gort.png in Resources */,
@@ -452,8 +460,12 @@
 				4A8B068117E0438E00B408BB /* Default.png in Resources */,
 				4A8B068317E0481D00B408BB /* icon.png in Resources */,
 				4A8B068517E0484300B408BB /* icon-mini.png in Resources */,
+<<<<<<< HEAD
 				3741854917E0505D00D68688 /* startbutton.png in Resources */,
 				3741854B17E07D0000D68688 /* paper.png in Resources */,
+=======
+				4AA1DEB117E050630023B26E /* Default-568h@2x.png in Resources */,
+>>>>>>> 0e135e44e0d19c92622477b85560a150fb957d34
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
