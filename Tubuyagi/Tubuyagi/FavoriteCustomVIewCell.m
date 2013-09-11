@@ -7,6 +7,7 @@
 //
 
 #import "FavoriteCustomVIewCell.h"
+#import "BasicRequest.h"
 
 @implementation FavoriteCustomVIewCell
 
@@ -90,7 +91,10 @@
 
 - (void)pushButton:(UIButton *)btn
 {
-    NSLog(@"favorite");
+    NSLog(@"wara");
+    addWaraToOthersTubuyaki(self.lblTweet.text, [NSDate date]);
+    
+    
     
 }
 

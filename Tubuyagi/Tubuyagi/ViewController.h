@@ -11,7 +11,7 @@
 #import <Social/Social.h>
 #import "FoodUIViewController.h"
 #import "DeleteWordTableViewController.h"
-#import "ManualInputViewController.h"
+//#import "ManualInputViewController.h"
 #import "FavoriteViewController.h"
 #import "bubbleView.h"
 #import "YagiView.h"
@@ -33,10 +33,14 @@
 @property (nonatomic, retain) ACAccountStore *accountStore;
 @property (nonatomic, retain) NSArray *twitterAccounts;
 @property (nonatomic, retain) YagiView *yagiView;
+@property (strong, nonatomic) IBOutlet UIButton *btnChooseFood;
+@property (strong, nonatomic) IBOutlet UIButton *btnShareTweet;
+@property (strong, nonatomic) IBOutlet UIButton *btnshowFavolite;
 
 - (IBAction)chooseFood:(UIButton *)sender;
 - (IBAction)setConfig:(UIButton *)sender;
 - (IBAction)forgetWord:(UIButton *)sender;
 - (IBAction)showFavorite:(id)sender;
 - (IBAction)shareTweet:(UIButton *)sender;
+- (void)availableButton;
 @end

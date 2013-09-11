@@ -11,6 +11,11 @@
 @class ViewController;
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
+{
+    UIImageView *viewStart;
+    UIButton *btnStart;
+    NSTimer *timer;
+}
 
 @property (strong, nonatomic) UIWindow *window;
 

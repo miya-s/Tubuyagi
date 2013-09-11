@@ -43,6 +43,12 @@
     btnYagi.frame = yagiRect;
     [btnYagi addTarget:self action:@selector(tweetYagi) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:btnYagi];
+    btnYagi.enabled = NO;
+    
+    //その他ボタン一時利用できないようにする
+    self.btnChooseFood.enabled = NO;
+    self.btnShareTweet.enabled = NO;
+    self.btnshowFavolite.enabled = NO;
     
     
     //PopTipViewの管理
@@ -60,12 +66,23 @@
     [self.view addSubview:lblYagiTweet];
     
     //twitter情報の取得
-    [self getTwitterAccountInformation];
+    [self performSelector:@selector(getTwitterAccountInformation)
+               withObject:nil
+               afterDelay:0.1];//getTwitterAccountInformation];
     
     [self initialize];
     
 
 //    [_yagiView eatFood];
+}
+
+- (void)availableButton
+{
+    btnYagi.enabled = YES;
+    //その他ボタン利用解除
+    self.btnChooseFood.enabled = YES;
+    self.btnShareTweet.enabled = YES;
+    self.btnshowFavolite.enabled = YES;
 }
 
 //位置設定の初期設定
@@ -88,17 +105,17 @@
 
 - (IBAction)chooseFood:(UIButton *)sender {
     
-    UITabBarController *tabc = [[UITabBarController alloc] init];
+//    UITabBarController *tabc = [[UITabBarController alloc] init];
     
-//    [self presentViewController:fvc animated:YES completion:nil];
+    [self presentViewController:fvc animated:YES completion:nil];
     fvc.lblTitle.text = userName;
     
-    ManualInputViewController *mivc = [[ManualInputViewController alloc] initWithNibName:@"ManualInputViewController" bundle:nil];
+//    ManualInputViewController *mivc = [[ManualInputViewController alloc] initWithNibName:@"ManualInputViewController" bundle:nil];
 //    [self presentViewController:mivc animated:YES completion:nil];
-    NSArray *views = [NSArray arrayWithObjects:fvc, mivc, nil];
-    [tabc setViewControllers:views];
-    
-    [self presentViewController:tabc animated:YES completion:nil];
+//    NSArray *views = [NSArray arrayWithObjects:fvc, mivc, nil];
+//    [tabc setViewControllers:views];
+//    
+//    [self presentViewController:tabc animated:YES completion:nil];
     
     [self initialize];
 }
@@ -121,11 +138,24 @@
     
     FavoriteViewController *fvvc = [[FavoriteViewController alloc] initWithNibName:@"FavoriteViewController" bundle:nil];
     
-    NSArray *favTweets = getJSONRecents(0, 20);
-    fvvc.favTweet = favTweets;
+    [self performSelector:@selector(getFavoriteJsondata:)
+               withObject:fvvc
+               afterDelay:0.1];
+//    NSArray *favTweets = getJSONRecents(0, 20);
+//    fvvc.favTweet = favTweets;
     
     [self presentViewController:fvvc animated:YES completion:nil];
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
 //    [self alert];
+}
+
+- (void)getFavoriteJsondata:(FavoriteViewController *)vc
+{
+    NSArray *favTweets = getJSONRecents(0, 20);
+
+    vc.favTweet = favTweets;
+    [vc.tableView reloadData];
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 }
 
 
@@ -135,14 +165,24 @@
     NSString *strShare = [NSString stringWithFormat:@"「%@」のつぶやきを共有しますか？？", strCurrTweet];
     if (!strCurrTweet) {
         strShare = @"つぶやぎをタップして\nしゃべらせよう！";
-    }
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"発言の共有"
+                                                        message:strShare
+                                                       delegate:self
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+        alert.tag = 10;
+        [alert show];
+    }else{
+        
+    
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"発言の共有"
                                                     message:strShare
                                                    delegate:self
                                           cancelButtonTitle:@"OK"
-                                          otherButtonTitles:@"キャンセル", nil];
+                                          otherButtonTitles:@"キャンセル",nil];
     alert.tag = 10;
     [alert show];
+    }
 }
 
 
@@ -245,10 +285,12 @@
                                
                            } errorBlock:^(NSError *error) {
                                NSLog(@"%@", [error localizedDescription]);
+                               NSLog(@"通信失敗1");
                            }];
         
     } errorBlock:^(NSError *error) {
         NSLog(@"%@", [error localizedDescription]);
+        NSLog(@"通信失敗２");
     }];
 
 }
@@ -364,5 +406,11 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 - (void)wordDelete
 {
     [_yagiView dischargeWord];
+}
+- (void)viewDidUnload {
+    [self setBtnChooseFood:nil];
+    [self setBtnShareTweet:nil];
+    [self setBtnshowFavolite:nil];
+    [super viewDidUnload];
 }
 @end

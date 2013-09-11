@@ -25,6 +25,7 @@
 @property (strong, nonatomic) IBOutlet HeaderView *headerView;
 @property (strong, nonatomic) IBOutlet UILabel *lblTitle;
 
+
 - (IBAction)backMainView:(id)sender;
 
 @end

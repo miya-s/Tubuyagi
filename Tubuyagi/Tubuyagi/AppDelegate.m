@@ -33,7 +33,67 @@
 #warning 毎回送る必要はない→名前変更時と、初回起動時と、twitter認証時
     addUser();
 
+    [self creatStartView];
+    
+    
     return YES;
+}
+
+- (void)creatStartView
+{
+    //スタート画面
+    viewStart = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Default.png"]];
+    CGPoint viewCenter = self.viewController.view.center;
+    viewStart.center = CGPointMake(viewCenter.x, viewCenter.y -30);
+    [self.viewController.view addSubview:viewStart];
+    UITapGestureRecognizer *gesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(pushStartButton)];
+    [self.viewController.view addGestureRecognizer:gesture];
+    
+    btnStart = [UIButton buttonWithType:UIButtonTypeCustom];
+    [btnStart setImage:[UIImage imageNamed:@"startbutton"] forState:UIControlStateNormal];
+    [btnStart addTarget:self action:@selector(pushStartButton) forControlEvents:UIControlEventTouchUpInside];
+    CGRect btnRect = CGRectMake(0, 0, 200, 50);
+    btnStart.frame = btnRect;
+    btnStart.tag = 0;//点滅のタグ
+    btnStart.center = CGPointMake(self.viewController.view.center.x, self.viewController.view.center.y + 120);
+    [self.viewController.view addSubview:btnStart];
+    
+    timer = [NSTimer scheduledTimerWithTimeInterval:1.0
+                                             target:self
+                                           selector:@selector(switchStartButton)
+                                           userInfo:nil
+                                            repeats:YES];
+
+}
+             
+-(void)switchStartButton
+{
+    switch (btnStart.tag) {
+        case 0:
+            btnStart.alpha = 0.0;
+            btnStart.tag = 1;
+            break;
+            
+        case 1:
+            btnStart.alpha = 1.0;
+            btnStart.tag = 0;
+            
+        default:
+            break;
+    }
+    
+}
+             
+             
+- (void)pushStartButton
+{
+    [timer invalidate];
+    [UIView animateWithDuration:1 animations:^(void){
+        viewStart.alpha = 0.0;
+        btnStart.alpha = 0.0;
+    }];
+    
+    [self.viewController availableButton];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application

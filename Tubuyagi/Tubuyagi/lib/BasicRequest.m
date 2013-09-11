@@ -87,12 +87,26 @@ bool addPost(NSString *content){
 }
 
 NSArray *getJSON(NSString *url){
+    NSError *error1 = nil;
     NSMutableURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url]];
-    NSData *json_data = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
+    NSData *json_data = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:&error1];
+    NSLog(@"error %@", error1);
+    
+    if (!(error1 == NULL)) {
+
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"接続できません"
+                                                        message:@"ネットの繋がる場所で再度トライして下さい"
+                                                       delegate:nil
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+        [alert show];
+
+        return nil;
+    }
     NSError *error=nil;
-    
-    
+
     NSArray *dict = [NSJSONSerialization JSONObjectWithData:json_data options:NSJSONReadingAllowFragments error:&error];
+    NSLog(@"%@", error);
     return dict;
 }
 

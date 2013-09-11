@@ -15,6 +15,11 @@
 
 @implementation FavoriteViewController
 
+- (BOOL)shouldAutorotate
+{
+    return NO;
+}
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -78,22 +83,26 @@
     FavoriteCustomVIewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         cell = [[FavoriteCustomVIewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-        
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
 //        NSString *num = [NSString stringWithFormat:@"%d", indexPath.row];
         
         
     
-        if (self.favTweet){
-            NSString *tweet = [[self.favTweet objectAtIndex:indexPath.row] objectForKey:@"content"];
-            NSString *strYagiName = [[self.favTweet objectAtIndex:indexPath.row] objectForKey:@"yagi_name"];
+//        if (self.favTweet){
+//            NSString *tweet = [[self.favTweet objectAtIndex:indexPath.row] objectForKey:@"content"];
+//            NSString *strYagiName = [[self.favTweet objectAtIndex:indexPath.row] objectForKey:@"yagi_name"];
+//
+//
+//        }
+    }
+    if (self.favTweet){
+        NSString *tweet = [[self.favTweet objectAtIndex:indexPath.row] objectForKey:@"content"];
+        NSString *strYagiName = [[self.favTweet objectAtIndex:indexPath.row] objectForKey:@"yagi_name"];
+        
+        cell.lblTweet.text = tweet;
+        cell.lblYagiName.text = strYagiName;
+        
 
-            cell.lblTweet.text = tweet;
-            cell.lblYagiName.text = strYagiName;
-//            [cell layoutView];
-//            [self.tableView reloadData];
-//          [cell.lblYagiName sizeThatFits:cell.lblYagiName.bounds.size];
-
-        }
     }
     
 
@@ -110,8 +119,8 @@
     //    learnFromText(selectedCell.textLabel.text);
     
     
-    selectedCell = [self.tableView cellForRowAtIndexPath:indexPath];
-    NSLog(@"click tubuyaki %@", selectedCell.lblTweet);
+//    selectedCell = [self.tableView cellForRowAtIndexPath:indexPath];
+//    NSLog(@"click tubuyaki %@", selectedCell.lblTweet);
 //    NSString *strAlert = [NSString stringWithFormat:@"「%@」を忘れさせてもいいですか？？", selectedCell.textLabel.text];
 //    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"単語の削除"
 //                                                    message:@"おす"
@@ -132,7 +141,7 @@
         
         FavoriteCustomVIewCell *aCell = [[FavoriteCustomVIewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"];
         CGSize bounds = CGSizeMake(aCell.lblTweet.frame.size.width, 1000);
-        UIFont *font = aCell.textLabel.font;
+//        UIFont *font = aCell.textLabel.font;
 //        NSLog(@"font desu %@", font);
         //textLabelのサイズ
         CGSize size = [aCell.lblTweet.text sizeWithFont:aCell.lblTweet.font

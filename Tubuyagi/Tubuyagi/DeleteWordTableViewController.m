@@ -15,6 +15,11 @@
 
 @implementation DeleteWordTableViewController
 
+- (BOOL)shouldAutorotate
+{
+    return NO;
+}
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -150,6 +155,25 @@
         return size.height + 20;
     }
     return 44;
+}
+
+//テーブルの背景
+
+- (void)tableView:(UITableView *)tableView
+  willDisplayCell:(UITableViewCell *)cell
+forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    // For even
+    if (indexPath.row % 2 == 0) {
+        cell.backgroundColor = [UIColor whiteColor];
+    }
+    // For odd
+    else {
+        cell.backgroundColor = [UIColor colorWithHue:0.61
+                                          saturation:0.09
+                                          brightness:0.99
+                                               alpha:1.0];
+    }
 }
 
 @end

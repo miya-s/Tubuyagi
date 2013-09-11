@@ -12,14 +12,14 @@
 		3741854217E0393E00D68688 /* yagi_kao_tarai.png in Resources */ = {isa = PBXBuildFile; fileRef = 3741854117E0393E00D68688 /* yagi_kao_tarai.png */; };
 		3741854517E03D7600D68688 /* tarai.wav in Resources */ = {isa = PBXBuildFile; fileRef = 3741854417E03D7600D68688 /* tarai.wav */; };
 		3741854717E0408C00D68688 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3741854617E0408C00D68688 /* AudioToolbox.framework */; };
+		3741854917E0505D00D68688 /* startbutton.png in Resources */ = {isa = PBXBuildFile; fileRef = 3741854817E0505D00D68688 /* startbutton.png */; };
+		3741854B17E07D0000D68688 /* paper.png in Resources */ = {isa = PBXBuildFile; fileRef = 3741854A17E07D0000D68688 /* paper.png */; };
 		374D792A17D822D000FAE80C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 374D792917D822D000FAE80C /* UIKit.framework */; };
 		374D792C17D822D000FAE80C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 374D792B17D822D000FAE80C /* Foundation.framework */; };
 		374D792E17D822D000FAE80C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 374D792D17D822D000FAE80C /* CoreGraphics.framework */; };
 		374D793417D822D000FAE80C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 374D793217D822D000FAE80C /* InfoPlist.strings */; };
 		374D793617D822D000FAE80C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 374D793517D822D000FAE80C /* main.m */; };
 		374D793A17D822D000FAE80C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 374D793917D822D000FAE80C /* AppDelegate.m */; };
-		374D793C17D822D000FAE80C /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 374D793B17D822D000FAE80C /* Default.png */; };
-		374D793E17D822D000FAE80C /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 374D793D17D822D000FAE80C /* Default@2x.png */; };
 		374D794017D822D000FAE80C /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 374D793F17D822D000FAE80C /* Default-568h@2x.png */; };
 		374D794317D822D000FAE80C /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 374D794217D822D000FAE80C /* ViewController.m */; };
 		374D794617D822D000FAE80C /* ViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 374D794417D822D000FAE80C /* ViewController.xib */; };
@@ -46,8 +46,6 @@
 		37CAC1FB17DDA6BB00854D4D /* DeleteWordTableViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 37CAC1F917DDA6BB00854D4D /* DeleteWordTableViewController.xib */; };
 		37CAC1FD17DDB66B00854D4D /* arrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 37CAC1FC17DDB66B00854D4D /* arrow.png */; };
 		37CAC20017DDB7F000854D4D /* HeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 37CAC1FF17DDB7F000854D4D /* HeaderView.m */; };
-		37CAC20417DDD28D00854D4D /* ManualInputViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37CAC20217DDD28D00854D4D /* ManualInputViewController.m */; };
-		37CAC20517DDD28D00854D4D /* ManualInputViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 37CAC20317DDD28D00854D4D /* ManualInputViewController.xib */; };
 		37CAC23B17DED99900854D4D /* FavoriteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37CAC23917DED99800854D4D /* FavoriteViewController.m */; };
 		37CAC23C17DED99900854D4D /* FavoriteViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 37CAC23A17DED99900854D4D /* FavoriteViewController.xib */; };
 		37CAC23F17DEDB8F00854D4D /* FavoriteCustomVIewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 37CAC23E17DEDB8F00854D4D /* FavoriteCustomVIewCell.m */; };
@@ -81,6 +79,8 @@
 		3741854117E0393E00D68688 /* yagi_kao_tarai.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = yagi_kao_tarai.png; path = YImages/yagi_kao_tarai.png; sourceTree = "<group>"; };
 		3741854417E03D7600D68688 /* tarai.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = tarai.wav; path = Audio/tarai.wav; sourceTree = "<group>"; };
 		3741854617E0408C00D68688 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		3741854817E0505D00D68688 /* startbutton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = startbutton.png; sourceTree = "<group>"; };
+		3741854A17E07D0000D68688 /* paper.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = paper.png; sourceTree = "<group>"; };
 		374D792617D822CF00FAE80C /* Tubuyagi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tubuyagi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		374D792917D822D000FAE80C /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		374D792B17D822D000FAE80C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -134,9 +134,6 @@
 		37CAC1FC17DDB66B00854D4D /* arrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = arrow.png; sourceTree = "<group>"; };
 		37CAC1FE17DDB7F000854D4D /* HeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeaderView.h; sourceTree = "<group>"; };
 		37CAC1FF17DDB7F000854D4D /* HeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeaderView.m; sourceTree = "<group>"; };
-		37CAC20117DDD28D00854D4D /* ManualInputViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ManualInputViewController.h; sourceTree = "<group>"; };
-		37CAC20217DDD28D00854D4D /* ManualInputViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ManualInputViewController.m; sourceTree = "<group>"; };
-		37CAC20317DDD28D00854D4D /* ManualInputViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ManualInputViewController.xib; sourceTree = "<group>"; };
 		37CAC23817DED99800854D4D /* FavoriteViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FavoriteViewController.h; sourceTree = "<group>"; };
 		37CAC23917DED99800854D4D /* FavoriteViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FavoriteViewController.m; sourceTree = "<group>"; };
 		37CAC23A17DED99900854D4D /* FavoriteViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FavoriteViewController.xib; sourceTree = "<group>"; };
@@ -207,7 +204,6 @@
 			children = (
 				4A8B068417E0484300B408BB /* icon-mini.png */,
 				4A8B068217E0481D00B408BB /* icon.png */,
-				3741854617E0408C00D68688 /* AudioToolbox.framework */,
 				4A8B068017E0438E00B408BB /* Default.png */,
 				4A8B067E17E042EF00B408BB /* Default@2x.png */,
 				4A63EA9E17D890F400C93F86 /* libsqlite3.0.dylib */,
@@ -228,6 +224,7 @@
 		374D792817D822CF00FAE80C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3741854617E0408C00D68688 /* AudioToolbox.framework */,
 				37778B0417DC6DFA004F51A5 /* Twitter.framework */,
 				375137BF17D9761F0069A12C /* Social.framework */,
 				375137BD17D976150069A12C /* Accounts.framework */,
@@ -270,6 +267,8 @@
 		374D795A17D8291E00FAE80C /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				3741854A17E07D0000D68688 /* paper.png */,
+				3741854817E0505D00D68688 /* startbutton.png */,
 				3741854117E0393E00D68688 /* yagi_kao_tarai.png */,
 				3741853F17E02E7D00D68688 /* tarai.png */,
 				3741853D17DFFF3300D68688 /* kamikuzu.png */,
@@ -321,9 +320,6 @@
 				37CAC1F717DDA6BB00854D4D /* DeleteWordTableViewController.h */,
 				37CAC1F817DDA6BB00854D4D /* DeleteWordTableViewController.m */,
 				37CAC1F917DDA6BB00854D4D /* DeleteWordTableViewController.xib */,
-				37CAC20117DDD28D00854D4D /* ManualInputViewController.h */,
-				37CAC20217DDD28D00854D4D /* ManualInputViewController.m */,
-				37CAC20317DDD28D00854D4D /* ManualInputViewController.xib */,
 				37CAC23817DED99800854D4D /* FavoriteViewController.h */,
 				37CAC23917DED99800854D4D /* FavoriteViewController.m */,
 				37CAC23A17DED99900854D4D /* FavoriteViewController.xib */,
@@ -429,8 +425,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				374D793417D822D000FAE80C /* InfoPlist.strings in Resources */,
-				374D793C17D822D000FAE80C /* Default.png in Resources */,
-				374D793E17D822D000FAE80C /* Default@2x.png in Resources */,
 				374D794017D822D000FAE80C /* Default-568h@2x.png in Resources */,
 				374D794617D822D000FAE80C /* ViewController.xib in Resources */,
 				374D795E17D8291E00FAE80C /* gort.png in Resources */,
@@ -448,7 +442,6 @@
 				37CAC1F617DD83D300854D4D /* yagi_kao_mgmg.png in Resources */,
 				37CAC1FB17DDA6BB00854D4D /* DeleteWordTableViewController.xib in Resources */,
 				37CAC1FD17DDB66B00854D4D /* arrow.png in Resources */,
-				37CAC20517DDD28D00854D4D /* ManualInputViewController.xib in Resources */,
 				37CAC23C17DED99900854D4D /* FavoriteViewController.xib in Resources */,
 				37CAC24117DEDDE400854D4D /* yagiSample.png in Resources */,
 				3741853E17DFFF3300D68688 /* kamikuzu.png in Resources */,
@@ -459,6 +452,8 @@
 				4A8B068117E0438E00B408BB /* Default.png in Resources */,
 				4A8B068317E0481D00B408BB /* icon.png in Resources */,
 				4A8B068517E0484300B408BB /* icon-mini.png in Resources */,
+				3741854917E0505D00D68688 /* startbutton.png in Resources */,
+				3741854B17E07D0000D68688 /* paper.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -493,7 +488,6 @@
 				37CAC1FA17DDA6BB00854D4D /* DeleteWordTableViewController.m in Sources */,
 				4A6FF2E117DDA71500410BF5 /* BasicRequest.m in Sources */,
 				37CAC20017DDB7F000854D4D /* HeaderView.m in Sources */,
-				37CAC20417DDD28D00854D4D /* ManualInputViewController.m in Sources */,
 				37CAC23B17DED99900854D4D /* FavoriteViewController.m in Sources */,
 				37CAC23F17DEDB8F00854D4D /* FavoriteCustomVIewCell.m in Sources */,
 			);

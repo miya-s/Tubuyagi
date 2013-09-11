@@ -17,6 +17,11 @@
 
 @implementation FoodUIViewController
 
+- (BOOL)shouldAutorotate
+{
+    return NO;
+}
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -62,6 +67,9 @@
     
     //twtterデータの取得
 //    [self getTwitterInformation];
+    
+    //紙の背景の生成
+    
 }
 
 - (void)didReceiveMemoryWarning
@@ -246,6 +254,28 @@
         [self performSelector:@selector(getTwitterInformation) withObject:nil afterDelay:0.1];
         //        [self.delegate refleshMainView];
     }
+}
+
+//テーブルの背景
+
+- (void)tableView:(UITableView *)tableView
+  willDisplayCell:(UITableViewCell *)cell
+forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+//    UIImage *bgImage = [UIImage imageNamed:@"paper.png"];
+//    UIColor *bgColor = [[UIColor alloc] initWithPatternImage:bgImage];
+//    cell.backgroundColor = bgColor;
+//    // For even
+//    if (indexPath.row % 2 == 0) {
+//        cell.backgroundColor = [UIColor whiteColor];
+//    }
+//    // For odd
+//    else {
+//        cell.backgroundColor = [UIColor colorWithHue:0.61
+//                                          saturation:0.09
+//                                          brightness:0.99
+//                                               alpha:1.0];
+//    }
 }
 
 
