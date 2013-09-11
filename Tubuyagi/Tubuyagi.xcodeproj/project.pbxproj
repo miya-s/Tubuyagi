@@ -65,6 +65,8 @@
 		4A63EAB017D96F7000C93F86 /* FMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A63EAAB17D96F7000C93F86 /* FMResultSet.m */; };
 		4A63EB9D17D9BD5300C93F86 /* TextAnalyzer.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A63EB9C17D9BD5300C93F86 /* TextAnalyzer.m */; };
 		4A6FF2E117DDA71500410BF5 /* BasicRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A6FF2E017DDA71500410BF5 /* BasicRequest.m */; };
+		4A8B067F17E042EF00B408BB /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A8B067E17E042EF00B408BB /* Default@2x.png */; };
+		4A8B068117E0438E00B408BB /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A8B068017E0438E00B408BB /* Default.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -157,6 +159,8 @@
 		4A63EB9C17D9BD5300C93F86 /* TextAnalyzer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = TextAnalyzer.m; path = lib/TextAnalyzer.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		4A6FF2DF17DDA71500410BF5 /* BasicRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BasicRequest.h; path = lib/BasicRequest.h; sourceTree = "<group>"; };
 		4A6FF2E017DDA71500410BF5 /* BasicRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BasicRequest.m; path = lib/BasicRequest.m; sourceTree = "<group>"; };
+		4A8B067E17E042EF00B408BB /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
+		4A8B068017E0438E00B408BB /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -180,6 +184,8 @@
 		374D791D17D822CF00FAE80C = {
 			isa = PBXGroup;
 			children = (
+				4A8B068017E0438E00B408BB /* Default.png */,
+				4A8B067E17E042EF00B408BB /* Default@2x.png */,
 				4A63EA9E17D890F400C93F86 /* libsqlite3.0.dylib */,
 				374D792F17D822D000FAE80C /* Tubuyagi */,
 				374D792817D822CF00FAE80C /* Frameworks */,
@@ -419,6 +425,8 @@
 				37CAC23C17DED99900854D4D /* FavoriteViewController.xib in Resources */,
 				37CAC24117DEDDE400854D4D /* yagiSample.png in Resources */,
 				3741853E17DFFF3300D68688 /* kamikuzu.png in Resources */,
+				4A8B067F17E042EF00B408BB /* Default@2x.png in Resources */,
+				4A8B068117E0438E00B408BB /* Default.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -544,16 +552,13 @@
 		374D794A17D822D000FAE80C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer: Akinori Ishii (8MDZYR5AYQ)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Ippei Otsuka (JZW5DJYPD8)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Tubuyagi/Tubuyagi-Prefix.pch";
 				INFOPLIST_FILE = "Tubuyagi/Tubuyagi-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "8B648EFB-CED0-4B02-9EEB-77B8B91A672C";
-
-
-
+				PROVISIONING_PROFILE = "4B42FD45-9B39-4665-AFF3-E15B7876D52F";
 				SDKROOT = iphoneos6.1;
 				WRAPPER_EXTENSION = app;
 			};
@@ -562,13 +567,13 @@
 		374D794B17D822D000FAE80C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer: Akinori Ishii (8MDZYR5AYQ)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Ippei Otsuka (JZW5DJYPD8)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Tubuyagi/Tubuyagi-Prefix.pch";
 				INFOPLIST_FILE = "Tubuyagi/Tubuyagi-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "8B648EFB-CED0-4B02-9EEB-77B8B91A672C";
+				PROVISIONING_PROFILE = "4B42FD45-9B39-4665-AFF3-E15B7876D52F";
 				SDKROOT = iphoneos6.1;
 				WRAPPER_EXTENSION = app;
 			};
