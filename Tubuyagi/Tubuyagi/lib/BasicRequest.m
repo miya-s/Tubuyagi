@@ -3,7 +3,7 @@
 //  Tubuyagi
 //
 //  Created by 宮原聡 on 2013/09/09.
-//  Copyright (c) 2013年 Genki Ishibashi. All rights reserved.
+//  Copyright (c) 2013年 Team IshiHara All rights reserved.
 //
 
 #import "BasicRequest.h"
@@ -86,6 +86,16 @@ bool addPost(NSString *content){
     return outcome;
 }
 
+NSArray *getJSON(NSString *url){
+    NSMutableURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url]];
+    NSData *json_data = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
+    NSError *error=nil;
+    
+    
+    NSArray *dict = [NSJSONSerialization JSONObjectWithData:json_data options:NSJSONReadingAllowFragments error:&error];
+    return dict;
+}
+
 bool addWara(long long post_id){
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
     NSURL *url = [NSURL URLWithString:@"http://tubu-yagi.appspot.com/api/add_wara"];
@@ -133,19 +143,12 @@ bool addWaraToOthersTubuyaki(NSString *content,NSDate *date){
     return true;
 }
 
-NSDictionary *getJSON(NSString *url){
-    NSMutableURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url]];
-    NSData *json_data = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
-    NSError *error=nil;
-    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:json_data options:NSJSONReadingAllowFragments error:&error];
-    return dict;
-}
-
-NSDictionary *getJSONRecents(int cursor, int num){
+NSArray *getJSONRecents(int cursor, int num){
+    
     return getJSON([NSString stringWithFormat: @"http://tubu-yagi.appspot.com/json/recent?cursor=%d&num=%d", cursor, num]);
 }
 
-NSDictionary *getJSONTops(int cursor, int num){
+NSArray *getJSONTops(int cursor, int num){
     return getJSON([NSString stringWithFormat: @"http://tubu-yagi.appspot.com/json/top?cursor=%d&num=%d", cursor, num]);
 }
 

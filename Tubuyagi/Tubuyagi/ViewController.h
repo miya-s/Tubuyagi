@@ -12,6 +12,7 @@
 #import "FoodUIViewController.h"
 #import "DeleteWordTableViewController.h"
 #import "ManualInputViewController.h"
+#import "FavoriteViewController.h"
 #import "bubbleView.h"
 #import "YagiView.h"
 

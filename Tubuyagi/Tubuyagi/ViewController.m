@@ -112,7 +112,13 @@
 
 - (IBAction)showFavorite:(id)sender {
     
-    [self alert];
+    FavoriteViewController *fvvc = [[FavoriteViewController alloc] initWithNibName:@"FavoriteViewController" bundle:nil];
+    
+    NSArray *favTweets = getJSONRecents(0, 20);
+    fvvc.favTweet = favTweets;
+    
+    [self presentViewController:fvvc animated:YES completion:nil];
+//    [self alert];
 }
 
 
@@ -210,7 +216,7 @@
                                   count:20
                            successBlock:^(NSArray *statuses) {
                                
-                               NSLog(@"-- statuses: %@", statuses);
+//                               NSLog(@"-- statuses: %@", statuses);
                                
                                //取得内容の保存
                                tweets = statuses;
