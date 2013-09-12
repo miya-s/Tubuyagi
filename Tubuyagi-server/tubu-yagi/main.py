@@ -299,6 +299,14 @@ class json_top(webapp2.RequestHandler):
     def get(self):
         output_list(self,"select * from TubuyagiPost order by wara desc")
 
+class json_wara(webapp2.RequestHandler):
+    def get(self):
+        self.response.headers['Content-Type'] = 'application/json'   
+        random_pass = self.request.get('random_pass')
+        user = userByRandomPass(random_pass)
+        wara = [{"user_name":user.user_name, "wara":user.wara}]
+        self.response.out.write(json.dumps(wara))        
+        #最近のふぁぼられpostとか見えないとアレ
 
 app = webapp2.WSGIApplication([ ('/', main_page),
                                 ('/api/',api_page),
@@ -307,6 +315,7 @@ app = webapp2.WSGIApplication([ ('/', main_page),
                                 ('/api/edit_post',edit_post),
                                 ('/api/delete_post',delete_post),
                                 ('/api/add_user',add_user),
+                                ('/json/wara',json_wara),
                                 ('/json/recent',json_recent),
                                 ('/json/top',json_top),
                                ],

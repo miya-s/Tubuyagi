@@ -176,4 +176,10 @@ void *getJSONTops(int cursor, int num, void (^success)(NSArray *result)){
     getJSON([NSString stringWithFormat: @"http://tubu-yagi.appspot.com/json/top?cursor=%d&num=%d", cursor, num], success);
 }
 
+void *getJSONWara(void (^success)(NSArray *result)){
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    NSString *random_pass = [ud stringForKey: @"TDRandomPassword"];
+    getJSON([NSString stringWithFormat: @"http://tubu-yagi.appspot.com/json/wara?random_pass=%@", random_pass], success);
+}
+
 @end

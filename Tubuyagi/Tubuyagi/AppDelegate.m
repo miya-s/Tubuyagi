@@ -35,10 +35,17 @@
 
 #warning 毎回送る必要はない→名前変更時と、初回起動時と、twitter認証時
     addUser();
+    
+    // こんな感じにwaraが取れるよって例
+    getJSONWara(^(NSArray *result){
+        NSLog(@"%@", result);
+        NSLog(@"wara : %@", [result objectAtIndex: 0]);
+        NSLog(@"wara : %d", [[[result objectAtIndex: 0] objectForKey:@"wara"] intValue]);
+    });
 
     [self creatStartView];
     
-    
+
     return YES;
 }
 
