@@ -49,7 +49,7 @@
     
     //その他ボタン一時利用できないようにする
     self.btnChooseFood.enabled = NO;
-    self.btnShareTweet.enabled = NO;
+//    self.btnShareTweet.enabled = NO;
     self.btnshowFavolite.enabled = NO;
     
     
@@ -65,12 +65,23 @@
     CGRect lblRect = CGRectMake(40, 330, 280, 52);
     lblYagiTweet = [[UILabel alloc] initWithFrame:lblRect];
     lblYagiTweet.text = @"aaaa";
+    UIImage *imgPaper = [UIImage imageNamed:@"paper_2.jpg"];
+    UIColor *bgColor = [UIColor colorWithPatternImage:imgPaper];
+    lblYagiTweet.backgroundColor = bgColor;
     [self.view addSubview:lblYagiTweet];
     
     //twitter情報の取得
     [self performSelector:@selector(getTwitterAccountInformation)
                withObject:nil
                afterDelay:0.1];//getTwitterAccountInformation];
+    
+    //ヤギのステータス
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    NSString *strOwner = [ud stringForKey:@"TDUserName"];
+    NSString *strYagiName = [ud stringForKey:@"TDYagiName"];
+    NSLog(@"yagi name %@", [ud objectForKey:@"TDYagiName"]);
+    NSLog(@"yagi name 2 %@", [ud stringForKey:@"TDYagiName"]);
+    _strStatus.text = [NSString stringWithFormat:@"オーナー:%@\nヤギの名前:%@", strOwner, strYagiName];
     
     [self initialize];
     
@@ -83,7 +94,7 @@
     btnYagi.enabled = YES;
     //その他ボタン利用解除
     self.btnChooseFood.enabled = YES;
-    self.btnShareTweet.enabled = YES;
+//    self.btnShareTweet.enabled = YES;
     self.btnshowFavolite.enabled = YES;
 }
 
@@ -339,6 +350,7 @@
         [self initialize];
     }];
     lblYagiTweet.text = strTweet;
+    [lblYagiTweet sizeThatFits:lblYagiTweet.bounds.size];
     
     //    [UIView commitAnimations];
     
@@ -436,7 +448,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 }
 - (void)viewDidUnload {
     [self setBtnChooseFood:nil];
-    [self setBtnShareTweet:nil];
+//    [self setBtnShareTweet:nil];
     [self setBtnshowFavolite:nil];
     [self setImgSaku:nil];
     [self setStrStatus:nil];
@@ -447,6 +459,11 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 - (void)touchTipPopView
 {
     [self shareTweet:nil];
+}
+
+- (void)popTipViewWasDismissedByUser:(CMPopTipView *)popTipView
+{
+    
 }
 
 #pragma mark - UITabBarController

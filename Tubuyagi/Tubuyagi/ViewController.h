@@ -32,13 +32,13 @@
     
     FavoriteViewController *fvvc1, *fvvc2;
 }
-@property (strong, nonatomic) IBOutlet UILabel *strYagiName;
-@property (strong, nonatomic) bubbleView *bblView;
+//@property (strong, nonatomic) IBOutlet UILabel *strYagiName;
+//@property (strong, nonatomic) bubbleView *bblView;
 @property (nonatomic, retain) ACAccountStore *accountStore;
 @property (nonatomic, retain) NSArray *twitterAccounts;
 @property (nonatomic, retain) YagiView *yagiView;
 @property (strong, nonatomic) IBOutlet UIButton *btnChooseFood;
-@property (strong, nonatomic) IBOutlet UIButton *btnShareTweet;
+//@property (strong, nonatomic) IBOutlet UIButton *btnShareTweet;
 @property (strong, nonatomic) IBOutlet UIButton *btnshowFavolite;
 @property (strong, nonatomic) IBOutlet UIImageView *imgSaku;
 @property (strong, nonatomic) IBOutlet UILabel *strStatus;

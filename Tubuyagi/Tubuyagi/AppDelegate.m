@@ -14,18 +14,16 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    // Override point for customization after application launch.
-    self.viewController = [[ViewController alloc] initWithNibName:@"ViewController" bundle:nil];
-    self.window.rootViewController = self.viewController;
-    [self.window makeKeyAndVisible];
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
 
     NSMutableDictionary *defaults = [NSMutableDictionary dictionary];
-    [defaults setObject:@"サイバーくん" forKey:@"TDUserName"];
+    [defaults setObject:@"名無しくん" forKey:@"TDUserName"];
     [defaults setObject:@"つぶやぎ" forKey:@"TDYagiName"];
+    [defaults setObject:@"0" forKey:@"TDFirstTime"];
+    [defaults setObject:[NSDate date] forKey:@"TDdate"];
     [ud registerDefaults:defaults];
 
+    
     if (![ud objectForKey:@"TDRandomPassword"]){
         [ud setObject:randStringWithLength(20) forKey:@"TDRandomPassword"];
     }
@@ -33,8 +31,14 @@
 #warning 毎回送る必要はない→名前変更時と、初回起動時と、twitter認証時
     addUser();
 
-    [self creatStartView];
     
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    // Override point for customization after application launch.
+    self.viewController = [[ViewController alloc] initWithNibName:@"ViewController" bundle:nil];
+    self.window.rootViewController = self.viewController;
+    [self.window makeKeyAndVisible];
+    
+    [self creatStartView];
     
     return YES;
 }

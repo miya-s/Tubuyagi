@@ -34,7 +34,7 @@
 }
 
 
-#define favBtnWidth 80
+#define favBtnWidth 100
 - (void)layoutView
 {
     //ヤギの画像
@@ -93,10 +93,13 @@
     imgHeart.center = heartPoint;
     [self addSubview:imgHeart];
     
-//    
-//    self.favNumber = [NSString stringWithFormat:@"0"];
-//    self.favNumber.
     
+    _lblFavNumber = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 60, 20)];
+    _lblFavNumber.text = @"1";
+    CGPoint lblPoint = imgHeart.center;
+    lblPoint.x += 50;
+    self.lblFavNumber.center = lblPoint;
+    [self addSubview:self.lblFavNumber];
     
     
 }
@@ -108,8 +111,17 @@
     long long userId = [self.userID longLongValue];
     addWaraToOthersTubuyaki(userId, self.lblTweet.text, [NSDate date]);
     NSLog(@"userID = %lld, text = %@, date = %@", userId, self.lblTweet.text, [NSDate date]);
-
     
+    //お気に入りの数字を増やす
+    int i = [_lblFavNumber.text intValue];
+    i++;
+    _lblFavNumber.text = [NSString stringWithFormat:@"%d", i];
+
+    //ボタン無効化
+    [btnFavorite setTitle:@"お気に入り済" forState:UIControlStateNormal];
+    btnFavorite.enabled = NO;
+    
+//    btn setTitle:<#(NSString *)#> forState:<#(UIControlState)#>
     
     
 }

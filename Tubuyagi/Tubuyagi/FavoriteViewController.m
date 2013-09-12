@@ -121,11 +121,15 @@
     if (self.favTweet){
         NSString *tweet = [[self.favTweet objectAtIndex:indexPath.row] objectForKey:@"content"];
         NSString *strYagiName = [[self.favTweet objectAtIndex:indexPath.row] objectForKey:@"yagi_name"];
-        
+//        NSString *strFav
+        int i = [[[self.favTweet objectAtIndex:indexPath.row] objectForKey:@"wara"] intValue];
+ 
+//        NSLog(@"%d", strFav);
         
         cell.userID = [[self.favTweet objectAtIndex:indexPath.row] objectForKey:@"id"];
         cell.lblTweet.text = tweet;
         cell.lblYagiName.text = strYagiName;
+        cell.lblFavNumber.text = [NSString stringWithFormat:@"%d",i] ;
         
 
     }
@@ -206,7 +210,6 @@
         self.headerView.state = HeaderViewStateStopping;
         [self _setHeaderViewHidden:NO animated:YES];
         
-#warning ココ！！
         [self performSelector:@selector(getFavoriteJsondata) withObject:nil afterDelay:0.1];
         //        [self.delegate refleshMainView];
     }

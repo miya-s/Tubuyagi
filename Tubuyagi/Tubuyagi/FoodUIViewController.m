@@ -265,9 +265,9 @@
   willDisplayCell:(UITableViewCell *)cell
 forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-//    UIImage *bgImage = [UIImage imageNamed:@"paper.png"];
-//    UIColor *bgColor = [[UIColor alloc] initWithPatternImage:bgImage];
-//    cell.backgroundColor = bgColor;
+    UIImage *bgImage = [UIImage imageNamed:@"paper_2.jpg"];
+    UIColor *bgColor = [[UIColor alloc] initWithPatternImage:bgImage];
+    cell.backgroundColor = bgColor;
 //    // For even
 //    if (indexPath.row % 2 == 0) {
 //        cell.backgroundColor = [UIColor whiteColor];
