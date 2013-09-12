@@ -177,7 +177,7 @@
     
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
     self.strYagiName.text =  [ud objectForKey:@"TDYagiName"];
-    self.txfYagiName.text = self.strYagiName.text;
+    self.txfYagiName.placeholder = @"新しいやぎの名前をいれてね";
     self.strOwnerName.text = [ud objectForKey:@"TDUserName"];
     
     [self.view addSubview:self.configView];
