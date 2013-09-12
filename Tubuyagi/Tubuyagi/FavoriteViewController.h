@@ -8,8 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import "FavoriteCustomVIewCell.h"
-
-@interface FavoriteViewController : UIViewController<UITableViewDataSource,UITableViewDelegate>
+#import "HeaderView.h"
+@interface FavoriteViewController : UIViewController<UITableViewDataSource,UITableViewDelegate,
+                                        UIScrollViewDelegate>
 {
 //    NSDictionary *favTweets;
     FavoriteCustomVIewCell *selectedCell;
@@ -17,6 +18,7 @@
 }
 @property (strong, nonatomic) IBOutlet UITableView *tableView;
 @property (nonatomic, retain) NSArray *favTweet;
+@property (strong, nonatomic) IBOutlet HeaderView *headerView;
 
 - (IBAction)backMainView:(id)sender;
 

@@ -8,7 +8,6 @@
 
 #import "ViewController.h"
 #import "FoodUIViewController.h"
-#import "CMPopTipView.h"
 #import "TextAnalyzer.h"
 #import "STTwitter.h"
 #import "BasicRequest.h"
@@ -139,27 +138,52 @@
 
 - (IBAction)showFavorite:(id)sender {
     
-    FavoriteViewController *fvvc = [[FavoriteViewController alloc] initWithNibName:@"FavoriteViewController" bundle:nil];
+    //UITabBarController生成
+    UITabBarController *tab = [[UITabBarController alloc] init];
+    tab.delegate = self;
+    
+//    UITabBarItem *item1 = [[UITabBarItem alloc] initWithTitle:@"新着" image:nil tag:0];
+//    UITabBarItem *item2 = [[UITabBarItem alloc] initWithTitle:@"人気" image:nil tag:1];
+//    NSArray *items = tab.tabBar.items;//[NSArray arrayWithObjects:item1, item2, nil];
+
+
+    
+
+    
+    //新着順
+    fvvc1 = [[FavoriteViewController alloc] initWithNibName:@"FavoriteViewController" bundle:nil];
+    fvvc1.title = @"新着";
+    //人気順
+    fvvc2 = [[FavoriteViewController alloc] initWithNibName:@"FavoriteViewController" bundle:nil];
+    fvvc2.title = @"人気";
+    NSArray *views = [NSArray arrayWithObjects:fvvc1, fvvc2, nil];
+    [tab setViewControllers:views];
+//    [tab.tabBar setItems:items];
     
     [self performSelector:@selector(getFavoriteJsondata:)
-               withObject:fvvc
+               withObject:fvvc1
                afterDelay:0.1];
 //    NSArray *favTweets = getJSONRecents(0, 20);
 //    fvvc.favTweet = favTweets;
     
-    [self presentViewController:fvvc animated:YES completion:nil];
+    [self presentViewController:tab animated:YES completion:nil];
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
 //    [self alert];
 }
 
 - (void)getFavoriteJsondata:(FavoriteViewController *)vc
 {
-    NSArray *favTweets = getJSONRecents(0, 20);
+    NSArray *favTweets;
+    if (vc == fvvc1) {
+        favTweets = getJSONRecents(0, 20);
+    }else
+        favTweets = getJSONTops(0, 20);
 
     vc.favTweet = favTweets;
     [vc.tableView reloadData];
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 }
+
 
 
 
@@ -219,7 +243,7 @@
     //吹き出し
     strCurrTweet = [NSString stringWithFormat:@"%@", generateSentence()];
     CMPopTipView *popTipView = [[CMPopTipView alloc] initWithMessage:strCurrTweet];
-//    popTipView.delegate = self;
+    popTipView.delegate = self;
     popTipView.animation = 0;
     popTipView.has3DStyle = 0;
     [popTipView presentPointingAtView:btnYagi inView:self.view animated:YES];
@@ -417,5 +441,30 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     [self setImgSaku:nil];
     [self setStrStatus:nil];
     [super viewDidUnload];
+}
+
+#pragma mark - CMPopTipViewDelegate
+- (void)touchTipPopView
+{
+    [self shareTweet:nil];
+}
+
+#pragma mark - UITabBarController
+- (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController
+{
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+    if (viewController == fvvc1) {
+        if (!fvvc1.favTweet) {
+            [self getFavoriteJsondata:fvvc1];
+        }
+    }else if (viewController == fvvc2){
+        if (!fvvc2.favTweet) {
+        [self performSelector:@selector(getFavoriteJsondata:)
+                   withObject:fvvc2
+                   afterDelay:0.1];
+        }
+    }
+    
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 }
 @end

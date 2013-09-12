@@ -15,9 +15,11 @@
 #import "FavoriteViewController.h"
 #import "bubbleView.h"
 #import "YagiView.h"
+#import "CMPopTipView.h"
 
 @interface ViewController : UIViewController<FoodViewControllerDelegate, UIActionSheetDelegate,
-                                                UIAlertViewDelegate, DeleteWordTabelViewControllerDelegate>
+                                                UIAlertViewDelegate, DeleteWordTabelViewControllerDelegate,
+                                                CMPopTipViewDelegate, UITabBarControllerDelegate>
 {
     BOOL timerFlag;
     UILabel *lblYagiTweet;
@@ -27,6 +29,8 @@
     NSArray *tweets;
     NSString *userName, *strCurrTweet;
     FoodUIViewController *fvc;
+    
+    FavoriteViewController *fvvc1, *fvvc2;
 }
 @property (strong, nonatomic) IBOutlet UILabel *strYagiName;
 @property (strong, nonatomic) bubbleView *bblView;

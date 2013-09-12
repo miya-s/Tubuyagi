@@ -27,8 +27,8 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
-//        self.foodTableView.delegate = self;
-//        self.foodTableView.dataSource = self;
+        self.foodTableView.delegate = self;
+        self.foodTableView.dataSource = self;
         
     }
     self.view.backgroundColor = [UIColor redColor];
@@ -62,6 +62,9 @@
     
     //HeaderView
     self.foodTableView.tableHeaderView = self.headerView;
+    UIImage *img = [UIImage imageNamed:@"status_bar.png"];
+    UIColor *bgColor = [UIColor colorWithPatternImage:img];
+    self.headerView.backgroundColor = bgColor;
     [self _setHeaderViewHidden:YES animated:NO];
     [self.headerView setState:HeaderViewStateHidden];
     

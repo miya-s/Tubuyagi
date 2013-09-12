@@ -86,6 +86,18 @@
     [self addSubview:btnFavorite];
     [btnFavorite addTarget:self action:@selector(pushButton:) forControlEvents:UIControlEventTouchUpInside];
     
+    //お気に入りの数
+    UIImageView *imgHeart = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"heart.png"]];
+    CGPoint heartPoint = btnFavorite.center;
+    heartPoint.x -= 180;
+    imgHeart.center = heartPoint;
+    [self addSubview:imgHeart];
+    
+//    
+//    self.favNumber = [NSString stringWithFormat:@"0"];
+//    self.favNumber.
+    
+    
     
 }
 

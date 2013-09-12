@@ -17,6 +17,7 @@
 {
     self.state = HeaderViewStateHidden;
     [self setUpdatedDate:nil];
+    NSLog(@"生成？");
 }
 
 /*

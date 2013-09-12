@@ -145,4 +145,5 @@ typedef enum {
 
 @protocol CMPopTipViewDelegate <NSObject>
 - (void)popTipViewWasDismissedByUser:(CMPopTipView *)popTipView;
+- (void)touchTipPopView;
 @end

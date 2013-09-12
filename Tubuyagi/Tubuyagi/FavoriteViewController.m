@@ -29,12 +29,35 @@
     return self;
 }
 
+- (void)_setHeaderViewHidden:(BOOL)hidden animated:(BOOL)animated
+{
+    CGFloat topOffset = 0.0;
+    if (hidden) {
+        topOffset = -self.headerView.frame.size.height;
+    }
+    if (animated) {
+        [UIView animateWithDuration:0.2 animations:^{
+            self.tableView.contentInset = UIEdgeInsetsMake(topOffset, 0, 0, 0);
+        }];
+    } else{
+        self.tableView.contentInset = UIEdgeInsetsMake(topOffset, 0, 0, 0);
+    }
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
+    
+    //HeaderView
+    self.tableView.tableHeaderView = self.headerView;
+    UIImage *img = [UIImage imageNamed:@"status_bar.png"];
+    UIColor *bgColor = [UIColor colorWithPatternImage:img];
+    self.headerView.backgroundColor = bgColor;
+    [self _setHeaderViewHidden:YES animated:NO];
+    [self.headerView setState:HeaderViewStateHidden];
     
     //データの取得
 //    favTweets = getJSONTops(0, 20);
@@ -152,5 +175,58 @@
         return size.height + margin * 3 + 80;
     }
     return 8*2 + 50 + 22 +15;
+}
+
+#pragma mark - UIScrolViewDelegate
+
+#define PULLDOWN_MARGINE -15.0f
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    if (self.headerView.state == HeaderViewStateStopping) {
+        return;
+    }
+    
+    CGFloat threshold = self.headerView.frame.size.height;
+    
+    if ( PULLDOWN_MARGINE <= scrollView.contentOffset.y &&
+        scrollView.contentOffset.y < threshold) {
+        self.headerView.state = HeaderViewStatePullingDown;
+    } else if (scrollView.contentOffset.y < PULLDOWN_MARGINE){
+        self.headerView.state = HeaderViewStateOveredThreshold;
+    } else{
+        self.headerView.state = HeaderViewStateHidden;
+    }
+    
+}
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
+{
+    if (self.headerView.state == HeaderViewStateOveredThreshold) {
+        self.headerView.state = HeaderViewStateStopping;
+        [self _setHeaderViewHidden:NO animated:YES];
+        
+#warning ココ！！
+        [self performSelector:@selector(getFavoriteJsondata) withObject:nil afterDelay:0.1];
+        //        [self.delegate refleshMainView];
+    }
+}
+
+//データの取得
+- (void)getFavoriteJsondata
+{
+    NSArray *favTweets;
+    if ([self.title isEqualToString:@"新着"]) {
+        favTweets = getJSONRecents(0, 20);
+    }else if ([self.title isEqualToString:@"人気"]){
+        favTweets = getJSONTops(0, 20);
+    }
+    self.favTweet = favTweets;
+    
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+    self.headerView.state = HeaderViewStateHidden;
+    [self.headerView setUpdatedDate:[NSDate date]];
+    [self _setHeaderViewHidden:YES animated:YES];
+    [self.tableView reloadData];
 }
 @end

@@ -543,12 +543,14 @@
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-	if (self.disableTapToDismiss) {
-		[super touchesBegan:touches withEvent:event];
-		return;
-	}
-
-	[self dismissByUser];
+    
+    [self.delegate touchTipPopView];
+//	if (self.disableTapToDismiss) {
+//		[super touchesBegan:touches withEvent:event];
+//		return;
+//	}
+//
+//	[self dismissByUser];
 }
 
 - (void)dismissTapAnywhereFired:(UIButton *)button
