@@ -14,6 +14,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    //初期値の設定
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
 
     NSMutableDictionary *defaults = [NSMutableDictionary dictionary];
@@ -27,9 +28,6 @@
     if (![ud objectForKey:@"TDRandomPassword"]){
         [ud setObject:randStringWithLength(20) forKey:@"TDRandomPassword"];
     }
-    getJSONRecents(0,20,^(NSArray*result){
-        NSLog(@"%@",result);
-    });
 
 #warning 毎回送る必要はない→名前変更時と、初回起動時と、twitter認証時
     addUser();
@@ -41,13 +39,85 @@
     self.window.rootViewController = self.viewController;
     [self.window makeKeyAndVisible];
     
+    //初回起動時の画面作製
+    if ([[ud objectForKey:@"TDFirstTime"] isEqualToString:@"0"]) {
+        NSLog(@"初回");
+        kaisuu = 0;
+        [self setStoryView];
+        [ud setObject:@"1" forKey:@"TDFirstTime"];
+    }
+    
     [self creatStartView];
+    
+
     
     return YES;
 }
 
+- (void)popUpTutorial
+{
+    if (kaisuu == 2) {
+        
+
+        NSLog(@"popUP");
+        scrTutorial = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.viewController.view.bounds.size.width, self.viewController.view.bounds.size.height)];
+        UIImageView *imgTutorial = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 1099)];
+        imgTutorial.image = [UIImage imageNamed:@"tutorial.png"];
+        [scrTutorial addSubview:imgTutorial];
+        scrTutorial.showsVerticalScrollIndicator = NO;
+        scrTutorial.contentSize = imgTutorial.bounds.size;
+        //閉じるボタン
+        UIButton *btnClose = [UIButton buttonWithType:UIButtonTypeCustom];
+        btnClose.frame = CGRectMake(0, 0, 100, 60);
+        btnClose.center = CGPointMake(scrTutorial.center.x, scrTutorial.contentSize.height - 30);
+        [btnClose addTarget:self action:@selector(endTutorial) forControlEvents:UIControlEventTouchUpInside];
+        [scrTutorial addSubview:btnClose];
+    
+        [self.viewController.view addSubview:scrTutorial];
+    
+        scrTutorial.transform = CGAffineTransformMakeScale(0.001, 0.001);
+        [UIView animateWithDuration:0.3 animations:^(void){
+            scrTutorial.transform = CGAffineTransformMakeScale(1.5, 1.5);
+        } completion:^(BOOL finished){
+            [UIView animateWithDuration:0.2 animations:^(void){
+                scrTutorial.transform = CGAffineTransformIdentity;
+            }];
+        }];
+        
+    }
+    
+}
+
+- (void)setStoryView
+{
+    NSLog(@"setStryView");
+    scrStory = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.viewController.view.bounds.size.width, self.viewController.view.bounds.size.height)];
+    UIImageView *imgStory = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 740.5)];
+    imgStory.image = [UIImage imageNamed:@"story.png"];
+    [scrStory addSubview:imgStory];
+    CGSize scrollSize = imgStory.bounds.size;
+    scrollSize.height += 100;
+    scrStory.contentSize = scrollSize;
+    scrStory.userInteractionEnabled = NO;
+    scrStory.backgroundColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.8];
+    scrStory.showsVerticalScrollIndicator = NO;
+    scrStory.showsHorizontalScrollIndicator = NO;
+    [self.viewController.view addSubview:scrStory];
+    viewBlack = [[UIView alloc] initWithFrame:self.window.frame];
+    viewBlack.backgroundColor = [UIColor blackColor];
+    [self.viewController.view addSubview:viewBlack];
+    
+    //skipButton
+    btnSkip = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    btnSkip.frame = CGRectMake(0, 0, 80, 40);
+    btnSkip.center = CGPointMake(self.viewController.view.center.x, self.viewController.view.bounds.size.height - 50);
+    [btnSkip addTarget:self action:@selector(skipStory) forControlEvents:UIControlEventTouchUpInside];
+    [self.viewController.view addSubview:btnSkip];
+}
+
 - (void)creatStartView
 {
+    NSLog(@"createStartView");
     //スタート画面
     viewStart = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Default.png"]];
     CGPoint viewCenter = self.viewController.view.center;
@@ -75,6 +145,7 @@
              
 -(void)switchStartButton
 {
+    NSLog(@"switchStartVutton");
     switch (btnStart.tag) {
         case 0:
             btnStart.alpha = 0.0;
@@ -95,9 +166,63 @@
 - (void)pushStartButton
 {
     [timer invalidate];
-    [UIView animateWithDuration:1 animations:^(void){
-        viewStart.alpha = 0.0;
-        btnStart.alpha = 0.0;
+    if (kaisuu == 0) {
+        kaisuu++;
+    
+        NSLog(@"pushStartButton");
+        NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+        [UIView animateWithDuration:1 animations:^(void){
+            viewStart.alpha = 0.0;
+            btnStart.alpha = 0.0;
+        } completion:^(BOOL finished){
+                [UIView animateWithDuration:3 animations:^(void){
+                    viewBlack.alpha = 0.0;
+                } completion:^(BOOL finished){
+                    [UIView animateWithDuration:15
+                                          delay:0
+                                        options:UIViewAnimationOptionCurveLinear
+                                     animations:^(void){
+                                         scrStory.contentOffset = CGPointMake(0, scrStory.contentSize.height - scrStory.bounds.size.height );
+                                     } completion:^(BOOL finished){
+                                         if ([[ud objectForKey:@"TDFirstTime"] isEqualToString:@"0"]){
+                                             [self skipStory];
+                                         }
+                                     }];
+                }];
+        }];
+        if ([[ud objectForKey:@"TDFirstTime"] isEqualToString:@"1"]) {
+            [self.viewController availableButton];
+        }
+    }
+    
+    
+    
+}
+
+- (void)skipStory
+{
+    if (kaisuu == 1) {
+        kaisuu++;
+   
+    
+        NSLog(@"skip");
+        [UIView animateWithDuration:5 animations:^(void){
+            scrStory.alpha = 0.0;
+            btnSkip.alpha = 0.0;
+        } completion:^(BOOL finished){
+
+            [self popUpTutorial];
+        }];
+    }
+}
+
+- (void)endTutorial
+{
+    NSLog(@"endTutorial");
+    [UIView animateWithDuration:0.3 animations:^(void){
+        scrTutorial.transform = CGAffineTransformMakeScale(0.001, 0.001);
+    } completion:^(BOOL finished){
+        [scrTutorial removeFromSuperview];
     }];
     
     [self.viewController availableButton];

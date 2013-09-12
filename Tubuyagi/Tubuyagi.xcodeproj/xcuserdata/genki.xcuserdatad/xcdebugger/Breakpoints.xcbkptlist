@@ -8,12 +8,12 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Tubuyagi/ViewController.m"
-         timestampString = "400654468.28772"
+         timestampString = "400664725.61242"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "191"
-         endingLineNumber = "191"
-         landmarkName = "-viewDidLoad"
+         startingLineNumber = "204"
+         endingLineNumber = "204"
+         landmarkName = "-getFavoriteJsondata:"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -21,38 +21,12 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Tubuyagi/ViewController.m"
-         timestampString = "400654468.28772"
+         timestampString = "400664725.61242"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "193"
-         endingLineNumber = "193"
-         landmarkName = "-viewDidLoad"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "Tubuyagi/ViewController.m"
-         timestampString = "400654468.28772"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "195"
-         endingLineNumber = "195"
-         landmarkName = "-viewDidLoad"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "Tubuyagi/ViewController.m"
-         timestampString = "400654468.28772"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "194"
-         endingLineNumber = "194"
-         landmarkName = "-viewDidLoad"
+         startingLineNumber = "204"
+         endingLineNumber = "204"
+         landmarkName = "-getFavoriteJsondata:"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint

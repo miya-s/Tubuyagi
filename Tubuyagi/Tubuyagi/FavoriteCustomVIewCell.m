@@ -54,6 +54,7 @@
     //ヤギの名前
     CGRect lblNameRect = CGRectMake(margin, margin + 50, img_ato.size.width, 10);
     _lblYagiName = [[UILabel alloc] initWithFrame:lblNameRect];
+    _lblYagiName.backgroundColor = [UIColor clearColor];
 //    _lblYagiName.text = @"つぶヤギ";
     _lblYagiName.font = [UIFont systemFontOfSize:[UIFont smallSystemFontSize]];
     [self addSubview:_lblYagiName];
@@ -72,6 +73,7 @@
     _lblTweet.font = [UIFont fontWithName:@"Helvetica" size:12];
 //    _lblTweet.text = @"呪文をいいます。";
     _lblTweet.lineBreakMode = NSLineBreakByTruncatingTail;
+    _lblTweet.backgroundColor = [UIColor clearColor];
     [_lblTweet setNumberOfLines:0];
     _lblTweet.font = _lblTweet.font;
     [self addSubview:_lblTweet];
@@ -96,6 +98,7 @@
     
     _lblFavNumber = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 60, 20)];
     _lblFavNumber.text = @"1";
+    _lblFavNumber.backgroundColor =[UIColor clearColor];
     CGPoint lblPoint = imgHeart.center;
     lblPoint.x += 50;
     self.lblFavNumber.center = lblPoint;

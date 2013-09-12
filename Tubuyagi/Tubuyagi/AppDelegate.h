@@ -12,8 +12,11 @@
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 {
+    int kaisuu;
     UIImageView *viewStart;
-    UIButton *btnStart;
+    UIButton *btnStart, *btnSkip;
+    UIView *viewBlack;
+    UIScrollView *scrStory, *scrTutorial;
     NSTimer *timer;
 }
 

@@ -50,7 +50,10 @@
     //その他ボタン一時利用できないようにする
     self.btnChooseFood.enabled = NO;
 //    self.btnShareTweet.enabled = NO;
+    self.btnConfig.enabled = NO;
+    self.btnForget.enabled = NO;
     self.btnshowFavolite.enabled = NO;
+    btnYagi.enabled = NO;
     
     
     //PopTipViewの管理
@@ -94,7 +97,8 @@
     btnYagi.enabled = YES;
     //その他ボタン利用解除
     self.btnChooseFood.enabled = YES;
-//    self.btnShareTweet.enabled = YES;
+    self.btnForget.enabled = YES;
+    self.btnConfig.enabled = YES;
     self.btnshowFavolite.enabled = YES;
 }
 
@@ -169,13 +173,12 @@
     fvvc2.title = @"人気";
     NSArray *views = [NSArray arrayWithObjects:fvvc1, fvvc2, nil];
     [tab setViewControllers:views];
-//    [tab.tabBar setItems:items];
-    
-    [self performSelector:@selector(getFavoriteJsondata:)
-               withObject:fvvc1
-               afterDelay:0.1];
-//    NSArray *favTweets = getJSONRecents(0, 20);
-//    fvvc.favTweet = favTweets;
+
+    [self getFavoriteJsondata:fvvc1];
+//    getJSONRecents(0, 20, ^(NSArray *result){
+//        fvvc1.favTweet = result;
+//    });
+
     
     [self presentViewController:tab animated:YES completion:nil];
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
@@ -184,15 +187,21 @@
 
 - (void)getFavoriteJsondata:(FavoriteViewController *)vc
 {
-    NSArray *favTweets;
-    if (vc == fvvc1) {
-//        favTweets = getJSONRecents(0, 20);
-    }else
-//        favTweets = getJSONTops(0, 20);
 
-    vc.favTweet = favTweets;
-    [vc.tableView reloadData];
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+    if (vc == fvvc1) {
+        getJSONRecents(0, 20, ^(NSArray *result){
+            fvvc1.favTweet = result;
+            [fvvc1.tableView reloadData];
+            [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+        });
+    }else if (vc == fvvc2){
+        getJSONTops(0, 20, ^(NSArray *result){
+            fvvc2.favTweet = result;
+            [fvvc2.tableView reloadData];
+            [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+        });
+    }
 }
 
 
@@ -269,7 +278,13 @@
     if (timerFlag == NO) {
         [timer invalidate];
     }
-    timer = [NSTimer scheduledTimerWithTimeInterval:3.0f
+    
+    NSUInteger showTime = strCurrTweet.length / 5.0;
+    if (showTime < 3) {
+        showTime = 3;
+    }
+    NSLog(@"time is %d", showTime);
+    timer = [NSTimer scheduledTimerWithTimeInterval:showTime
                                     target:self
                                   selector:@selector(judgdeWalkRestart)
                                   userInfo:nil
@@ -452,6 +467,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     [self setBtnshowFavolite:nil];
     [self setImgSaku:nil];
     [self setStrStatus:nil];
+    [self setBtnConfig:nil];
+    [self setBtnForget:nil];
     [super viewDidUnload];
 }
 

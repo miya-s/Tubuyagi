@@ -32,6 +32,8 @@
 		3741856D17E0AD6000D68688 /* preference.png in Resources */ = {isa = PBXBuildFile; fileRef = 3741856C17E0AD6000D68688 /* preference.png */; };
 		3742D34A17E15CB900C83680 /* back-down.png in Resources */ = {isa = PBXBuildFile; fileRef = 3742D34817E15CB800C83680 /* back-down.png */; };
 		3742D34B17E15CB900C83680 /* back.png in Resources */ = {isa = PBXBuildFile; fileRef = 3742D34917E15CB900C83680 /* back.png */; };
+		3742D34D17E18B1900C83680 /* story.png in Resources */ = {isa = PBXBuildFile; fileRef = 3742D34C17E18B1900C83680 /* story.png */; };
+		3742D34F17E1984F00C83680 /* tutorial.png in Resources */ = {isa = PBXBuildFile; fileRef = 3742D34E17E1984F00C83680 /* tutorial.png */; };
 		374D792A17D822D000FAE80C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 374D792917D822D000FAE80C /* UIKit.framework */; };
 		374D792C17D822D000FAE80C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 374D792B17D822D000FAE80C /* Foundation.framework */; };
 		374D792E17D822D000FAE80C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 374D792D17D822D000FAE80C /* CoreGraphics.framework */; };
@@ -113,6 +115,8 @@
 		3741856C17E0AD6000D68688 /* preference.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = preference.png; path = UIImage/preference.png; sourceTree = "<group>"; };
 		3742D34817E15CB800C83680 /* back-down.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "back-down.png"; path = "UIImage/back-down.png"; sourceTree = "<group>"; };
 		3742D34917E15CB900C83680 /* back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = back.png; path = UIImage/back.png; sourceTree = "<group>"; };
+		3742D34C17E18B1900C83680 /* story.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = story.png; path = UIImage/story.png; sourceTree = "<group>"; };
+		3742D34E17E1984F00C83680 /* tutorial.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = tutorial.png; path = UIImage/tutorial.png; sourceTree = "<group>"; };
 		374D792617D822CF00FAE80C /* Tubuyagi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tubuyagi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		374D792917D822D000FAE80C /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		374D792B17D822D000FAE80C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -235,6 +239,8 @@
 		3741855117E0A3C900D68688 /* UIImage(~2013.9.11) */ = {
 			isa = PBXGroup;
 			children = (
+				3742D34E17E1984F00C83680 /* tutorial.png */,
+				3742D34C17E18B1900C83680 /* story.png */,
 				3742D34817E15CB800C83680 /* back-down.png */,
 				3742D34917E15CB900C83680 /* back.png */,
 				3741856C17E0AD6000D68688 /* preference.png */,
@@ -528,6 +534,8 @@
 				3741856D17E0AD6000D68688 /* preference.png in Resources */,
 				3742D34A17E15CB900C83680 /* back-down.png in Resources */,
 				3742D34B17E15CB900C83680 /* back.png in Resources */,
+				3742D34D17E18B1900C83680 /* story.png in Resources */,
+				3742D34F17E1984F00C83680 /* tutorial.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

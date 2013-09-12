@@ -268,17 +268,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     UIImage *bgImage = [UIImage imageNamed:@"paper_2.jpg"];
     UIColor *bgColor = [[UIColor alloc] initWithPatternImage:bgImage];
     cell.backgroundColor = bgColor;
-//    // For even
-//    if (indexPath.row % 2 == 0) {
-//        cell.backgroundColor = [UIColor whiteColor];
-//    }
-//    // For odd
-//    else {
-//        cell.backgroundColor = [UIColor colorWithHue:0.61
-//                                          saturation:0.09
-//                                          brightness:0.99
-//                                               alpha:1.0];
-//    }
+
 }
 
 

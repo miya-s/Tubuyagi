@@ -218,18 +218,40 @@
 //データの取得
 - (void)getFavoriteJsondata
 {
-    NSArray *favTweets;
-    if ([self.title isEqualToString:@"新着"]) {
-//        favTweets = getJSONRecents(0, 20);
-    }else if ([self.title isEqualToString:@"人気"]){
-//        favTweets = getJSONTops(0, 20);
-    }
-    self.favTweet = favTweets;
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
     
+    if ([self.title isEqualToString:@"新着"]) {
+        getJSONRecents(0,20,^(NSArray*result){
+            self.favTweet = result;
+            [self taskFinished];
+        });
+    }else if ([self.title isEqualToString:@"人気"]){
+        getJSONTops(0, 20, ^(NSArray *result){
+            self.favTweet = result;
+            [self taskFinished];
+        });
+    }
+    
+    
+    
+}
+
+- (void)taskFinished
+{
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
     self.headerView.state = HeaderViewStateHidden;
     [self.headerView setUpdatedDate:[NSDate date]];
     [self _setHeaderViewHidden:YES animated:YES];
     [self.tableView reloadData];
+}
+
+- (void)tableView:(UITableView *)tableView
+  willDisplayCell:(UITableViewCell *)cell
+forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    UIImage *bgImage = [UIImage imageNamed:@"paper_2.jpg"];
+    UIColor *bgColor = [[UIColor alloc] initWithPatternImage:bgImage];
+    cell.backgroundColor = bgColor;
+    
 }
 @end
