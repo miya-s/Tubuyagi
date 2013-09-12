@@ -15,6 +15,7 @@ void addUser(void);
 void addPost(NSString *content);
 void *getJSONRecents(int cursor, int num, void (^success)(NSArray *result));
 void *getJSONTops(int cursor, int num, void (^success)(NSArray *result));
+void *getJSONWara(void (^success)(NSArray *result));
 void addWara(long long post_id);
 
 //自分の投稿をお気に入りに追加＆つぶやきを共有
