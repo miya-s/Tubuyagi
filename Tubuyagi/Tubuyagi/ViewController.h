@@ -19,7 +19,7 @@
 
 @interface ViewController : UIViewController<FoodViewControllerDelegate, UIActionSheetDelegate,
                                                 UIAlertViewDelegate, DeleteWordTabelViewControllerDelegate,
-                                                CMPopTipViewDelegate, UITabBarControllerDelegate>
+                                                CMPopTipViewDelegate, UITabBarControllerDelegate,UITextFieldDelegate>
 {
     BOOL timerFlag;
     UILabel *lblYagiTweet;
@@ -32,19 +32,20 @@
     
     FavoriteViewController *fvvc1, *fvvc2;
 }
-//@property (strong, nonatomic) IBOutlet UILabel *strYagiName;
-//@property (strong, nonatomic) bubbleView *bblView;
 @property (nonatomic, retain) ACAccountStore *accountStore;
 @property (nonatomic, retain) NSArray *twitterAccounts;
 @property (nonatomic, retain) YagiView *yagiView;
 @property (strong, nonatomic) IBOutlet UIButton *btnChooseFood;
-//@property (strong, nonatomic) IBOutlet UIButton *btnShareTweet;
 @property (strong, nonatomic) IBOutlet UIButton *btnshowFavolite;
 @property (strong, nonatomic) IBOutlet UIImageView *imgSaku;
 @property (strong, nonatomic) IBOutlet UILabel *strStatus;
 @property (strong, nonatomic) IBOutlet UIButton *btnConfig;
 @property (strong, nonatomic) IBOutlet UIButton *btnForget;
 @property (strong, nonatomic) IBOutlet UILabel *strWara;
+@property (strong, nonatomic) IBOutlet UILabel *strOwnerName;
+@property (strong, nonatomic) IBOutlet UILabel *strYagiName;
+@property (strong, nonatomic) IBOutlet UITextField *txfYagiName;
+@property (strong, nonatomic) IBOutlet UIView *configView;
 
 - (IBAction)chooseFood:(UIButton *)sender;
 - (IBAction)setConfig:(UIButton *)sender;

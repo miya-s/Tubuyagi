@@ -14,6 +14,7 @@
 
 #define alertStrTweet 10
 #define alertDeleteAllBigramData 11
+#define alertDelegateTextField 12
 @interface ViewController ()
 
 @end
@@ -79,12 +80,13 @@
                afterDelay:0.1];//getTwitterAccountInformation];
     
     //ヤギのステータス
-    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-    NSString *strOwner = [ud stringForKey:@"TDUserName"];
-    NSString *strYagiName = [ud stringForKey:@"TDYagiName"];
-    NSLog(@"yagi name %@", [ud objectForKey:@"TDYagiName"]);
-    NSLog(@"yagi name 2 %@", [ud stringForKey:@"TDYagiName"]);
-    _strStatus.text = [NSString stringWithFormat:@"オーナー:%@\nヤギの名前:%@", strOwner, strYagiName];
+    [self setYagiName];
+//    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+//    NSString *strOwner = [ud stringForKey:@"TDUserName"];
+//    NSString *strYagiName = [ud stringForKey:@"TDYagiName"];
+//    NSLog(@"yagi name %@", [ud objectForKey:@"TDYagiName"]);
+//    NSLog(@"yagi name 2 %@", [ud stringForKey:@"TDYagiName"]);
+//    _strStatus.text = [NSString stringWithFormat:@"オーナー:%@\nヤギの名前:%@", strOwner, strYagiName];
     
     [self initialize];
     
@@ -100,7 +102,19 @@
                 
 //                NSString *tweet = [[self.favTweet objectAtIndex:indexPath.row] objectForKey:@"wara"];
 
-//    [_yagiView eatFood];
+    //設定画面の初期設定
+    self.txfYagiName.delegate = self;
+
+}
+
+- (void)setYagiName
+{
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    NSString *strOwner = [ud stringForKey:@"TDUserName"];
+    NSString *strYagiName = [ud stringForKey:@"TDYagiName"];
+    NSLog(@"yagi name %@", [ud objectForKey:@"TDYagiName"]);
+    NSLog(@"yagi name 2 %@", [ud stringForKey:@"TDYagiName"]);
+    _strStatus.text = [NSString stringWithFormat:@"オーナー:%@\nヤギの名前:%@", strOwner, strYagiName];
 }
 
 - (void)availableButton
@@ -150,7 +164,25 @@
 
 - (IBAction)setConfig:(UIButton *)sender {
     NSLog(@"setConfig");
-    [self alert];
+    
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    self.strYagiName.text =  [ud objectForKey:@"TDYagiName"];
+    self.txfYagiName.text = self.strYagiName.text;
+    self.strOwnerName.text = [ud objectForKey:@"TDUserName"];
+    
+    [self.view addSubview:self.configView];
+    
+    self.configView.transform = CGAffineTransformMakeScale(0.001, 0.001);
+    [UIView animateWithDuration:0.3 animations:^(void){
+        self.configView.transform = CGAffineTransformMakeScale(1.5, 1.5);
+    } completion:^(BOOL finished){
+        [UIView animateWithDuration:0.2 animations:^(void){
+            self.configView.transform = CGAffineTransformIdentity;
+        }];
+    }];
+    
+    [self.txfYagiName becomeFirstResponder];
+//    [self alert];
 }
 
 - (IBAction)forgetWord:(UIButton *)sender {
@@ -287,7 +319,7 @@
         [timer invalidate];
     }
     
-    NSUInteger showTime = strCurrTweet.length / 5.0;
+    NSUInteger showTime = strCurrTweet.length / 4.0;
     if (showTime < 3) {
         showTime = 3;
     }
@@ -442,6 +474,16 @@
                 default:
                     break;
             }
+            break;
+            
+        case alertDelegateTextField:
+            switch (buttonIndex) {
+                case 0:
+                    break;
+                    
+                default:
+                    break;
+            }
             default:
             break;
     }
@@ -478,6 +520,10 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     [self setBtnConfig:nil];
     [self setBtnForget:nil];
     [self setStrWara:nil];
+    [self setStrOwnerName:nil];
+    [self setStrYagiName:nil];
+    [self setTxfYagiName:nil];
+    [self setConfigView:nil];
     [super viewDidUnload];
 }
 
@@ -509,5 +555,30 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     }
     
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+}
+
+#pragma mark - UITextFieldDelegate
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    if ([textField.text isEqualToString:@""]) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"名前が設定されていません" message:@"やぎの名前を設定して下さい" delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+        alert.tag = alertDelegateTextField;
+        [alert show];
+    }else{
+    
+        [textField resignFirstResponder];
+        [UIView animateWithDuration:0.3 animations:^(void){
+            self.configView.transform = CGAffineTransformMakeScale(0.001, 0.001);
+        } completion:^(BOOL finished){
+            [self.configView removeFromSuperview];
+        }];
+    
+        NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+        [ud setValue:textField.text forKey:@"TDYagiName"];
+        [self setYagiName];
+    }
+    
+
+    return YES;
 }
 @end
