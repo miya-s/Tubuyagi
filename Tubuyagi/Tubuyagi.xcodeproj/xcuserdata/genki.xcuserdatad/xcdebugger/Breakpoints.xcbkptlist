@@ -8,11 +8,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Tubuyagi/ViewController.m"
-         timestampString = "400664725.61242"
+         timestampString = "400676046.778591"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "204"
-         endingLineNumber = "204"
+         startingLineNumber = "244"
+         endingLineNumber = "244"
          landmarkName = "-getFavoriteJsondata:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -21,11 +21,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Tubuyagi/ViewController.m"
-         timestampString = "400664725.61242"
+         timestampString = "400676046.778591"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "204"
-         endingLineNumber = "204"
+         startingLineNumber = "244"
+         endingLineNumber = "244"
          landmarkName = "-getFavoriteJsondata:"
          landmarkType = "5">
       </FileBreakpoint>

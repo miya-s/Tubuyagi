@@ -31,7 +31,6 @@
 
 #warning 毎回送る必要はない→名前変更時と、初回起動時と、twitter認証時
     addUser();
-    
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
     self.viewController = [[ViewController alloc] initWithNibName:@"ViewController" bundle:nil];
@@ -43,7 +42,7 @@
         NSLog(@"初回");
         kaisuu = 0;
         [self setStoryView];
-        [ud setObject:@"1" forKey:@"TDFirstTime"];
+        
     }
     
     [self creatStartView];
@@ -54,13 +53,13 @@
 
 - (void)popUpTutorial
 {
-    if (kaisuu == 2) {
-        
+//    if (kaisuu == 2) {
+    
 
         NSLog(@"popUP");
         scrTutorial = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.viewController.view.bounds.size.width, self.viewController.view.bounds.size.height)];
-        UIImageView *imgTutorial = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 1099)];
-        imgTutorial.image = [UIImage imageNamed:@"tutorial.png"];
+        UIImageView *imgTutorial = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 1346)];
+        imgTutorial.image = [UIImage imageNamed:@"tutorial_new2.png"];
         [scrTutorial addSubview:imgTutorial];
         scrTutorial.showsVerticalScrollIndicator = NO;
         scrTutorial.contentSize = imgTutorial.bounds.size;
@@ -82,7 +81,7 @@
             }];
         }];
         
-    }
+//    }
     
 }
 
@@ -106,9 +105,10 @@
     [self.viewController.view addSubview:viewBlack];
     
     //skipButton
-    btnSkip = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    btnSkip.frame = CGRectMake(0, 0, 80, 40);
-    btnSkip.center = CGPointMake(self.viewController.view.center.x, self.viewController.view.bounds.size.height - 50);
+    btnSkip = [UIButton buttonWithType:UIButtonTypeCustom];
+    [btnSkip setImage:[UIImage imageNamed:@"scroll.png"] forState:UIControlStateNormal];
+    btnSkip.frame = CGRectMake(0, 0, 40, 77.2);
+    btnSkip.center = CGPointMake(self.viewController.view.center.x + 120, self.viewController.view.bounds.size.height - 80);
     [btnSkip addTarget:self action:@selector(skipStory) forControlEvents:UIControlEventTouchUpInside];
     [self.viewController.view addSubview:btnSkip];
 }
@@ -223,6 +223,8 @@
         [scrTutorial removeFromSuperview];
     }];
     
+#warning 最後に直す
+    [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"TDFirstTime"];
     [self.viewController availableButton];
 }
 

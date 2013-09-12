@@ -34,7 +34,7 @@
 }
 
 
-#define favBtnWidth 100
+#define favBtnWidth 30
 - (void)layoutView
 {
     //ヤギの画像
@@ -80,17 +80,17 @@
     
     
     //お気に入り・笑いボタン
-    CGRect btnFavRect = CGRectMake(lblTweetRect.origin.x + lblTweetRect.size.width - favBtnWidth, lblTweetRect.origin.y + lblTweetRect.size.height + margin, favBtnWidth, 30);
-    btnFavorite = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    CGRect btnFavRect = CGRectMake(lblTweetRect.origin.x + lblTweetRect.size.width - favBtnWidth - 10, lblTweetRect.origin.y + lblTweetRect.size.height + margin, favBtnWidth, 30);
+    self.btnFavorite = [UIButton buttonWithType:UIButtonTypeCustom];
 
-    btnFavorite.frame = btnFavRect;
-    [btnFavorite setTitle:@"お気に入り" forState:UIControlStateNormal];
-    [self addSubview:btnFavorite];
-    [btnFavorite addTarget:self action:@selector(pushButton:) forControlEvents:UIControlEventTouchUpInside];
+    self.btnFavorite.frame = btnFavRect;
+    [self.btnFavorite setImage:[UIImage imageNamed:@"vocant-heart.png"] forState:UIControlStateNormal];
+    [self addSubview:self.btnFavorite];
+    [self.btnFavorite addTarget:self action:@selector(pushButton:) forControlEvents:UIControlEventTouchUpInside];
     
     //お気に入りの数
-    UIImageView *imgHeart = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"heart.png"]];
-    CGPoint heartPoint = btnFavorite.center;
+    UIImageView *imgHeart = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"total-heart.png"]];
+    CGPoint heartPoint = self.btnFavorite.center;
     heartPoint.x -= 180;
     imgHeart.center = heartPoint;
     [self addSubview:imgHeart];
@@ -100,7 +100,7 @@
     _lblFavNumber.text = @"1";
     _lblFavNumber.backgroundColor =[UIColor clearColor];
     CGPoint lblPoint = imgHeart.center;
-    lblPoint.x += 50;
+    lblPoint.x += 60;
     self.lblFavNumber.center = lblPoint;
     [self addSubview:self.lblFavNumber];
     
@@ -120,13 +120,18 @@
     i++;
     _lblFavNumber.text = [NSString stringWithFormat:@"%d", i];
 
-    //ボタン無効化
-    [btnFavorite setTitle:@"お気に入り済" forState:UIControlStateNormal];
-    btnFavorite.enabled = NO;
+    [self disabledButton:btn];
     
 //    btn setTitle:<#(NSString *)#> forState:<#(UIControlState)#>
     
     
+}
+
+- (void)disabledButton:(UIButton *)btn
+{
+    //ボタン無効化
+    [self.btnFavorite setImage:[UIImage imageNamed:@"heart.png"] forState:UIControlStateNormal];//setTitle:@"お気に入り済" forState:UIControlStateNormal];
+    self.btnFavorite.enabled = NO;
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated
