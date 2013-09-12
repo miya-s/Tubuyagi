@@ -54,4 +54,5 @@
 - (IBAction)showFavorite:(id)sender;
 - (IBAction)shareTweet:(UIButton *)sender;
 - (void)availableButton;
+- (IBAction)closeConfigView:(id)sender;
 @end

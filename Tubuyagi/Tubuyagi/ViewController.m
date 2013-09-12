@@ -137,6 +137,16 @@
     self.btnshowFavolite.enabled = YES;
 }
 
+- (IBAction)closeConfigView:(id)sender {
+    
+    [_txfYagiName resignFirstResponder];
+    [UIView animateWithDuration:0.3 animations:^(void){
+        self.configView.transform = CGAffineTransformMakeScale(0.001, 0.001);
+    } completion:^(BOOL finished){
+        [self.configView removeFromSuperview];
+    }];
+}
+
 //位置設定の初期設定
 - (void)initialize
 {
