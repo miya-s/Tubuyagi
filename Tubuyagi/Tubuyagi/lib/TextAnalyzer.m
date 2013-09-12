@@ -122,6 +122,15 @@ bool isThereWara(long long post_id){
     return res;
 }
 
+bool isThereWaraByContent(NSString *str){
+    FMDatabase* db    = getWaraLogDB();
+    [db open];
+    FMResultSet* sqlResults = [db executeQuery:@"SELECT * FROM wara_log WHERE content = ?", str];
+    bool res = [sqlResults next];
+    [db close];
+    return res;
+}
+
 void deleteWord(NSString* word){
     FMDatabase* db    = getBigramDB();
     [db open];

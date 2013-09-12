@@ -220,9 +220,9 @@
 {
     NSArray *favTweets;
     if ([self.title isEqualToString:@"新着"]) {
-        favTweets = getJSONRecents(0, 20);
+//        favTweets = getJSONRecents(0, 20);
     }else if ([self.title isEqualToString:@"人気"]){
-        favTweets = getJSONTops(0, 20);
+//        favTweets = getJSONTops(0, 20);
     }
     self.favTweet = favTweets;
     

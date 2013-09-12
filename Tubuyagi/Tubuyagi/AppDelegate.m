@@ -27,6 +27,9 @@
     if (![ud objectForKey:@"TDRandomPassword"]){
         [ud setObject:randStringWithLength(20) forKey:@"TDRandomPassword"];
     }
+    getJSONRecents(0,20,^(NSArray*result){
+        NSLog(@"%@",result);
+    });
 
 #warning 毎回送る必要はない→名前変更時と、初回起動時と、twitter認証時
     addUser();

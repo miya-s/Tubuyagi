@@ -11,14 +11,14 @@
 @interface BasicRequest : NSObject
 
 NSString *randStringWithLength(int length);
-bool addUser(void);
-bool addPost(NSString *content);
-NSArray *getJSONRecents(int cursor, int num);
-NSArray *getJSONTops(int cursor, int num);
-bool addWara(long long post_id);
+void addUser(void);
+void addPost(NSString *content);
+void *getJSONRecents(int cursor, int num, void (^success)(NSArray *result));
+void *getJSONTops(int cursor, int num, void (^success)(NSArray *result));
+void addWara(long long post_id);
 
 //自分の投稿をお気に入りに追加＆つぶやきを共有
-bool addWaraToMyTubuyaki(NSString *content);
+void addWaraToMyTubuyaki(NSString *content);
 //自分のお気に入りに追加
-bool addWaraToOthersTubuyaki(long long post_id, NSString *content,NSDate *date);
+void addWaraToOthersTubuyaki(long long post_id, NSString *content,NSDate *date);
 @end

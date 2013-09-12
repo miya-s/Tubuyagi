@@ -186,9 +186,9 @@
 {
     NSArray *favTweets;
     if (vc == fvvc1) {
-        favTweets = getJSONRecents(0, 20);
+//        favTweets = getJSONRecents(0, 20);
     }else
-        favTweets = getJSONTops(0, 20);
+//        favTweets = getJSONTops(0, 20);
 
     vc.favTweet = favTweets;
     [vc.tableView reloadData];
