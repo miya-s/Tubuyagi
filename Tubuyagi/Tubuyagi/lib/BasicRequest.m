@@ -144,13 +144,14 @@ void addWaraToMyTubuyaki(NSString *content){
 #warning addPostがブロックを取れるようにして、addMyWaraLogは成功時のみ
 }
 
-void addWaraToOthersTubuyaki(long long post_id, NSString *content, NSDate *date){
+bool addWaraToOthersTubuyaki(long long post_id, NSString *content, NSDate *date){
     if (isThereWara(post_id)){
         NSLog(@"you faved the post you have already faved.");
-        return;
+        return false;
     }
     addWaraLog(content, post_id, date);
     addWara(post_id);
+    return true;
 }
 
 void *getJSONRecents(int cursor, int num, void (^success)(NSArray *result)){

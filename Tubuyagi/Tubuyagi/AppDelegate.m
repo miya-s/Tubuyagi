@@ -60,7 +60,7 @@
         NSLog(@"popUP");
         scrTutorial = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.viewController.view.bounds.size.width, self.viewController.view.bounds.size.height)];
         UIImageView *imgTutorial = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 1346)];
-        imgTutorial.image = [UIImage imageNamed:@"tutorial_new2.png"];
+        imgTutorial.image = [UIImage imageNamed:@"tutorial_new3.png"];
         [scrTutorial addSubview:imgTutorial];
         scrTutorial.showsVerticalScrollIndicator = NO;
         scrTutorial.contentSize = imgTutorial.bounds.size;

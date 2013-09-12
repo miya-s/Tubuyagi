@@ -112,14 +112,16 @@
     NSLog(@"wara");
 
     long long userId = [self.userID longLongValue];
-    addWaraToOthersTubuyaki(userId, self.lblTweet.text, [NSDate date]);
+    bool result = addWaraToOthersTubuyaki(userId, self.lblTweet.text, [NSDate date]);
     NSLog(@"userID = %lld, text = %@, date = %@", userId, self.lblTweet.text, [NSDate date]);
     
     //お気に入りの数字を増やす
+    if (result){
+    }
     int i = [_lblFavNumber.text intValue];
     i++;
     _lblFavNumber.text = [NSString stringWithFormat:@"%d", i];
-
+    
     [self disabledButton:btn];
     
 //    btn setTitle:<#(NSString *)#> forState:<#(UIControlState)#>
