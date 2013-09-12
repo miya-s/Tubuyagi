@@ -11,12 +11,13 @@
 @interface FavoriteCustomVIewCell : UITableViewCell
 {
     UIButton *btnFavorite;
+    
 }
 
 
 @property (nonatomic, retain) UIImageView *yagiImageView;
 @property (nonatomic, retain) UILabel *lblYagiName;
 @property (nonatomic, retain) UILabel *lblTweet;
-
+@property (nonatomic, retain) NSString *userID;
 -(void)layoutView;
 @end

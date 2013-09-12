@@ -13,6 +13,7 @@
 {
 //    NSDictionary *favTweets;
     FavoriteCustomVIewCell *selectedCell;
+//    NSString *userID;
 }
 @property (strong, nonatomic) IBOutlet UITableView *tableView;
 @property (nonatomic, retain) NSArray *favTweet;

@@ -37,9 +37,12 @@
     _yagiView = [[YagiView alloc] initWithFrame:yagiRect];
     [self.view addSubview:_yagiView];
     
+    [self.view insertSubview:_yagiView belowSubview:self.imgSaku];
+    
     
     //ヤギを押した時のボタン
     btnYagi = [UIButton buttonWithType:UIButtonTypeCustom];
+    yagiRect.size.height -= 30;
     btnYagi.frame = yagiRect;
     [btnYagi addTarget:self action:@selector(tweetYagi) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:btnYagi];
@@ -411,6 +414,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     [self setBtnChooseFood:nil];
     [self setBtnShareTweet:nil];
     [self setBtnshowFavolite:nil];
+    [self setImgSaku:nil];
+    [self setStrStatus:nil];
     [super viewDidUnload];
 }
 @end

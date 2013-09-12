@@ -36,6 +36,8 @@
 @property (strong, nonatomic) IBOutlet UIButton *btnChooseFood;
 @property (strong, nonatomic) IBOutlet UIButton *btnShareTweet;
 @property (strong, nonatomic) IBOutlet UIButton *btnshowFavolite;
+@property (strong, nonatomic) IBOutlet UIImageView *imgSaku;
+@property (strong, nonatomic) IBOutlet UILabel *strStatus;
 
 - (IBAction)chooseFood:(UIButton *)sender;
 - (IBAction)setConfig:(UIButton *)sender;

@@ -14,6 +14,22 @@
 		3741854717E0408C00D68688 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3741854617E0408C00D68688 /* AudioToolbox.framework */; };
 		3741854917E0505D00D68688 /* startbutton.png in Resources */ = {isa = PBXBuildFile; fileRef = 3741854817E0505D00D68688 /* startbutton.png */; };
 		3741854B17E07D0000D68688 /* paper.png in Resources */ = {isa = PBXBuildFile; fileRef = 3741854A17E07D0000D68688 /* paper.png */; };
+		3741854E17E082AE00D68688 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4AA1DEAE17E04EC80023B26E /* Default-568h@2x.png */; };
+		3741854F17E083FE00D68688 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A8B068017E0438E00B408BB /* Default.png */; };
+		3741855017E0840A00D68688 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A8B067E17E042EF00B408BB /* Default@2x.png */; };
+		3741855D17E0A3E700D68688 /* background.png in Resources */ = {isa = PBXBuildFile; fileRef = 3741855217E0A3E700D68688 /* background.png */; };
+		3741855E17E0A3E700D68688 /* heart-big.png in Resources */ = {isa = PBXBuildFile; fileRef = 3741855317E0A3E700D68688 /* heart-big.png */; };
+		3741855F17E0A3E700D68688 /* heart.png in Resources */ = {isa = PBXBuildFile; fileRef = 3741855417E0A3E700D68688 /* heart.png */; };
+		3741856017E0A3E700D68688 /* paper_2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 3741855517E0A3E700D68688 /* paper_2.jpg */; };
+		3741856117E0A3E700D68688 /* saku.png in Resources */ = {isa = PBXBuildFile; fileRef = 3741855617E0A3E700D68688 /* saku.png */; };
+		3741856217E0A3E700D68688 /* status_bar.png in Resources */ = {isa = PBXBuildFile; fileRef = 3741855717E0A3E700D68688 /* status_bar.png */; };
+		3741856417E0A3E700D68688 /* えさ-down.png in Resources */ = {isa = PBXBuildFile; fileRef = 3741855917E0A3E700D68688 /* えさ-down.png */; };
+		3741856517E0A3E700D68688 /* えさ.png in Resources */ = {isa = PBXBuildFile; fileRef = 3741855A17E0A3E700D68688 /* えさ.png */; };
+		3741856617E0A3E700D68688 /* おきに-down.png in Resources */ = {isa = PBXBuildFile; fileRef = 3741855B17E0A3E700D68688 /* おきに-down.png */; };
+		3741856717E0A3E700D68688 /* おきに.png in Resources */ = {isa = PBXBuildFile; fileRef = 3741855C17E0A3E700D68688 /* おきに.png */; };
+		3741856A17E0A6D300D68688 /* button-down.png in Resources */ = {isa = PBXBuildFile; fileRef = 3741856817E0A6D100D68688 /* button-down.png */; };
+		3741856B17E0A6D300D68688 /* button-up.png in Resources */ = {isa = PBXBuildFile; fileRef = 3741856917E0A6D200D68688 /* button-up.png */; };
+		3741856D17E0AD6000D68688 /* preference.png in Resources */ = {isa = PBXBuildFile; fileRef = 3741856C17E0AD6000D68688 /* preference.png */; };
 		374D792A17D822D000FAE80C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 374D792917D822D000FAE80C /* UIKit.framework */; };
 		374D792C17D822D000FAE80C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 374D792B17D822D000FAE80C /* Foundation.framework */; };
 		374D792E17D822D000FAE80C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 374D792D17D822D000FAE80C /* CoreGraphics.framework */; };
@@ -68,11 +84,8 @@
 		4A63EAB017D96F7000C93F86 /* FMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A63EAAB17D96F7000C93F86 /* FMResultSet.m */; };
 		4A63EB9D17D9BD5300C93F86 /* TextAnalyzer.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A63EB9C17D9BD5300C93F86 /* TextAnalyzer.m */; };
 		4A6FF2E117DDA71500410BF5 /* BasicRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A6FF2E017DDA71500410BF5 /* BasicRequest.m */; };
-		4A8B067F17E042EF00B408BB /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A8B067E17E042EF00B408BB /* Default@2x.png */; };
-		4A8B068117E0438E00B408BB /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A8B068017E0438E00B408BB /* Default.png */; };
 		4A8B068317E0481D00B408BB /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A8B068217E0481D00B408BB /* icon.png */; };
 		4A8B068517E0484300B408BB /* icon-mini.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A8B068417E0484300B408BB /* icon-mini.png */; };
-		4AA1DEB117E050630023B26E /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4AA1DEAE17E04EC80023B26E /* Default-568h@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -83,6 +96,19 @@
 		3741854617E0408C00D68688 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		3741854817E0505D00D68688 /* startbutton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = startbutton.png; sourceTree = "<group>"; };
 		3741854A17E07D0000D68688 /* paper.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = paper.png; sourceTree = "<group>"; };
+		3741855217E0A3E700D68688 /* background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = background.png; path = UIImage/background.png; sourceTree = "<group>"; };
+		3741855317E0A3E700D68688 /* heart-big.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "heart-big.png"; path = "UIImage/heart-big.png"; sourceTree = "<group>"; };
+		3741855417E0A3E700D68688 /* heart.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = heart.png; path = UIImage/heart.png; sourceTree = "<group>"; };
+		3741855517E0A3E700D68688 /* paper_2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = paper_2.jpg; path = UIImage/paper_2.jpg; sourceTree = "<group>"; };
+		3741855617E0A3E700D68688 /* saku.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = saku.png; path = UIImage/saku.png; sourceTree = "<group>"; };
+		3741855717E0A3E700D68688 /* status_bar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = status_bar.png; path = UIImage/status_bar.png; sourceTree = "<group>"; };
+		3741855917E0A3E700D68688 /* えさ-down.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "えさ-down.png"; path = "UIImage/えさ-down.png"; sourceTree = "<group>"; };
+		3741855A17E0A3E700D68688 /* えさ.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "えさ.png"; path = "UIImage/えさ.png"; sourceTree = "<group>"; };
+		3741855B17E0A3E700D68688 /* おきに-down.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "おきに-down.png"; path = "UIImage/おきに-down.png"; sourceTree = "<group>"; };
+		3741855C17E0A3E700D68688 /* おきに.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "おきに.png"; path = "UIImage/おきに.png"; sourceTree = "<group>"; };
+		3741856817E0A6D100D68688 /* button-down.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "button-down.png"; path = "UIImage/button-down.png"; sourceTree = "<group>"; };
+		3741856917E0A6D200D68688 /* button-up.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "button-up.png"; path = "UIImage/button-up.png"; sourceTree = "<group>"; };
+		3741856C17E0AD6000D68688 /* preference.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = preference.png; path = UIImage/preference.png; sourceTree = "<group>"; };
 		374D792617D822CF00FAE80C /* Tubuyagi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tubuyagi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		374D792917D822D000FAE80C /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		374D792B17D822D000FAE80C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -202,6 +228,26 @@
 			name = Audio;
 			sourceTree = "<group>";
 		};
+		3741855117E0A3C900D68688 /* UIImage(~2013.9.11) */ = {
+			isa = PBXGroup;
+			children = (
+				3741856C17E0AD6000D68688 /* preference.png */,
+				3741856817E0A6D100D68688 /* button-down.png */,
+				3741856917E0A6D200D68688 /* button-up.png */,
+				3741855217E0A3E700D68688 /* background.png */,
+				3741855317E0A3E700D68688 /* heart-big.png */,
+				3741855417E0A3E700D68688 /* heart.png */,
+				3741855517E0A3E700D68688 /* paper_2.jpg */,
+				3741855617E0A3E700D68688 /* saku.png */,
+				3741855717E0A3E700D68688 /* status_bar.png */,
+				3741855917E0A3E700D68688 /* えさ-down.png */,
+				3741855A17E0A3E700D68688 /* えさ.png */,
+				3741855B17E0A3E700D68688 /* おきに-down.png */,
+				3741855C17E0A3E700D68688 /* おきに.png */,
+			);
+			name = "UIImage(~2013.9.11)";
+			sourceTree = "<group>";
+		};
 		374D791D17D822CF00FAE80C = {
 			isa = PBXGroup;
 			children = (
@@ -271,6 +317,7 @@
 		374D795A17D8291E00FAE80C /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				3741855117E0A3C900D68688 /* UIImage(~2013.9.11) */,
 				3741854A17E07D0000D68688 /* paper.png */,
 				3741854817E0505D00D68688 /* startbutton.png */,
 				3741854117E0393E00D68688 /* yagi_kao_tarai.png */,
@@ -429,10 +476,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				374D793417D822D000FAE80C /* InfoPlist.strings in Resources */,
-<<<<<<< HEAD
-=======
 				374D793E17D822D000FAE80C /* Default@2x.png in Resources */,
->>>>>>> 0e135e44e0d19c92622477b85560a150fb957d34
 				374D794017D822D000FAE80C /* Default-568h@2x.png in Resources */,
 				374D794617D822D000FAE80C /* ViewController.xib in Resources */,
 				374D795E17D8291E00FAE80C /* gort.png in Resources */,
@@ -456,16 +500,26 @@
 				3741854017E02E7D00D68688 /* tarai.png in Resources */,
 				3741854217E0393E00D68688 /* yagi_kao_tarai.png in Resources */,
 				3741854517E03D7600D68688 /* tarai.wav in Resources */,
-				4A8B067F17E042EF00B408BB /* Default@2x.png in Resources */,
-				4A8B068117E0438E00B408BB /* Default.png in Resources */,
 				4A8B068317E0481D00B408BB /* icon.png in Resources */,
 				4A8B068517E0484300B408BB /* icon-mini.png in Resources */,
-<<<<<<< HEAD
 				3741854917E0505D00D68688 /* startbutton.png in Resources */,
 				3741854B17E07D0000D68688 /* paper.png in Resources */,
-=======
-				4AA1DEB117E050630023B26E /* Default-568h@2x.png in Resources */,
->>>>>>> 0e135e44e0d19c92622477b85560a150fb957d34
+				3741854E17E082AE00D68688 /* Default-568h@2x.png in Resources */,
+				3741854F17E083FE00D68688 /* Default.png in Resources */,
+				3741855017E0840A00D68688 /* Default@2x.png in Resources */,
+				3741855D17E0A3E700D68688 /* background.png in Resources */,
+				3741855E17E0A3E700D68688 /* heart-big.png in Resources */,
+				3741855F17E0A3E700D68688 /* heart.png in Resources */,
+				3741856017E0A3E700D68688 /* paper_2.jpg in Resources */,
+				3741856117E0A3E700D68688 /* saku.png in Resources */,
+				3741856217E0A3E700D68688 /* status_bar.png in Resources */,
+				3741856417E0A3E700D68688 /* えさ-down.png in Resources */,
+				3741856517E0A3E700D68688 /* えさ.png in Resources */,
+				3741856617E0A3E700D68688 /* おきに-down.png in Resources */,
+				3741856717E0A3E700D68688 /* おきに.png in Resources */,
+				3741856A17E0A6D300D68688 /* button-down.png in Resources */,
+				3741856B17E0A6D300D68688 /* button-up.png in Resources */,
+				3741856D17E0AD6000D68688 /* preference.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

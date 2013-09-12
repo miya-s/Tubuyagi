@@ -65,11 +65,11 @@
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     
-//    NSLog(@"numberOfRowsInSection");
-//    if (arrDeleteWord) {
-//        return [arrDeleteWord count];
-//    }
-    return 10;//tweetの数
+    NSLog(@"numberOfRowsInSection");
+    if (self.favTweet) {
+        return [self.favTweet count];
+    }
+    return 0;//tweetの数
 }
 
 // セルの中身の実装
@@ -99,6 +99,8 @@
         NSString *tweet = [[self.favTweet objectAtIndex:indexPath.row] objectForKey:@"content"];
         NSString *strYagiName = [[self.favTweet objectAtIndex:indexPath.row] objectForKey:@"yagi_name"];
         
+        
+        cell.userID = [[self.favTweet objectAtIndex:indexPath.row] objectForKey:@"id"];
         cell.lblTweet.text = tweet;
         cell.lblYagiName.text = strYagiName;
         
