@@ -117,7 +117,7 @@ bool addWara(long long post_id){
     [request setHTTPMethod:@"POST"];
     [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
     
-    NSString *reqBody = [NSString stringWithFormat: @"user_name=%@&random_pass=%@&post_id=%lld", [ud stringForKey: @"TDUserName"], [ud stringForKey: @"TDRandomPassword"],post_id];
+    NSString *reqBody = [NSString stringWithFormat: @"user_name=%@&random_pass=%@&post_id=%qi", [ud stringForKey: @"TDUserName"], [ud stringForKey: @"TDRandomPassword"], post_id];
     NSLog(@"reqBody: %@", reqBody);
     
     [request setHTTPBody:[reqBody dataUsingEncoding:NSUTF8StringEncoding]];
@@ -152,8 +152,12 @@ bool addWaraToMyTubuyaki(NSString *content){
 }
 
 bool addWaraToOthersTubuyaki(long long post_id, NSString *content,NSDate *date){
-    if (isThereWara(content)) return false;
-    addWaraLog(content,date);
+#warning 重複を防ぐ仕組みほしい
+    if (isThereWara(post_id)){
+        NSLog(@"you faved the post you have already faved.");
+        return false;
+    }
+    addWaraLog(content, post_id, date);
     addWara(post_id);
     return true;
 }
