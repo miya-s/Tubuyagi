@@ -12,7 +12,7 @@
 
 NSString *randStringWithLength(int length);
 void addUser(void);
-void addPost(NSString *content);
+void addPost(NSString *content, void (^success)(NSArray *results));
 void *getJSONRecents(int cursor, int num, void (^success)(NSArray *result));
 void *getJSONTops(int cursor, int num, void (^success)(NSArray *result));
 void *getJSONWara(void (^success)(NSArray *result));

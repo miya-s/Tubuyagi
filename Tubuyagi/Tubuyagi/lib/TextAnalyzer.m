@@ -340,7 +340,7 @@ void addWaraLog(NSString *content, long long post_id, NSDate *date){
     [waraLogDb close];
 }
 
-void addMyWaraLog(NSString *content){
-    addWaraLog(content, 0, [NSDate date]);
+void addMyWaraLog(NSString *content,long long post_id){
+    addWaraLog(content, post_id, [NSDate date]);
 }
 @end

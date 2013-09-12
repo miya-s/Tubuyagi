@@ -52,7 +52,7 @@ void addUser(void){
                            }];
 }
 
-void addPost(NSString *content){
+void addPost(NSString *content, void (^success)(NSArray *results)){
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
     NSURL *url = [NSURL URLWithString:@"http://tubu-yagi.appspot.com/api/add_post"];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
@@ -69,8 +69,8 @@ void addPost(NSString *content){
      
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
                                if (data) {
-                                   NSString *result;
-                                   result = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+                                   NSArray *result = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+                                   success(result);
                                    NSLog(@"result: %@", result);
                                } else {
                                    NSLog(@"error: %@", error);
@@ -129,12 +129,22 @@ void addWaraToMyTubuyaki(NSString *content){
         NSLog(@"you faved the post you have already faved.");
         return;
     }
-    addPost(content);
+    //    getJSONWara(^(NSArray *result){
+    //
+    //        int wara =  [[[result objectAtIndex: 0] objectForKey:@"wara"] intValue];
+    //        self.strWara.text = [NSString stringWithFormat:@"%d", wara];
+    //    });
+    addPost(content, ^(NSArray*result){
+        NSLog(@"%@",result);
+        if ([[[result objectAtIndex:0] objectForKey:@"result"] isEqualToString:@"success"]){
+            long long post_id = [[[result objectAtIndex:0] objectForKey:@"id"] longLongValue];
+            addMyWaraLog(content, post_id);            
+        }
+    });
 #warning addPostがブロックを取れるようにして、addMyWaraLogは成功時のみ
-    addMyWaraLog(content);
 }
 
-void addWaraToOthersTubuyaki(long long post_id, NSString *content,NSDate *date){
+void addWaraToOthersTubuyaki(long long post_id, NSString *content, NSDate *date){
     if (isThereWara(post_id)){
         NSLog(@"you faved the post you have already faved.");
         return;

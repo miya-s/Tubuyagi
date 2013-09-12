@@ -21,6 +21,6 @@ NSMutableArray* showDeletableWords(void);
 NSMutableArray* showLearnLog(void);
 NSMutableArray* showWaraLog(void);
 void addWaraLog(NSString *content, long long post_id, NSDate *date);
-void addMyWaraLog(NSString *content);
+void addMyWaraLog(NSString *content, long long post_id);
 void deleteWord(NSString *word);
 @end

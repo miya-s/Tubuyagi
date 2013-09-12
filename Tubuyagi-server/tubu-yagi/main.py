@@ -51,7 +51,13 @@ def modifyUserName(user, new_user_name):
 def checkUser(user_name, random_pass):
     user = db.GqlQuery("select * from User where random_pass = '%s'" % random_pass).get()
     if not user:
-        return None
+        newuser = User(parent=UserKey())
+        newuser.user_name = user_name
+        newuser.random_pass = random_pass
+        newuser.wara = 0
+        newuser.date = datetime.datetime.now() + datetime.timedelta(hours=9)
+        newuser.put()
+        return newuser
     if not user.user_name == user_name:
         modifyUserName(user, user_name)
     return user 
@@ -77,7 +83,7 @@ class api_page(webapp2.RequestHandler):
         self.response.write(
             '<html>'
                 '<body>'
-                   '<a href="/api/add_post">add post</a></br>'
+                   '<a href="/api/add_post>add post</a></br>'
                    '<a href="/api/add_user">add user</a>'
             )
 
@@ -126,7 +132,7 @@ class add_post(webapp2.RequestHandler):
         random_pass = self.request.get('random_pass')
         
         if not checkUser(user_name, random_pass):
-            self.response.out.write(json.dumps({"result":"fail"}))
+            self.response.out.write(json.dumps([{"result":"fail"}]))
             return
         newpost = TubuyagiPost(parent=TubuyagiPostKey())
         newpost.random_pass = random_pass
@@ -135,7 +141,7 @@ class add_post(webapp2.RequestHandler):
         newpost.wara = 1
         newpost.date = datetime.datetime.now() + datetime.timedelta(hours=9)
         newpost.put()
-        self.response.out.write(json.dumps({"result":"success"}))
+        self.response.out.write(json.dumps([{"result":"success", "id": newpost.key().id()}]))
 
 class edit_post(webapp2.RequestHandler):
     def get(self):
