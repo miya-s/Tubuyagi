@@ -8,6 +8,7 @@
 
 #import "FavoriteViewController.h"
 #import "BasicRequest.h"
+#import "TextAnalyzer.h"
 
 @interface FavoriteViewController ()
 
@@ -65,6 +66,7 @@
 //    NSLog(@"dic %@", self.favTweet);
 //    NSString *userName = [[self.favTweet objectForKey:@"1"] objectForKey:@"content"];
 //    NSLog(@"username %@", userName);
+    
     [self.tableView reloadData];
 
 }
@@ -130,6 +132,9 @@
         cell.lblTweet.text = tweet;
         cell.lblYagiName.text = strYagiName;
         cell.lblFavNumber.text = [NSString stringWithFormat:@"%d",i] ;
+        if (isThereWara([cell.userID longLongValue])) {
+            [cell disabledButton:cell.btnFavorite];
+        }
         
 
     }

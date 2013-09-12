@@ -33,11 +33,11 @@
     addUser();
     
     // こんな感じにwaraが取れるよって例
-    getJSONWara(^(NSArray *result){
-        NSLog(@"%@", result);
-        NSLog(@"warai : %@", [result objectAtIndex: 0]);
-        NSLog(@"warai : %d", [[[result objectAtIndex: 0] objectForKey:@"wara"] intValue]);
-    });
+//    getJSONWara(^(NSArray *result){
+//        NSLog(@"%@", result);
+//        NSLog(@"warai : %@", [result objectAtIndex: 0]);
+//        NSLog(@"warai : %d", [[[result objectAtIndex: 0] objectForKey:@"wara"] intValue]);
+//    });
 
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
@@ -51,7 +51,7 @@
         NSLog(@"初回");
         kaisuu = 0;
         [self setStoryView];
-        [ud setObject:@"1" forKey:@"TDFirstTime"];
+        
     }
     
     [self creatStartView];
@@ -62,8 +62,8 @@
 
 - (void)popUpTutorial
 {
-    if (kaisuu == 2) {
-        
+//    if (kaisuu == 2) {
+    
 
         NSLog(@"popUP");
         scrTutorial = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.viewController.view.bounds.size.width, self.viewController.view.bounds.size.height)];
@@ -90,7 +90,7 @@
             }];
         }];
         
-    }
+//    }
     
 }
 
@@ -114,9 +114,10 @@
     [self.viewController.view addSubview:viewBlack];
     
     //skipButton
-    btnSkip = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    btnSkip.frame = CGRectMake(0, 0, 80, 40);
-    btnSkip.center = CGPointMake(self.viewController.view.center.x, self.viewController.view.bounds.size.height - 50);
+    btnSkip = [UIButton buttonWithType:UIButtonTypeCustom];
+    [btnSkip setImage:[UIImage imageNamed:@"scroll.png"] forState:UIControlStateNormal];
+    btnSkip.frame = CGRectMake(0, 0, 40, 77.2);
+    btnSkip.center = CGPointMake(self.viewController.view.center.x + 120, self.viewController.view.bounds.size.height - 80);
     [btnSkip addTarget:self action:@selector(skipStory) forControlEvents:UIControlEventTouchUpInside];
     [self.viewController.view addSubview:btnSkip];
 }
@@ -231,6 +232,8 @@
         [scrTutorial removeFromSuperview];
     }];
     
+#warning 最後に直す
+    [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"TDFirstTime"];
     [self.viewController availableButton];
 }
 

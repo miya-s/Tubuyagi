@@ -10,7 +10,7 @@
 
 @interface FavoriteCustomVIewCell : UITableViewCell
 {
-    UIButton *btnFavorite;
+//    UIButton *btnFavorite;
     
 }
 
@@ -20,5 +20,7 @@
 @property (nonatomic, retain) UILabel *lblTweet;
 @property (nonatomic, retain) NSString *userID;
 @property (nonatomic, retain) UILabel *lblFavNumber;
--(void)layoutView;
+@property (nonatomic, retain) UIButton *btnFavorite;
+- (void)layoutView;
+- (void)disabledButton:(UIButton *)btn;
 @end

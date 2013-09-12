@@ -89,6 +89,17 @@
     [self initialize];
     
 
+    //自分のお気に入り数を生成
+
+    getJSONWara(^(NSArray *result){
+
+        int wara =  [[[result objectAtIndex: 0] objectForKey:@"wara"] intValue];
+        self.strWara.text = [NSString stringWithFormat:@"%d", wara];
+        });
+
+                
+//                NSString *tweet = [[self.favTweet objectAtIndex:indexPath.row] objectForKey:@"wara"];
+
 //    [_yagiView eatFood];
 }
 
@@ -157,30 +168,27 @@
     UITabBarController *tab = [[UITabBarController alloc] init];
     tab.delegate = self;
     
-//    UITabBarItem *item1 = [[UITabBarItem alloc] initWithTitle:@"新着" image:nil tag:0];
-//    UITabBarItem *item2 = [[UITabBarItem alloc] initWithTitle:@"人気" image:nil tag:1];
-//    NSArray *items = tab.tabBar.items;//[NSArray arrayWithObjects:item1, item2, nil];
 
-
-    
-
+    [[tab.tabBar.items objectAtIndex:0] setBackgroundImage:[UIImage imageNamed:@"clock.png"]];
     
     //新着順
     fvvc1 = [[FavoriteViewController alloc] initWithNibName:@"FavoriteViewController" bundle:nil];
-    fvvc1.title = @"新着";
+    UIImage *img1 = [UIImage imageNamed:@"clock.png"];
+    UITabBarItem *tabItem1 = [[UITabBarItem alloc] initWithTitle:@"新着" image:img1 tag:0];
+    fvvc1.tabBarItem = tabItem1;
+//    [[fvvc1.tabBarController.tabBar.items objectAtIndex:0] setFinishedSelectedImage:nil withFinishedUnselectedImage:[UIImage imageNamed:@"clock.png"]];
     //人気順
     fvvc2 = [[FavoriteViewController alloc] initWithNibName:@"FavoriteViewController" bundle:nil];
-    fvvc2.title = @"人気";
+    UIImage *img2 = [UIImage imageNamed:@"crown.png"];
+    UITabBarItem *tabItem2 = [[UITabBarItem alloc] initWithTitle:@"人気" image:img2 tag:0];
+    fvvc2.tabBarItem = tabItem2;
     NSArray *views = [NSArray arrayWithObjects:fvvc1, fvvc2, nil];
     [tab setViewControllers:views];
 
     [self getFavoriteJsondata:fvvc1];
-//    getJSONRecents(0, 20, ^(NSArray *result){
-//        fvvc1.favTweet = result;
-//    });
-
     
     [self presentViewController:tab animated:YES completion:nil];
+    
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
 //    [self alert];
 }
@@ -469,6 +477,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     [self setStrStatus:nil];
     [self setBtnConfig:nil];
     [self setBtnForget:nil];
+    [self setStrWara:nil];
     [super viewDidUnload];
 }
 

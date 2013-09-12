@@ -34,6 +34,11 @@
 		3742D34B17E15CB900C83680 /* back.png in Resources */ = {isa = PBXBuildFile; fileRef = 3742D34917E15CB900C83680 /* back.png */; };
 		3742D34D17E18B1900C83680 /* story.png in Resources */ = {isa = PBXBuildFile; fileRef = 3742D34C17E18B1900C83680 /* story.png */; };
 		3742D34F17E1984F00C83680 /* tutorial.png in Resources */ = {isa = PBXBuildFile; fileRef = 3742D34E17E1984F00C83680 /* tutorial.png */; };
+		3742D35317E1B07C00C83680 /* clock.png in Resources */ = {isa = PBXBuildFile; fileRef = 3742D35017E1B07B00C83680 /* clock.png */; };
+		3742D35417E1B07C00C83680 /* crown.png in Resources */ = {isa = PBXBuildFile; fileRef = 3742D35117E1B07B00C83680 /* crown.png */; };
+		3742D35517E1B07C00C83680 /* scroll.png in Resources */ = {isa = PBXBuildFile; fileRef = 3742D35217E1B07B00C83680 /* scroll.png */; };
+		3742D35817E1B69E00C83680 /* total-heart.png in Resources */ = {isa = PBXBuildFile; fileRef = 3742D35617E1B69D00C83680 /* total-heart.png */; };
+		3742D35917E1B69E00C83680 /* vocant-heart.png in Resources */ = {isa = PBXBuildFile; fileRef = 3742D35717E1B69D00C83680 /* vocant-heart.png */; };
 		374D792A17D822D000FAE80C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 374D792917D822D000FAE80C /* UIKit.framework */; };
 		374D792C17D822D000FAE80C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 374D792B17D822D000FAE80C /* Foundation.framework */; };
 		374D792E17D822D000FAE80C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 374D792D17D822D000FAE80C /* CoreGraphics.framework */; };
@@ -117,6 +122,11 @@
 		3742D34917E15CB900C83680 /* back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = back.png; path = UIImage/back.png; sourceTree = "<group>"; };
 		3742D34C17E18B1900C83680 /* story.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = story.png; path = UIImage/story.png; sourceTree = "<group>"; };
 		3742D34E17E1984F00C83680 /* tutorial.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = tutorial.png; path = UIImage/tutorial.png; sourceTree = "<group>"; };
+		3742D35017E1B07B00C83680 /* clock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = clock.png; path = UIImage/clock.png; sourceTree = "<group>"; };
+		3742D35117E1B07B00C83680 /* crown.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = crown.png; path = UIImage/crown.png; sourceTree = "<group>"; };
+		3742D35217E1B07B00C83680 /* scroll.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = scroll.png; path = UIImage/scroll.png; sourceTree = "<group>"; };
+		3742D35617E1B69D00C83680 /* total-heart.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "total-heart.png"; path = "UIImage/total-heart.png"; sourceTree = "<group>"; };
+		3742D35717E1B69D00C83680 /* vocant-heart.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "vocant-heart.png"; path = "UIImage/vocant-heart.png"; sourceTree = "<group>"; };
 		374D792617D822CF00FAE80C /* Tubuyagi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tubuyagi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		374D792917D822D000FAE80C /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		374D792B17D822D000FAE80C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -239,6 +249,11 @@
 		3741855117E0A3C900D68688 /* UIImage(~2013.9.11) */ = {
 			isa = PBXGroup;
 			children = (
+				3742D35617E1B69D00C83680 /* total-heart.png */,
+				3742D35717E1B69D00C83680 /* vocant-heart.png */,
+				3742D35017E1B07B00C83680 /* clock.png */,
+				3742D35117E1B07B00C83680 /* crown.png */,
+				3742D35217E1B07B00C83680 /* scroll.png */,
 				3742D34E17E1984F00C83680 /* tutorial.png */,
 				3742D34C17E18B1900C83680 /* story.png */,
 				3742D34817E15CB800C83680 /* back-down.png */,
@@ -536,6 +551,11 @@
 				3742D34B17E15CB900C83680 /* back.png in Resources */,
 				3742D34D17E18B1900C83680 /* story.png in Resources */,
 				3742D34F17E1984F00C83680 /* tutorial.png in Resources */,
+				3742D35317E1B07C00C83680 /* clock.png in Resources */,
+				3742D35417E1B07C00C83680 /* crown.png in Resources */,
+				3742D35517E1B07C00C83680 /* scroll.png in Resources */,
+				3742D35817E1B69E00C83680 /* total-heart.png in Resources */,
+				3742D35917E1B69E00C83680 /* vocant-heart.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

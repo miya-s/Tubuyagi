@@ -44,6 +44,7 @@
 @property (strong, nonatomic) IBOutlet UILabel *strStatus;
 @property (strong, nonatomic) IBOutlet UIButton *btnConfig;
 @property (strong, nonatomic) IBOutlet UIButton *btnForget;
+@property (strong, nonatomic) IBOutlet UILabel *strWara;
 
 - (IBAction)chooseFood:(UIButton *)sender;
 - (IBAction)setConfig:(UIButton *)sender;
