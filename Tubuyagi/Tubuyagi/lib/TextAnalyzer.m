@@ -17,7 +17,7 @@ NSString*   sqlSelectBigramSet = @"SELECT * FROM bigram WHERE pre = %@";
 NSString*   sqlUpdateBigram = @"UPDATE bigram SET count = %d WHERE pre = %@ AND post = %@;";
 NSString*   bigramDatabaseName = @"bi-gram.db";
 NSString*   learnLogDatabaseName = @"tweet-log.db";
-NSString*   waraLogDatabaseName = @"wara-log.db";
+NSString*   waraLogDatabaseName = @"wara-logv2.db";
 
 FMDatabase* getDB(NSString * dbname){
     NSArray*    paths = NSSearchPathForDirectoriesInDomains( NSDocumentDirectory, NSUserDomainMask, YES );
@@ -113,10 +113,10 @@ NSMutableArray* showWaraLog(void){
     return showDBContents(db, @"wara_log");
 }
 
-bool isThereWara(NSString* content){
+bool isThereWara(long long post_id){
     FMDatabase* db    = getWaraLogDB();
     [db open];
-    FMResultSet* sqlResults = [db executeQuery:@"SELECT * FROM wara_log WHERE content = ?",content];
+    FMResultSet* sqlResults = [db executeQuery:@"SELECT * FROM wara_log WHERE post_id = ?",[NSNumber numberWithLongLong:post_id]];
     bool res = [sqlResults next];
     [db close];
     return res;
@@ -222,12 +222,6 @@ NSString* generateSentence(void){
         return @"メェ〜。";
     }
     
-    FMDatabase* waraLogDb    = getWaraLogDB();
-    [waraLogDb open];
-    [waraLogDb executeUpdate:@"CREATE TABLE IF NOT EXISTS wara_log (content TEXT NOT NULL, wara INTEGER NOT NULL, );"];
-    [waraLogDb executeUpdateWithFormat: @"INSERT INTO wara_log VALUES (%@)",result];
-    [waraLogDb close];
-    
     return result;
 }
 
@@ -326,16 +320,16 @@ void forgetFromText(NSString* text){
     [db close];
 }
 
-void addWaraLog(NSString *content,NSDate *date){
+void addWaraLog(NSString *content, long long post_id, NSDate *date){
     FMDatabase* waraLogDb    = getWaraLogDB();
     [waraLogDb open];
-    [waraLogDb executeUpdate:@"CREATE TABLE IF NOT EXISTS wara_log (content TEXT NOT NULL, wara INTEGER, date TEXT);"];
+    [waraLogDb executeUpdate:@"CREATE TABLE IF NOT EXISTS wara_log (content TEXT NOT NULL, wara INTEGER, post_id INTEGER, date TEXT);"];
 #warning  miyahara ここの設計要検討
-    [waraLogDb executeUpdateWithFormat: @"INSERT INTO wara_log VALUES (%@, 0, %@)",content, date];
+    [waraLogDb executeUpdateWithFormat: @"INSERT INTO wara_log VALUES (%@, 0, %qi, %@)",content, post_id,date];
     [waraLogDb close];
 }
 
 void addMyWaraLog(NSString *content){
-    addWaraLog(content, [NSDate date]);
+    addWaraLog(content, 0, [NSDate date]);
 }
 @end

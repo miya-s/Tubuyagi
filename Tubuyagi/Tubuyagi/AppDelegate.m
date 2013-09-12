@@ -26,7 +26,7 @@
     [defaults setObject:@"つぶやぎ" forKey:@"TDYagiName"];
     [ud registerDefaults:defaults];
 
-    if (![ud objectForKey:@"TDSentPassword"]){
+    if (![ud objectForKey:@"TDRandomPassword"]){
         [ud setObject:randStringWithLength(20) forKey:@"TDRandomPassword"];
     }
 

@@ -15,11 +15,11 @@ void learnFromText(NSString* morphTargetText);
 void forgetFromText(NSString* text);
 void deleteAllBigramData(void);
 void deleteAllLearnLog(void);
-bool isThereWara(NSString* content);
+bool isThereWara(long long post_id);
 NSMutableArray* showDeletableWords(void);
 NSMutableArray* showLearnLog(void);
 NSMutableArray* showWaraLog(void);
-void addWaraLog(NSString *content,NSDate *date);
+void addWaraLog(NSString *content, long long post_id, NSDate *date);
 void addMyWaraLog(NSString *content);
 void deleteWord(NSString *word);
 @end
