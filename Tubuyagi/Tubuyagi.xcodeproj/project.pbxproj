@@ -80,6 +80,8 @@
 		37D0612D17DB5BAD00F94E30 /* yoko_03.png in Resources */ = {isa = PBXBuildFile; fileRef = 37D0612C17DB5BAD00F94E30 /* yoko_03.png */; };
 		37D0615F17DB647100F94E30 /* CMPopTipView.m in Sources */ = {isa = PBXBuildFile; fileRef = 37D0615E17DB647100F94E30 /* CMPopTipView.m */; };
 		37D0616117DC1E7200F94E30 /* yagi_hukigen.png in Resources */ = {isa = PBXBuildFile; fileRef = 37D0616017DC1E7200F94E30 /* yagi_hukigen.png */; };
+		4A4564FA17E1C04F00DA3013 /* paper.wav in Resources */ = {isa = PBXBuildFile; fileRef = 4A4564F917E1C04F00DA3013 /* paper.wav */; };
+		4A45650217E1C3FA00DA3013 /* yagi.wav in Resources */ = {isa = PBXBuildFile; fileRef = 4A45650117E1C3FA00DA3013 /* yagi.wav */; };
 		4A63EA9F17D890F400C93F86 /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A63EA9E17D890F400C93F86 /* libsqlite3.0.dylib */; };
 		4A63EAAC17D96F7000C93F86 /* FMDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A63EAA317D96F7000C93F86 /* FMDatabase.m */; };
 		4A63EAAD17D96F7000C93F86 /* FMDatabaseAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A63EAA517D96F7000C93F86 /* FMDatabaseAdditions.m */; };
@@ -187,6 +189,8 @@
 		37D0615D17DB647000F94E30 /* CMPopTipView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMPopTipView.h; sourceTree = "<group>"; };
 		37D0615E17DB647100F94E30 /* CMPopTipView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMPopTipView.m; sourceTree = "<group>"; };
 		37D0616017DC1E7200F94E30 /* yagi_hukigen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = yagi_hukigen.png; path = YImages/yagi_hukigen.png; sourceTree = "<group>"; };
+		4A4564F917E1C04F00DA3013 /* paper.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = paper.wav; sourceTree = "<group>"; };
+		4A45650117E1C3FA00DA3013 /* yagi.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = yagi.wav; sourceTree = "<group>"; };
 		4A63EA9E17D890F400C93F86 /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = usr/lib/libsqlite3.0.dylib; sourceTree = SDKROOT; };
 		4A63EAA217D96F7000C93F86 /* FMDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FMDatabase.h; path = lib/FMDatabase.h; sourceTree = "<group>"; };
 		4A63EAA317D96F7000C93F86 /* FMDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FMDatabase.m; path = lib/FMDatabase.m; sourceTree = "<group>"; };
@@ -231,6 +235,8 @@
 		3741854317E03D5D00D68688 /* Audio */ = {
 			isa = PBXGroup;
 			children = (
+				4A45650117E1C3FA00DA3013 /* yagi.wav */,
+				4A4564F917E1C04F00DA3013 /* paper.wav */,
 				3741854417E03D7600D68688 /* tarai.wav */,
 			);
 			name = Audio;
@@ -536,6 +542,8 @@
 				3742D34B17E15CB900C83680 /* back.png in Resources */,
 				3742D34D17E18B1900C83680 /* story.png in Resources */,
 				3742D34F17E1984F00C83680 /* tutorial.png in Resources */,
+				4A4564FA17E1C04F00DA3013 /* paper.wav in Resources */,
+				4A45650217E1C3FA00DA3013 /* yagi.wav in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

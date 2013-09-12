@@ -32,14 +32,6 @@
 #warning 毎回送る必要はない→名前変更時と、初回起動時と、twitter認証時
     addUser();
     
-    // こんな感じにwaraが取れるよって例
-    getJSONWara(^(NSArray *result){
-        NSLog(@"%@", result);
-        NSLog(@"warai : %@", [result objectAtIndex: 0]);
-        NSLog(@"warai : %d", [[[result objectAtIndex: 0] objectForKey:@"wara"] intValue]);
-    });
-
-    
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
     self.viewController = [[ViewController alloc] initWithNibName:@"ViewController" bundle:nil];

@@ -304,8 +304,12 @@ class json_wara(webapp2.RequestHandler):
         self.response.headers['Content-Type'] = 'application/json'   
         random_pass = self.request.get('random_pass')
         user = userByRandomPass(random_pass)
-        wara = [{"user_name":user.user_name, "wara":user.wara}]
-        self.response.out.write(json.dumps(wara))        
+        if not user:
+            logging.error("failed to catch the user")
+            self.response.out.write(json.dumps([{"user_name":"unknown user","wara":"0"}]))        
+        else:
+            wara = [{"user_name":user.user_name, "wara":user.wara}]
+            self.response.out.write(json.dumps(wara))        
         #最近のふぁぼられpostとか見えないとアレ
 
 app = webapp2.WSGIApplication([ ('/', main_page),
