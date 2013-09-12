@@ -92,9 +92,11 @@
 - (void)pushButton:(UIButton *)btn
 {
     NSLog(@"wara");
+
     long long userId = [self.userID longLongValue];
     addWaraToOthersTubuyaki(userId, self.lblTweet.text, [NSDate date]);
     NSLog(@"userID = %lld, text = %@, date = %@", userId, self.lblTweet.text, [NSDate date]);
+
     
     
     

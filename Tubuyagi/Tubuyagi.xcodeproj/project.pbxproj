@@ -520,6 +520,8 @@
 				3741856A17E0A6D300D68688 /* button-down.png in Resources */,
 				3741856B17E0A6D300D68688 /* button-up.png in Resources */,
 				3741856D17E0AD6000D68688 /* preference.png in Resources */,
+				4AA1DEB117E050630023B26E /* Default-568h@2x.png in Resources */,
+
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
