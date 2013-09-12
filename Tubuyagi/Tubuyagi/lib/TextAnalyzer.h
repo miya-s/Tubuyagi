@@ -16,6 +16,7 @@ void forgetFromText(NSString* text);
 void deleteAllBigramData(void);
 void deleteAllLearnLog(void);
 bool isThereWara(long long post_id);
+bool isThereWaraByContent(NSString *str);
 NSMutableArray* showDeletableWords(void);
 NSMutableArray* showLearnLog(void);
 NSMutableArray* showWaraLog(void);

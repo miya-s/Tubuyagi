@@ -132,7 +132,7 @@ class add_post(webapp2.RequestHandler):
         newpost.random_pass = random_pass
         newpost.yagi_name = yagi_name
         newpost.content = content
-        newpost.wara = 0
+        newpost.wara = 1
         newpost.date = datetime.datetime.now() + datetime.timedelta(hours=9)
         newpost.put()
         self.response.out.write(json.dumps({"result":"success"}))

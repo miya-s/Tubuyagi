@@ -143,7 +143,10 @@ bool addWara(long long post_id){
 
 
 bool addWaraToMyTubuyaki(NSString *content){
-    if (isThereWara(content)) return false;
+    if (isThereWaraByContent(content)){
+        NSLog(@"you faved the post you have already faved.");
+        return false;
+    }
     bool outcome = addPost(content);
     if (outcome){
         addMyWaraLog(content);
