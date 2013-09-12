@@ -22,7 +22,7 @@ NSInteger randBetween(NSInteger min, NSInteger max) {
     return (arc4random() % (max - min + 1)) + min;
 }
 
-bool addUser(void){
+void addUser(void){
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
     NSString *userName = [ud stringForKey: @"TDUserName"];
     NSURL *url = [NSURL URLWithString:@"http://tubu-yagi.appspot.com/api/add_user"];
@@ -36,26 +36,23 @@ bool addUser(void){
     [request setHTTPBody:[reqBody dataUsingEncoding:NSUTF8StringEncoding]];
     
     
-    __block NSString *result;
-    __block BOOL outcome;
     [NSURLConnection sendAsynchronousRequest:request
                                        queue:[NSOperationQueue mainQueue]
      
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                               if (data) {
-                                   result = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+
+                                if (data) {
+                                    NSString *result;
+                                    result = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
                                    NSLog(@"result: %@", result);
                                    [ud setBool:true forKey:@"TDSentPassword"];
-                                   outcome = true;
                                } else {
                                    NSLog(@"error: %@", error);
-                                   outcome = false;
                                }
                            }];
-    return outcome;
 }
 
-bool addPost(NSString *content){
+void addPost(NSString *content){
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
     NSURL *url = [NSURL URLWithString:@"http://tubu-yagi.appspot.com/api/add_post"];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
@@ -67,28 +64,42 @@ bool addPost(NSString *content){
     
     [request setHTTPBody:[reqBody dataUsingEncoding:NSUTF8StringEncoding]];
     
-    
-    __block NSString *result;
-    __block BOOL outcome;
     [NSURLConnection sendAsynchronousRequest:request
                                        queue:[NSOperationQueue mainQueue]
      
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
                                if (data) {
+                                   NSString *result;
                                    result = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
                                    NSLog(@"result: %@", result);
-                                   outcome = true;
                                } else {
                                    NSLog(@"error: %@", error);
-                                   outcome = false;
                                }
                            }];
-    return outcome;
 }
 
-NSArray *getJSON(NSString *url){
+void *getJSON(NSString *url, void (^success)(NSArray *result) ){
+    NSURL *url1 = [NSURL URLWithString:url];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url1];
+    [request setHTTPMethod:@"GET"];
+    [NSURLConnection sendAsynchronousRequest:request
+                                       queue:[NSOperationQueue mainQueue]
+     
+                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                               if (data) {
+                                   NSArray *result = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+                                   success(result);
+                                    NSLog(@"result: %@", result);
+                               } else {
+                                   NSLog(@"error: %@", error);
+                               }
+                           }];
+    /*
+    NSLog(@"1");
     NSError *error1 = nil;
     NSMutableURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url]];
+    NSLog(@"2");
+    //ここでつまる
     NSData *json_data = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:&error1];
     NSLog(@"error %@", error1);
     
@@ -104,13 +115,14 @@ NSArray *getJSON(NSString *url){
         return nil;
     }
     NSError *error=nil;
-
+    NSLog(@"3");
     NSArray *dict = [NSJSONSerialization JSONObjectWithData:json_data options:NSJSONReadingAllowFragments error:&error];
+    NSLog(@"%@",dict);
     NSLog(@"%@", error);
-    return dict;
+    return dict;*/
 }
 
-bool addWara(long long post_id){
+void addWara(long long post_id){
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
     NSURL *url = [NSURL URLWithString:@"http://tubu-yagi.appspot.com/api/add_wara"];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
@@ -122,56 +134,46 @@ bool addWara(long long post_id){
     
     [request setHTTPBody:[reqBody dataUsingEncoding:NSUTF8StringEncoding]];
     
-    
-    __block NSString *result;
-    __block BOOL outcome;
     [NSURLConnection sendAsynchronousRequest:request
                                        queue:[NSOperationQueue mainQueue]
      
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                               NSString *result;
                                if (data) {
                                    result = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
                                    NSLog(@"result: %@", result);
-                                   outcome = true;
                                } else {
                                    NSLog(@"error: %@", error);
-                                   outcome = false;
                                }
                            }];
-    return outcome;
 }
 
 
-bool addWaraToMyTubuyaki(NSString *content){
+void addWaraToMyTubuyaki(NSString *content){
     if (isThereWaraByContent(content)){
         NSLog(@"you faved the post you have already faved.");
-        return false;
+        return;
     }
-    bool outcome = addPost(content);
-    if (outcome){
-        addMyWaraLog(content);
-    }
-    return outcome;
+    addPost(content);
+#warning addPostがブロックを取れるようにして、addMyWaraLogは成功時のみ
+    addMyWaraLog(content);
 }
 
-bool addWaraToOthersTubuyaki(long long post_id, NSString *content,NSDate *date){
-#warning 重複を防ぐ仕組みほしい
+void addWaraToOthersTubuyaki(long long post_id, NSString *content,NSDate *date){
     if (isThereWara(post_id)){
         NSLog(@"you faved the post you have already faved.");
-        return false;
+        return;
     }
     addWaraLog(content, post_id, date);
     addWara(post_id);
-    return true;
 }
 
-NSArray *getJSONRecents(int cursor, int num){
-    
-    return getJSON([NSString stringWithFormat: @"http://tubu-yagi.appspot.com/json/recent?cursor=%d&num=%d", cursor, num]);
+void *getJSONRecents(int cursor, int num, void (^success)(NSArray *result)){
+    getJSON([NSString stringWithFormat: @"http://tubu-yagi.appspot.com/json/recent?cursor=%d&num=%d", cursor, num], success);
 }
 
-NSArray *getJSONTops(int cursor, int num){
-    return getJSON([NSString stringWithFormat: @"http://tubu-yagi.appspot.com/json/top?cursor=%d&num=%d", cursor, num]);
+void *getJSONTops(int cursor, int num, void (^success)(NSArray *result)){
+    getJSON([NSString stringWithFormat: @"http://tubu-yagi.appspot.com/json/top?cursor=%d&num=%d", cursor, num], success);
 }
 
 @end
