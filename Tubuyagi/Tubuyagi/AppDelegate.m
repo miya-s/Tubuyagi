@@ -39,8 +39,8 @@
     // こんな感じにwaraが取れるよって例
     getJSONWara(^(NSArray *result){
         NSLog(@"%@", result);
-        NSLog(@"wara : %@", [result objectAtIndex: 0]);
-        NSLog(@"wara : %d", [[[result objectAtIndex: 0] objectForKey:@"wara"] intValue]);
+        NSLog(@"warai : %@", [result objectAtIndex: 0]);
+        NSLog(@"warai : %d", [[[result objectAtIndex: 0] objectForKey:@"wara"] intValue]);
     });
 
     [self creatStartView];
