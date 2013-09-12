@@ -25,6 +25,8 @@
     
     //音関連
     SystemSoundID soudID;
+    SystemSoundID paperSound;
+    SystemSoundID yagiSound;
     SystemSoundID fail;
 }
 

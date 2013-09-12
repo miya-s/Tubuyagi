@@ -78,7 +78,7 @@ void addPost(NSString *content){
                            }];
 }
 
-void *getJSON(NSString *url, void (^success)(NSArray *result) ){
+void *getJSON(NSString *url, void (^success)(NSArray *results) ){
     NSURL *url1 = [NSURL URLWithString:url];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url1];
     [request setHTTPMethod:@"GET"];
@@ -94,32 +94,7 @@ void *getJSON(NSString *url, void (^success)(NSArray *result) ){
                                    NSLog(@"error: %@", error);
                                }
                            }];
-    /*
-    NSLog(@"1");
-    NSError *error1 = nil;
-    NSMutableURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url]];
-    NSLog(@"2");
-    //ここでつまる
-    NSData *json_data = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:&error1];
-    NSLog(@"error %@", error1);
-    
-    if (!(error1 == NULL)) {
-
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"接続できません"
-                                                        message:@"ネットの繋がる場所で再度トライして下さい"
-                                                       delegate:nil
-                                              cancelButtonTitle:@"OK"
-                                              otherButtonTitles:nil];
-        [alert show];
-
-        return nil;
-    }
-    NSError *error=nil;
-    NSLog(@"3");
-    NSArray *dict = [NSJSONSerialization JSONObjectWithData:json_data options:NSJSONReadingAllowFragments error:&error];
-    NSLog(@"%@",dict);
-    NSLog(@"%@", error);
-    return dict;*/
+    return 0;
 }
 
 void addWara(long long post_id){
@@ -170,16 +145,19 @@ void addWaraToOthersTubuyaki(long long post_id, NSString *content,NSDate *date){
 
 void *getJSONRecents(int cursor, int num, void (^success)(NSArray *result)){
     getJSON([NSString stringWithFormat: @"http://tubu-yagi.appspot.com/json/recent?cursor=%d&num=%d", cursor, num], success);
+    return 0;
 }
 
 void *getJSONTops(int cursor, int num, void (^success)(NSArray *result)){
     getJSON([NSString stringWithFormat: @"http://tubu-yagi.appspot.com/json/top?cursor=%d&num=%d", cursor, num], success);
+    return 0;
 }
 
 void *getJSONWara(void (^success)(NSArray *result)){
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
     NSString *random_pass = [ud stringForKey: @"TDRandomPassword"];
     getJSON([NSString stringWithFormat: @"http://tubu-yagi.appspot.com/json/wara?random_pass=%@", random_pass], success);
+    return 0;
 }
 
 @end

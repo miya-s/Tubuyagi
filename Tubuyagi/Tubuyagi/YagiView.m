@@ -72,9 +72,15 @@
         //音の準備
         NSString *path = [[NSBundle mainBundle] pathForResource:@"tarai" ofType:@"wav"];
         NSURL *url = [NSURL fileURLWithPath:path];
-       AudioServicesCreateSystemSoundID((__bridge_retained CFURLRef)url, &soudID);
+        AudioServicesCreateSystemSoundID((__bridge_retained CFURLRef)url, &soudID);
         
-        [self walk];
+        NSString *path2 = [[NSBundle mainBundle] pathForResource:@"paper" ofType:@"wav"];
+        NSURL *url2 = [NSURL fileURLWithPath:path2];
+        AudioServicesCreateSystemSoundID((__bridge_retained CFURLRef)url2, &paperSound);
+        
+        NSString *path3 = [[NSBundle mainBundle] pathForResource:@"yagi" ofType:@"wav"];
+        NSURL *url3 = [NSURL fileURLWithPath:path3];
+        AudioServicesCreateSystemSoundID((__bridge_retained CFURLRef)url3, &yagiSound);
     }
     return self;
 }
@@ -94,6 +100,8 @@
     imgBackLeftLeg.tag = 2;
     imgBackRightLeg.tag = 2;
     
+
+    AudioServicesPlaySystemSound(yagiSound);
     if (hukigen == YES) {
         imgFace.image = imgGakkariFace;
     }else{
@@ -123,6 +131,7 @@
 {
     imgFace.image = imgPaku;
     [self performSelector:@selector(mogmog) withObject:nil afterDelay:kutiakeruTime];
+    AudioServicesPlaySystemSound(paperSound);
     
 }
 
