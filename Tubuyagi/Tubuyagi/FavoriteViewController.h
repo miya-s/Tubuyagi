@@ -30,6 +30,6 @@
 
 @protocol FavoriteViewControllerDelegate <NSObject>
 
-- (void)
+- (void)reloadFavCount;
 
 @end

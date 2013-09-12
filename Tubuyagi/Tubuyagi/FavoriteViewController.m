@@ -84,6 +84,7 @@
 - (IBAction)backMainView:(id)sender {
     
     [self dismissViewControllerAnimated:YES completion:nil];
+    [self.delegate reloadFavCount];
 }
 
 #pragma mark - UITableViewDataSource

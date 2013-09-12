@@ -93,11 +93,12 @@
 
     //自分のお気に入り数を生成
 
-    getJSONWara(^(NSArray *result){
-
-        int wara =  [[[result objectAtIndex: 0] objectForKey:@"wara"] intValue];
-        self.strWara.text = [NSString stringWithFormat:@"%d", wara];
-        });
+    [self performSelector:@selector(getWaraCount) withObject:nil afterDelay:3];
+//    getJSONWara(^(NSArray *result){
+//
+//        int wara =  [[[result objectAtIndex: 0] objectForKey:@"wara"] intValue];
+//        self.strWara.text = [NSString stringWithFormat:@"%d", wara];
+//        });
 
                 
 //                NSString *tweet = [[self.favTweet objectAtIndex:indexPath.row] objectForKey:@"wara"];
@@ -105,6 +106,15 @@
     //設定画面の初期設定
     self.txfYagiName.delegate = self;
 
+}
+
+- (void)getWaraCount
+{
+    getJSONWara(^(NSArray *result){
+        
+        int wara =  [[[result objectAtIndex: 0] objectForKey:@"wara"] intValue];
+        self.strWara.text = [NSString stringWithFormat:@"%d", wara];
+    });
 }
 
 - (void)setYagiName
@@ -205,12 +215,14 @@
     
     //新着順
     fvvc1 = [[FavoriteViewController alloc] initWithNibName:@"FavoriteViewController" bundle:nil];
+    fvvc1.delegate = self;
     UIImage *img1 = [UIImage imageNamed:@"clock.png"];
     UITabBarItem *tabItem1 = [[UITabBarItem alloc] initWithTitle:@"新着" image:img1 tag:0];
     fvvc1.tabBarItem = tabItem1;
 //    [[fvvc1.tabBarController.tabBar.items objectAtIndex:0] setFinishedSelectedImage:nil withFinishedUnselectedImage:[UIImage imageNamed:@"clock.png"]];
     //人気順
     fvvc2 = [[FavoriteViewController alloc] initWithNibName:@"FavoriteViewController" bundle:nil];
+    fvvc2.delegate = self;
     UIImage *img2 = [UIImage imageNamed:@"crown.png"];
     UITabBarItem *tabItem2 = [[UITabBarItem alloc] initWithTitle:@"人気" image:img2 tag:0];
     fvvc2.tabBarItem = tabItem2;
@@ -580,5 +592,16 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     
 
     return YES;
+}
+
+#pragma mark - FavoriteVieDelegate
+- (void)reloadFavCount{
+    
+    [self getWaraCount];
+//    getJSONWara(^(NSArray *result){
+//        
+//        int wara =  [[[result objectAtIndex: 0] objectForKey:@"wara"] intValue];
+//        self.strWara.text = [NSString stringWithFormat:@"%d", wara];
+//    });
 }
 @end

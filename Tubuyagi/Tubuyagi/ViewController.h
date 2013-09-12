@@ -19,7 +19,8 @@
 
 @interface ViewController : UIViewController<FoodViewControllerDelegate, UIActionSheetDelegate,
                                                 UIAlertViewDelegate, DeleteWordTabelViewControllerDelegate,
-                                                CMPopTipViewDelegate, UITabBarControllerDelegate,UITextFieldDelegate>
+                                                CMPopTipViewDelegate, UITabBarControllerDelegate,UITextFieldDelegate,
+                                                FavoriteViewControllerDelegate>
 {
     BOOL timerFlag;
     UILabel *lblYagiTweet;

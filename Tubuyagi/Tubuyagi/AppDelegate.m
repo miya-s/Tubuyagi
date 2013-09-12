@@ -31,6 +31,7 @@
 
 #warning 毎回送る必要はない→名前変更時と、初回起動時と、twitter認証時
     addUser();
+    
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
     self.viewController = [[ViewController alloc] initWithNibName:@"ViewController" bundle:nil];
