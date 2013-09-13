@@ -352,6 +352,7 @@
                                   userInfo:nil
                                    repeats:NO];
     timerFlag = NO;
+    twitterAcountFlag = NO;
 
     
 //#warning 直す
@@ -360,8 +361,12 @@
 
 
 - (void)alert{
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"まだできていません" message:@"Coming Soon!" delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
-    [alert show];
+    if (twitterAcountFlag) {
+        
+    
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Twitterの情報を取得できませんでした" message:@"電波のいいところで再起動、もしくは本体に登録されているTwitterアカウントを確認して下さい" delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+        [alert show];
+    }
 }
 
 - (void)getTwitterAccountInformation
@@ -404,6 +409,7 @@
                            } errorBlock:^(NSError *error) {
                                NSLog(@"%@", [error localizedDescription]);
                                NSLog(@"通信失敗1");
+                               twitterAcountFlag = YES;
                            }];
         
     } errorBlock:^(NSError *error) {

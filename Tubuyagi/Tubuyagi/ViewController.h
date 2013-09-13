@@ -22,7 +22,7 @@
                                                 CMPopTipViewDelegate, UITabBarControllerDelegate,UITextFieldDelegate,
                                                 FavoriteViewControllerDelegate>
 {
-    BOOL timerFlag;
+    BOOL timerFlag, twitterAcountFlag;
     UILabel *lblYagiTweet;
     UIButton *btnYagi;                  //ヤギをタッチした時
     NSMutableArray *visiblePopTipViews; //ヤギの発言
@@ -55,4 +55,5 @@
 - (IBAction)shareTweet:(UIButton *)sender;
 - (void)availableButton;
 - (IBAction)closeConfigView:(id)sender;
+- (void)alert;
 @end
