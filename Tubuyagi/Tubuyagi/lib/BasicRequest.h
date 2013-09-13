@@ -21,5 +21,5 @@ void addWara(long long post_id);
 //自分の投稿をお気に入りに追加＆つぶやきを共有
 void addWaraToMyTubuyaki(NSString *content);
 //自分のお気に入りに追加
-void addWaraToOthersTubuyaki(long long post_id, NSString *content,NSDate *date);
+bool addWaraToOthersTubuyaki(long long post_id, NSString *content,NSDate *date);
 @end
