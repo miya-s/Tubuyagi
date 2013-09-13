@@ -395,6 +395,9 @@
                                [df setObject:username forKey:@"TDUserName"];
                                userName = [NSString stringWithFormat:@"%@のタイムライン", username];
                                
+                               //ステータスの更新
+                               [self setYagiName];
+                               
                                //読みこみの表示の解除
                                [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
                                

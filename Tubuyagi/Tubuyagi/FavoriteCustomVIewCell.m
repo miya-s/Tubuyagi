@@ -52,7 +52,7 @@
     [self addSubview:_yagiImageView];
     
     //ヤギの名前
-    CGRect lblNameRect = CGRectMake(margin, margin + 50, img_ato.size.width, 10);
+    CGRect lblNameRect = CGRectMake(margin, margin + 50, img_ato.size.width+15, 10);
     _lblYagiName = [[UILabel alloc] initWithFrame:lblNameRect];
     _lblYagiName.backgroundColor = [UIColor clearColor];
 //    _lblYagiName.text = @"つぶヤギ";
