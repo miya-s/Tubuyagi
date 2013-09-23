@@ -105,7 +105,7 @@
 
     //設定画面の初期設定
     self.txfYagiName.delegate = self;
-
+    self.txfYagiName.returnKeyType = UIReturnKeyDone;
 }
 
 - (void)getWaraCount
