@@ -226,12 +226,12 @@
 {
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
     
-    if ([self.title isEqualToString:@"新着"]) {
+    if ([self.tabBarItem.title isEqualToString:@"新着"]) {
         getJSONRecents(0,20,^(NSArray*result){
             self.favTweet = result;
             [self taskFinished];
         });
-    }else if ([self.title isEqualToString:@"人気"]){
+    }else if ([self.tabBarItem.title isEqualToString:@"人気"]){
         getJSONTops(0, 20, ^(NSArray *result){
             self.favTweet = result;
             [self taskFinished];
