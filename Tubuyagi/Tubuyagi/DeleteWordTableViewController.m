@@ -27,7 +27,6 @@
         // Custom initialization
         NSSet *aSet = [NSSet setWithArray:showLearnLog()];
         arrDeleteWord = [aSet allObjects];
-//        NSLog(@"あｊふぁいえじあおｗｊふぁじぇを　%@", arrDeleteWord);
     }
     return self;
 }

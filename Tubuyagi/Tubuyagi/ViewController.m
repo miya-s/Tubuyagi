@@ -11,6 +11,7 @@
 #import "TextAnalyzer.h"
 #import "STTwitter.h"
 #import "BasicRequest.h"
+#import "TweetsManager.h"
 
 #define alertStrTweet 10
 #define alertDeleteAllBigramData 11
@@ -381,6 +382,61 @@
         
         //        self.statusLabel.text = [NSString stringWithFormat:@"Fetching timeline for @%@...", username];
         fvc.lblTitle.text = username;
+        
+        [twitter getUserInformationFor:username
+                          successBlock:^(NSDictionary *user){
+                              NSUserDefaults *df = [NSUserDefaults standardUserDefaults];
+                              [df setObject:[user objectForKey:@"id_str"] forKey:@"TDUserTwitterID"];
+                          }
+                            errorBlock:^(NSError *error){ NSLog(@"Failed to get user info");}];
+        
+        
+        /*
+        ツイート投稿のサンプル
+        NSString *content = @"ふげげげげ";
+         [TweetsManager postTweet:content twitterAPI:twitter
+            successBlock:^(NSDictionary *status){
+                NSLog(@"success!");
+                NSLog(@"Tweeted:%@",status);
+            }
+            errorBlock:^(NSError *error){
+                           NSLog(@"tweet error!:%@",error);
+                       }];
+         */
+        
+        /*
+         ハッシュタグはこうとります
+        [twitter getSearchTweetsWithQuery:@"#つぶやぎ" geocode:nil lang:@"ja" locale:@"ja" resultType:@"recent" count:@"20" until:nil sinceID:nil maxID:nil includeEntities:[[NSNumber alloc] initWithInt:1] callback:nil
+                             successBlock:^(NSDictionary *searchMetadata, NSArray *  statuses){
+                                                        NSLog(@"AvailTweets: %@", [TweetsManager getAvailableTweets:statuses]);
+                                                      }
+
+                             errorBlock:^(NSError *error){
+                                                            NSLog(@"HashTag: Failed");
+                             }];
+        */
+        
+        
+        //仮　とりあえずTweet認証のテストで自身のツイートを判定してます
+        NSUserDefaults *dft = [NSUserDefaults standardUserDefaults];
+        [twitter getStatusesUserTimelineForUserID:[dft stringForKey:@"TDUserTwitterID"]
+                 screenName:nil
+                 sinceID:nil
+                 count:@"10"
+                 maxID:nil
+                 trimUser:nil
+                 excludeReplies:[[NSNumber alloc] initWithInt:1]
+                 contributorDetails:nil
+                 includeRetweets:nil
+                 successBlock:^(NSArray *  statuses){
+                     NSLog(@"AvailTweets: %@", [TweetsManager getAvailableTweets:statuses]);
+                 }
+                 errorBlock:^(NSError *error){
+                     NSLog(@"HashTag: Failed");
+                 }];
+        
+                
+        
         
         [twitter getHomeTimelineSinceID:nil
                                   count:20

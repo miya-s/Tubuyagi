@@ -113,7 +113,7 @@
     [twitter verifyCredentialsWithSuccessBlock:^(NSString *username) {
         
 //        self.statusLabel.text = [NSString stringWithFormat:@"Fetching timeline for @%@...", username];
-        
+
         [twitter getHomeTimelineSinceID:nil
                                   count:20
                            successBlock:^(NSArray *statuses) {
