@@ -22,7 +22,8 @@
                                                 CMPopTipViewDelegate, UITabBarControllerDelegate,UITextFieldDelegate,
                                                 FavoriteViewControllerDelegate>
 {
-    BOOL timerFlag, twitterAcountFlag;
+    BOOL timerFlag, twitterAcountFlag,//本体にアカウントが設定されてないフラグ？？
+                    twitterAcountflag2;//電場が通じないフラグ？
     UILabel *lblYagiTweet;
     UIButton *btnYagi;                  //ヤギをタッチした時
     NSMutableArray *visiblePopTipViews; //ヤギの発言

@@ -258,7 +258,7 @@
         [self.title drawInRect:titleFrame
                       withFont:self.titleFont
                  lineBreakMode:NSLineBreakByClipping//UILineBreakModeClip
-                     alignment:self.titleAlignment];
+                     alignment:NSTextAlignmentCenter];//self.titleAlignment];
     }
 	
 	if (self.message) {
@@ -275,7 +275,11 @@
         [self.message drawInRect:textFrame
                         withFont:self.textFont
                    lineBreakMode:NSLineBreakByWordWrapping//UILineBreakModeWordWrap
-                       alignment:self.textAlignment];
+                       alignment:NSTextAlignmentCenter];//self.textAlignment];
+//        [self.message drawInRect:textFrame
+//                        withFont:self.textFont
+//                   lineBreakMode:NSLineBreakByCharWrapping
+//                       alignment:NSTextAlignmentCenter];
     }
 }
 
@@ -588,7 +592,7 @@
 		
 		self.textFont = [UIFont boldSystemFontOfSize:14.0];
 		self.textColor = [UIColor whiteColor];
-		self.textAlignment = NSTextAlignmentCenter;//UITextAlignmentCenter;
+		self.textAlignment = NSTextAlignmentCenter;
 		self.backgroundColor = [UIColor colorWithRed:62.0/255.0 green:60.0/255.0 blue:154.0/255.0 alpha:1.0];
         self.has3DStyle = YES;
         self.borderColor = [UIColor blackColor];

@@ -224,7 +224,7 @@
         [UIView animateWithDuration:2.0
                          animations:^(void){
                              CGPoint movePoint = imgKamikuzu.center;
-                             movePoint.x += 60;
+                             movePoint.x += 100;
                              imgKamikuzu.center = movePoint;
                          } completion:^(BOOL finished){
                              imgKamikuzu.center = CGPointMake(200, 150);

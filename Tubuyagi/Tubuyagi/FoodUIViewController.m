@@ -17,10 +17,18 @@
 
 @implementation FoodUIViewController
 
+//回転
 - (BOOL)shouldAutorotate
 {
     return NO;
 }
+
+//ステータスバーの非表示
+- (BOOL)prefersStatusBarHidden
+{
+    return YES;
+}
+
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {

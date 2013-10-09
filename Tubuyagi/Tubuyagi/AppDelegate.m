@@ -118,9 +118,25 @@
 {
     NSLog(@"createStartView");
     //スタート画面
-    viewStart = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Default.png"]];
-    CGPoint viewCenter = self.viewController.view.center;
-    viewStart.center = CGPointMake(viewCenter.x, viewCenter.y -30);
+    if (self.window.bounds.size.height > 480) {
+        viewStart = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, 320, 568)];
+        viewStart.image = [UIImage imageNamed:@"Default-568h@2x.png"];
+        
+        
+    }else{
+        viewStart = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Default.png"]];
+    }
+    
+    CGPoint viewCenter = viewStart.center;
+    if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
+        viewCenter.y -= 20;//iOS6ならステータスバー分だけずらす
+    }
+    
+    viewStart.center = CGPointMake(viewCenter.x, viewCenter.y);
+    
+    //新しい
+//    viewStart.frame = viewRect;
+    
     [self.viewController.view addSubview:viewStart];
     UITapGestureRecognizer *gesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(pushStartButton)];
     [self.viewController.view addGestureRecognizer:gesture];

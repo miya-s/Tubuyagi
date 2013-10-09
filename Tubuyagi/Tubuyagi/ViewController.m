@@ -24,16 +24,47 @@
 
 - (BOOL)shouldAutorotate
 {
+    
     return NO;
+}
+
+
+//- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+//{
+//    // スクリーンサイズを取得します
+//    CGRect screenSize = [UIScreen mainScreen].bounds;
+//    if (screenSize.size.height <= 480) {
+//        // 縦幅が小さい場合には、3.5インチ用のXibファイルを指定します
+////        screenType = SCREEN_TYPE_3_5;
+//        nibNameOrNil = @"ViewController";
+//    } else {
+//        // 立て幅が長い場合には、4.0インチ用のXibファイルを指定します。
+////        screenType = SCREEN_TYPE_4_0;
+//        nibNameOrNil = @"ViewController_5";
+//    }
+//    
+//    // Xibファイル名を元に、インスタンスを生成します。
+//    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+//    if (self) {
+////        self.title = @"toZaim";
+//    }
+//    return self;
+//}
+
+//ステータスバーの非表示
+- (BOOL)prefersStatusBarHidden
+{
+    return YES;
 }
 
 - (void)viewDidLoad
 {
+    
     NSLog(@"ViewDidLoad");
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
     //ヤギの生成
-    CGRect yagiRect = CGRectMake(70, 158, 230, 228);
+    CGRect yagiRect = CGRectMake(45, 158, 230, 228);
     _yagiView = [[YagiView alloc] initWithFrame:yagiRect];
     [self.view addSubview:_yagiView];
     
@@ -353,10 +384,11 @@
                                    repeats:NO];
     timerFlag = NO;
     twitterAcountFlag = NO;
+    twitterAcountflag2 = NO;
 
     
 //#warning 直す
-//    [_yagiView allFoget];
+//    [_yagiView dischargeWord];
 }
 
 
@@ -365,6 +397,10 @@
         
     
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Twitterの情報を取得できませんでした" message:@"電波のいいところで再起動、もしくは本体に登録されているTwitterアカウントを確認して下さい" delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+        [alert show];
+    }else if (twitterAcountflag2)
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Twitterの情報を取得できませんでした" message:@"本体に登録されているTwitterアカウントを確認して下さい" delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
         [alert show];
     }
 }
@@ -408,13 +444,15 @@
                                
                            } errorBlock:^(NSError *error) {
                                NSLog(@"%@", [error localizedDescription]);
-                               NSLog(@"通信失敗1");
+                               NSLog(@"通信失敗1、twitterAccount設定してない");
                                twitterAcountFlag = YES;
                            }];
         
     } errorBlock:^(NSError *error) {
         NSLog(@"%@", [error localizedDescription]);
-        NSLog(@"通信失敗２");
+        NSLog(@"通信失敗２、おそらく電波がつうじない");
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+        twitterAcountflag2 = YES;
     }];
 
 }
@@ -541,6 +579,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 - (void)wordDelete
 {
     [_yagiView dischargeWord];
+    
 }
 - (void)viewDidUnload {
     [self setBtnChooseFood:nil];
