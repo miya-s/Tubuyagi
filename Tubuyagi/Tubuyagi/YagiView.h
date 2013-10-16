@@ -13,6 +13,7 @@
 {
     int kaoFlag;
     int kaisuu;
+    NSString *yagi_type;
     UIImageView *imgFace,*imgBody,
                 *imgFrntRightLeg, *imgFrntLeftLeg,
                 *imgBackRightLeg, *imgBackLeftLeg,

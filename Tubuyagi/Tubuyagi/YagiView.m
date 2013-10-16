@@ -16,22 +16,23 @@
     if (self) {
         // Initialization code
         CGPoint fakePoint = CGPointZero;
-        imgFace = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"_kao.png"]];
-        imgBody = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"_doutai.png"]];
-        imgFrntLeftLeg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"maeAshi.png"]];
-        imgFrntRightLeg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"maeAshi.png"]];
-        imgBackLeftLeg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ushiroAsh.png"]];
-        imgBackRightLeg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"usiroashi_03.png"]];
+        yagi_type = @"real";
+        imgFace = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[yagi_type stringByAppendingString:@"_kao.png"]]];
+        imgBody = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[yagi_type stringByAppendingString:@"_doutai.png"]]];
+        imgFrntLeftLeg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[yagi_type stringByAppendingString:@"_maeashi.png"]]];
+        imgFrntRightLeg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[yagi_type stringByAppendingString:@"_maeashi2.png"]]];
+        imgBackLeftLeg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[yagi_type stringByAppendingString:@"_ushiroashi.png"]]];
+        imgBackRightLeg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[yagi_type stringByAppendingString:@"_ushiroashi2.png"]]];
         imgTarai = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"tarai.png"]];
         imgKamikuzu = [[UIImageView alloc] initWithFrame:CGRectMake(fakePoint.x, fakePoint.y, 20, 20)];
         imgKamikuzu.image = [UIImage imageNamed:@"kamikuzu.png"];
         
-        imgYokoFace = [UIImage imageNamed:@"yoko_03.png"];
-        imgMaeFace = [UIImage imageNamed:@"_kao.png"];
-        imgGakkariFace = [UIImage imageNamed:@"yagi_hukigen.png"];
-        imgMgmg = [UIImage imageNamed:@"yagi_kao_mgmg.png"];
-        imgPaku = [UIImage imageNamed:@"yagi_kao_a.png"];
-        imgKaoTrai = [UIImage imageNamed:@"yagi_kao_tarai.png"];
+        imgYokoFace = [UIImage imageNamed:[yagi_type stringByAppendingString:@"_yoko.png"]];
+        imgMaeFace = [UIImage imageNamed:[yagi_type stringByAppendingString:@"_kao.png"]];
+        imgGakkariFace = [UIImage imageNamed:[yagi_type stringByAppendingString:@"_hukigen.png"]];
+        imgMgmg = [UIImage imageNamed:[yagi_type stringByAppendingString:@"_mgmg.png"]];
+        imgPaku = [UIImage imageNamed:[yagi_type stringByAppendingString:@"_a.png"]];
+        imgKaoTrai = [UIImage imageNamed:[yagi_type stringByAppendingString:@"_tarai.png"]];
         
         imgFace.image = imgYokoFace;
         
@@ -41,14 +42,26 @@
         imgBackLeftLeg.frame = setRect;
         imgBackRightLeg.frame = setRect;
         
-        imgFace.center = CGPointMake(62, 74);
-        imgBody.center = CGPointMake(144, 120);
-        imgFrntRightLeg.center = CGPointMake(108, 153);
-        imgFrntLeftLeg.center = CGPointMake(130, 157);
-        imgBackRightLeg.center = CGPointMake(170, 154);
-        imgBackLeftLeg.center = CGPointMake(190, 152);
-        imgKamikuzu.center = CGPointMake(200, 150);
-        imgTarai.center = CGPointMake(57.5, -104);
+        if ([yagi_type isEqualToString:@"normal"]){
+            imgFace.center = CGPointMake(62, 74);
+            imgBody.center = CGPointMake(144, 120);
+            imgFrntRightLeg.center = CGPointMake(108, 153);
+            imgFrntLeftLeg.center = CGPointMake(130, 157);
+            imgBackRightLeg.center = CGPointMake(170, 154);
+            imgBackLeftLeg.center = CGPointMake(190, 152);
+            imgKamikuzu.center = CGPointMake(200, 150);
+            imgTarai.center = CGPointMake(57.5, -104);
+        } else if ([yagi_type isEqualToString:@"real"]) {
+            imgFace.center = CGPointMake(62, 74);
+            imgBody.center = CGPointMake(144, 120);
+            imgFrntRightLeg.center = CGPointMake(108, 183);
+            imgFrntLeftLeg.center = CGPointMake(130, 187);
+            imgBackRightLeg.center = CGPointMake(170, 184);
+            imgBackLeftLeg.center = CGPointMake(190, 182);
+            imgKamikuzu.center = CGPointMake(200, 150);
+            imgTarai.center = CGPointMake(57.5, -104);
+
+        }
 
         imgTarai.alpha = 0.0;
         
@@ -62,9 +75,9 @@
         
         [self addSubview:imgKamikuzu];
         [self addSubview:imgBackRightLeg];
+        [self addSubview:imgFrntRightLeg];
         [self addSubview:imgBody];
         [self addSubview:imgBackLeftLeg];
-        [self addSubview:imgFrntRightLeg];
         [self addSubview:imgFrntLeftLeg];
         [self addSubview:imgFace];
         [self addSubview:imgTarai];
