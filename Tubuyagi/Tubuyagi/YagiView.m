@@ -18,6 +18,7 @@
         CGPoint fakePoint = CGPointZero;
         yagi_type = @"real";
         imgFace = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[yagi_type stringByAppendingString:@"_kao.png"]]];
+        
         imgBody = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[yagi_type stringByAppendingString:@"_doutai.png"]]];
         imgFrntLeftLeg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[yagi_type stringByAppendingString:@"_maeashi.png"]]];
         imgFrntRightLeg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[yagi_type stringByAppendingString:@"_maeashi2.png"]]];
@@ -34,13 +35,24 @@
         imgPaku = [UIImage imageNamed:[yagi_type stringByAppendingString:@"_a.png"]];
         imgKaoTrai = [UIImage imageNamed:[yagi_type stringByAppendingString:@"_tarai.png"]];
         
-        imgFace.image = imgYokoFace;
-        
-        CGRect setRect = CGRectMake(0, 0, 29, 103);
+        CGRect setRect;
+        if ([yagi_type isEqualToString:@"real"]) {
+            setRect = CGRectMake(0, 0, 29, 223);
+            imgFrntRightLeg.contentMode = UIViewContentModeBottom ;
+            imgFrntLeftLeg.contentMode = UIViewContentModeBottom ;
+            imgBackRightLeg.contentMode = UIViewContentModeBottom ;
+            imgBackLeftLeg.contentMode = UIViewContentModeBottom ;
+        } else {
+            setRect = CGRectMake(0, 0, 29, 113);
+        }
+
         imgFrntRightLeg.frame = setRect;
         imgFrntLeftLeg.frame = setRect;
-        imgBackLeftLeg.frame = setRect;
         imgBackRightLeg.frame = setRect;
+        imgBackLeftLeg.frame = setRect;
+
+        
+    
         
         if ([yagi_type isEqualToString:@"normal"]){
             imgFace.center = CGPointMake(62, 74);
@@ -54,10 +66,10 @@
         } else if ([yagi_type isEqualToString:@"real"]) {
             imgFace.center = CGPointMake(62, 74);
             imgBody.center = CGPointMake(144, 120);
-            imgFrntRightLeg.center = CGPointMake(108, 183);
-            imgFrntLeftLeg.center = CGPointMake(130, 187);
-            imgBackRightLeg.center = CGPointMake(170, 184);
-            imgBackLeftLeg.center = CGPointMake(190, 182);
+            imgFrntRightLeg.center = CGPointMake(108, 113);
+            imgFrntLeftLeg.center = CGPointMake(130, 127);
+            imgBackRightLeg.center = CGPointMake(170, 104);
+            imgBackLeftLeg.center = CGPointMake(205, 132);
             imgKamikuzu.center = CGPointMake(200, 150);
             imgTarai.center = CGPointMake(57.5, -104);
 
