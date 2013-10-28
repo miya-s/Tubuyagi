@@ -16,7 +16,7 @@
     if (self) {
         // Initialization code
         CGPoint fakePoint = CGPointZero;
-        yagi_type = @"real";
+        yagi_type = @"normal";
         imgFace = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[yagi_type stringByAppendingString:@"_kao.png"]]];
         
         imgBody = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[yagi_type stringByAppendingString:@"_doutai.png"]]];
