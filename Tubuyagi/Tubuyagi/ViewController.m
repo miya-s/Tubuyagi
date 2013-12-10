@@ -30,27 +30,6 @@
 }
 
 
-//- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-//{
-//    // スクリーンサイズを取得します
-//    CGRect screenSize = [UIScreen mainScreen].bounds;
-//    if (screenSize.size.height <= 480) {
-//        // 縦幅が小さい場合には、3.5インチ用のXibファイルを指定します
-////        screenType = SCREEN_TYPE_3_5;
-//        nibNameOrNil = @"ViewController";
-//    } else {
-//        // 立て幅が長い場合には、4.0インチ用のXibファイルを指定します。
-////        screenType = SCREEN_TYPE_4_0;
-//        nibNameOrNil = @"ViewController_5";
-//    }
-//    
-//    // Xibファイル名を元に、インスタンスを生成します。
-//    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-//    if (self) {
-////        self.title = @"toZaim";
-//    }
-//    return self;
-//}
 
 //ステータスバーの非表示
 - (BOOL)prefersStatusBarHidden
@@ -113,27 +92,13 @@
     
     //ヤギのステータス
     [self setYagiName];
-//    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-//    NSString *strOwner = [ud stringForKey:@"TDUserName"];
-//    NSString *strYagiName = [ud stringForKey:@"TDYagiName"];
-//    NSLog(@"yagi name %@", [ud objectForKey:@"TDYagiName"]);
-//    NSLog(@"yagi name 2 %@", [ud stringForKey:@"TDYagiName"]);
-//    _strStatus.text = [NSString stringWithFormat:@"オーナー:%@\nヤギの名前:%@", strOwner, strYagiName];
     
+    //ヤギの食べるエサの配置
     [self initialize];
     
 
     //自分のお気に入り数を生成
-
     [self performSelector:@selector(getWaraCount) withObject:nil afterDelay:3];
-//    getJSONWara(^(NSArray *result){
-//
-//        int wara =  [[[result objectAtIndex: 0] objectForKey:@"wara"] intValue];
-//        self.strWara.text = [NSString stringWithFormat:@"%d", wara];
-//        });
-
-                
-//                NSString *tweet = [[self.favTweet objectAtIndex:indexPath.row] objectForKey:@"wara"];
 
     //設定画面の初期設定
     self.txfYagiName.delegate = self;
@@ -179,12 +144,13 @@
     }];
 }
 
-//位置設定の初期設定
+//ヤギのエサの位置設定
 - (void)initialize
 {
     NSLog(@"initialize");
     lblYagiTweet.frame = CGRectMake(40, 330, 280, 52);
     lblYagiTweet.alpha = 0.0;
+   lblYagiTweet.transform = CGAffineTransformIdentity;
     timerFlag = YES;
     
     [self dismissAllPopTipViews];
@@ -199,17 +165,9 @@
 
 - (IBAction)chooseFood:(UIButton *)sender {
     
-//    UITabBarController *tabc = [[UITabBarController alloc] init];
-    
     [self presentViewController:fvc animated:YES completion:nil];
     fvc.lblTitle.text = userName;
     
-//    ManualInputViewController *mivc = [[ManualInputViewController alloc] initWithNibName:@"ManualInputViewController" bundle:nil];
-//    [self presentViewController:mivc animated:YES completion:nil];
-//    NSArray *views = [NSArray arrayWithObjects:fvc, mivc, nil];
-//    [tabc setViewControllers:views];
-//    
-//    [self presentViewController:tabc animated:YES completion:nil];
     
     [self initialize];
 }
@@ -520,15 +478,16 @@
 {
     [_yagiView eatFood];
     lblYagiTweet.alpha = 1.0;
-    //    [UIView beginAnimations:nil context:NULL];
-    //    [UIView setAnimationDuration:2.f];
     [UIView animateWithDuration:1.0f animations:^{
         lblYagiTweet.center = CGPointMake(_yagiView.center.x - 52, _yagiView.center.y -15);
         lblYagiTweet.transform = CGAffineTransformMakeScale(0.01, 0.01);
     } completion:^(BOOL finished){
-        lblYagiTweet.transform = CGAffineTransformIdentity;
-        [self initialize];
+        
+        //iOS7だとコールバックできないのでタイマー関数で呼ぶ
+        [self performSelector:@selector(initialize) withObject:Nil afterDelay:1.0f];
+        
     }];
+    
     lblYagiTweet.text = strTweet;
     [lblYagiTweet sizeThatFits:lblYagiTweet.bounds.size];
     
