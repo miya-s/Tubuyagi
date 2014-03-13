@@ -7,7 +7,7 @@
 //
 
 #import "FoodUIViewController.h"
-#import "TextAnalyzer.h"
+#import "MarkovTextGenerator.h"
 #import "STTwitter.h"
 #import "DeleteWordTableViewController.h"
 

@@ -7,7 +7,7 @@
 //
 
 #import "BasicRequest.h"
-#import "TextAnalyzer.h"
+#import "MarkovTextGenerator.h"
 
 @implementation BasicRequest
 
@@ -18,6 +18,7 @@ NSString *randStringWithLength(int length) {
     }
     return [[NSString alloc] initWithCharacters:letter length:length];
 }
+
 NSInteger randBetween(NSInteger min, NSInteger max) {
     return (arc4random() % (max - min + 1)) + min;
 }

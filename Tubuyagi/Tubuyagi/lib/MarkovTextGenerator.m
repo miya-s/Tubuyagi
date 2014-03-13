@@ -6,19 +6,24 @@
 //  Copyright (c) 2013年 Genki Ishibashi. All rights reserved.
 //
 
-#import "TextAnalyzer.h"
+#import "MarkovTextGenerator.h"
 
-@implementation TextAnalyzer
+@implementation MarkovTextGenerator
 
-NSString*   sqlAddBigram = @"INSERT INTO bigram VALUES (%@, %@, %d)";
-NSString*   sqlSelectBigram = @"SELECT * FROM bigram WHERE pre = %@ AND post = %@;";
-NSString*   sqlDeleteBigram = @"DELETE FROM bigram WHERE pre = %@ AND post = %@;";
-NSString*   sqlSelectBigramSet = @"SELECT * FROM bigram WHERE pre = %@";
-NSString*   sqlUpdateBigram = @"UPDATE bigram SET count = %d WHERE pre = %@ AND post = %@;";
-NSString*   bigramDatabaseName = @"bi-gram.db";
-NSString*   learnLogDatabaseName = @"tweet-log.db";
-NSString*   waraLogDatabaseName = @"wara-logv2.db";
+/*SQLクエリ*/
+static NSString* queryToAddBigram = @"INSERT INTO bigram VALUES (%@, %@, %d)";
+static NSString* queryToSelectBigram = @"SELECT * FROM bigram WHERE pre = %@ AND post = %@;";
+static NSString* queryToDeleteBigram = @"DELETE FROM bigram WHERE pre = %@ AND post = %@;";
+static NSString* queryToSelectBigramSet = @"SELECT * FROM bigram WHERE pre = %@";
+static NSString* queryToUpdateBigram = @"UPDATE bigram SET count = %d WHERE pre = %@ AND post = %@;";
 
+/*DBのファイル名*/
+static NSString* bigramDatabaseName = @"bi-gram.db";
+static NSString* learnLogDatabaseName = @"tweet-log.db";
+static NSString* waraLogDatabaseName = @"wara-logv2.db";
+
+
+/*DBのインスタンス取得*/
 FMDatabase* getDB(NSString * dbname){
     NSArray*    paths = NSSearchPathForDirectoriesInDomains( NSDocumentDirectory, NSUserDomainMask, YES );
     NSString*   dir   = [paths objectAtIndex:0];
@@ -38,6 +43,10 @@ FMDatabase* getWaraLogDB(void){
     return getDB(waraLogDatabaseName);
 }
 
+
+/*
+ Tweetにはハッシュタグなどが含まれるので、それを取り除く
+ */
 NSString* deleteNoises(NSString *str){
     NSString *result = [str stringByReplacingOccurrencesOfString:@"\n" withString:@" "];
     NSRegularExpression *regexp;
@@ -53,6 +62,9 @@ NSString* deleteNoises(NSString *str){
     return result;
 }
 
+/*
+ DBをクリアする
+ */
 void deleteAllBigramData(void){
     FMDatabase* db    = getBigramDB();
     [db open];
@@ -68,30 +80,9 @@ void deleteAllLearnLog(void){
     [db close];
 }
 
-
-NSMutableArray* showDeletableWords(void){
-    FMDatabase* db    = getBigramDB();
-    NSMutableArray *result = [NSMutableArray array];
-    [db open];
-    FMResultSet* sqlResults = [db executeQuery:@"SELECT * FROM bigram ORDER BY count DESC"];
-    int i = 0;
-    while ([sqlResults next] && i < 20){
-        NSString* targetPreWord = [sqlResults stringForColumn:@"pre"];
-
-        if ([result indexOfObject:targetPreWord] != NSNotFound || [targetPreWord length] < 2){
-            continue;
-        }
-        FMResultSet* res = [db executeQuery:@"SELECT COUNT(*) FROM bigram WHERE post = ?",targetPreWord];
-        [res next];
-        if ([res intForColumn:@"COUNT(*)"] > 1){
-            [result addObject:targetPreWord];
-            i+=1;
-        }
-    }
-    [db close];
-    return result;
-}
-
+/*
+    DBに保存されている内容を出力
+ */
 NSMutableArray* showDBContents(FMDatabase* db, NSString *db_name){
     NSMutableArray *result = [NSMutableArray array];
     [db open];
@@ -124,6 +115,7 @@ bool isThereWara(long long post_id){
     return res;
 }
 
+/*発言内容からすでにふぁぼったものか判断*/
 bool isThereWaraByContent(NSString *str){
     FMDatabase* db    = getWaraLogDB();
     [db open];
@@ -133,20 +125,8 @@ bool isThereWaraByContent(NSString *str){
     return res;
 }
 
-void deleteWord(NSString* word){
-    FMDatabase* db    = getBigramDB();
-    [db open];
-
-    [db executeQueryWithFormat:@"DELETE FROM bigram WHERE pre = %@", word];
-    [db executeQueryWithFormat:@"DELETE FROM bigram WHERE post = %@", word];
-    NSLog(@"%@", [db lastError]);
-    NSLog(@"%@", word);
-    [db close];
-}
-
-
 void updateBigramValue(FMDatabase *db, NSString* previous, NSString* current){
-    FMResultSet* sqlResult = [db executeQueryWithFormat:sqlSelectBigram, previous, current];
+    FMResultSet* sqlResult = [db executeQueryWithFormat:queryToSelectBigram, previous, current];
     BOOL isThereTargetBigram = [sqlResult next];
     int value;
     
@@ -157,14 +137,14 @@ void updateBigramValue(FMDatabase *db, NSString* previous, NSString* current){
     }
     if (isThereTargetBigram){
         int count = [sqlResult intForColumn:@"count"];
-        [db executeUpdateWithFormat:sqlUpdateBigram, count + value, previous, current];
+        [db executeUpdateWithFormat:queryToUpdateBigram, count + value, previous, current];
     } else {
-        [db executeUpdateWithFormat:sqlAddBigram, previous, current, value];
+        [db executeUpdateWithFormat:queryToAddBigram, previous, current, value];
     }
 }
 
 void reduceBigramValue(FMDatabase *db, NSString* previous, NSString* current){
-    FMResultSet* sqlResult = [db executeQueryWithFormat:sqlSelectBigram, previous, current];
+    FMResultSet* sqlResult = [db executeQueryWithFormat:queryToSelectBigram, previous, current];
     BOOL isThereTargetBigram = [sqlResult next];
     int value;
     
@@ -176,21 +156,21 @@ void reduceBigramValue(FMDatabase *db, NSString* previous, NSString* current){
     if (isThereTargetBigram){
         int count = [sqlResult intForColumn:@"count"];
         if (count + value <= 0){
-            [db executeUpdateWithFormat:sqlDeleteBigram, previous, current];
+            [db executeUpdateWithFormat:queryToDeleteBigram, previous, current];
         } else {
-            [db executeUpdateWithFormat:sqlUpdateBigram, count + value, previous, current];
+            [db executeUpdateWithFormat:queryToUpdateBigram, count + value, previous, current];
         }
     } else {
     }
 }
 
 NSString* generateNextWord(FMDatabase *db, NSString *previous){
-    FMResultSet* sqlResult = [db executeQueryWithFormat:sqlSelectBigramSet, previous];
+    FMResultSet* sqlResult = [db executeQueryWithFormat:queryToSelectBigramSet, previous];
     int sumOfCase = 0;
     while ([sqlResult next]){
         sumOfCase += [sqlResult intForColumn:@"count"];
     }
-    sqlResult = [db executeQueryWithFormat:sqlSelectBigramSet, previous];
+    sqlResult = [db executeQueryWithFormat:queryToSelectBigramSet, previous];
     
     double k = (double)(arc4random() % 100) / 100;
     while ([sqlResult next]){

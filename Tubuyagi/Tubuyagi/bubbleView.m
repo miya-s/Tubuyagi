@@ -7,7 +7,7 @@
 //
 
 #import "bubbleView.h"
-#import "TextAnalyzer.h"
+#import "MarkovTextGenerator.h"
 
 @implementation bubbleView
 

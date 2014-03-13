@@ -7,7 +7,7 @@
 //
 
 #import "DeleteWordTableViewController.h"
-#import "TextAnalyzer.h"
+#import "MarkovTextGenerator.h"
 
 @interface DeleteWordTableViewController ()
 
@@ -73,7 +73,6 @@
 // セルの中身の実装
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-//    NSLog(@"cellForRowAtIndexPath");
     
     NSString *strCellIdentifier = [NSString stringWithFormat:@"%d", indexPath.row];
     NSString *CellIdentifier = strCellIdentifier;
@@ -92,7 +91,6 @@
             if (arrDeleteWord) {
                 cell.textLabel.text = [arrDeleteWord objectAtIndex:indexPath.row];
             }
-//            NSLog(@"delete word %@", [showDeletableWords() objectAtIndex:indexPath.row]);
         
         }
     }

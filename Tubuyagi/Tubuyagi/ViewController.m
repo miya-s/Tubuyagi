@@ -8,7 +8,7 @@
 
 #import "ViewController.h"
 #import "FoodUIViewController.h"
-#import "TextAnalyzer.h"
+#import "MarkovTextGenerator.h"
 #import "STTwitter.h"
 #import "BasicRequest.h"
 #import "TweetsManager.h"

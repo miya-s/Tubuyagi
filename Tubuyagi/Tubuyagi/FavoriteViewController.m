@@ -8,7 +8,7 @@
 
 #import "FavoriteViewController.h"
 #import "BasicRequest.h"
-#import "TextAnalyzer.h"
+#import "MarkovTextGenerator.h"
 
 @interface FavoriteViewController ()
 
