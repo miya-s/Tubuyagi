@@ -1,5 +1,5 @@
 //
-//  NSString+MD5.h
+//  NSString+SHA.h
 //  Tubuyagi
 //
 //  Created by 宮原聡 on 2013/09/24.
@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface NSString(MD5)
-- (NSString*) MD5String;
-- (NSString*) getMD5ForAuth;
+@interface NSString(SHA)
+- (NSString*) SHAString;
+- (NSString*) getSHAForAuth;
 @end

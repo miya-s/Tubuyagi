@@ -9,7 +9,7 @@
 #import "AppDelegate.h"
 #import "BasicRequest.h"
 #import "ViewController.h"
-#import "NSString+MD5.h"
+#import "NSString+SHA.h"
 
 @implementation AppDelegate
 

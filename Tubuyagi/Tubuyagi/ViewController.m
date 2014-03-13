@@ -12,6 +12,7 @@
 #import "STTwitter.h"
 #import "BasicRequest.h"
 #import "TweetsManager.h"
+#import "NSString+SHA.h"
 
 #define alertStrTweet 10
 #define alertDeleteAllBigramData 11
@@ -39,6 +40,8 @@
 
 - (void)viewDidLoad
 {
+    NSLog(@"SHA test: %@", [@"sha" getSHAForAuth]);
+    
     
     NSLog(@"ViewDidLoad");
     [super viewDidLoad];

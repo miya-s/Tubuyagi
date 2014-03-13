@@ -70,7 +70,7 @@
 		37CAC24117DEDDE400854D4D /* yagiSample.png in Resources */ = {isa = PBXBuildFile; fileRef = 37CAC24017DEDDE400854D4D /* yagiSample.png */; };
 		37D0612517DB422300F94E30 /* YagiView.m in Sources */ = {isa = PBXBuildFile; fileRef = 37D0612417DB422300F94E30 /* YagiView.m */; };
 		37D0615F17DB647100F94E30 /* CMPopTipView.m in Sources */ = {isa = PBXBuildFile; fileRef = 37D0615E17DB647100F94E30 /* CMPopTipView.m */; };
-		4A2F2F6E17F1D28C0017E97A /* NSString+MD5.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A2F2F6D17F1D28C0017E97A /* NSString+MD5.m */; };
+		4A2F2F6E17F1D28C0017E97A /* NSString+SHA.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A2F2F6D17F1D28C0017E97A /* NSString+SHA.m */; };
 		4A2F2F7117F1D8C50017E97A /* TweetsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A2F2F7017F1D8C50017E97A /* TweetsManager.m */; };
 		4A4564FA17E1C04F00DA3013 /* paper.wav in Resources */ = {isa = PBXBuildFile; fileRef = 4A4564F917E1C04F00DA3013 /* paper.wav */; };
 		4A45650217E1C3FA00DA3013 /* yagi.wav in Resources */ = {isa = PBXBuildFile; fileRef = 4A45650117E1C3FA00DA3013 /* yagi.wav */; };
@@ -195,8 +195,8 @@
 		37D0612417DB422300F94E30 /* YagiView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YagiView.m; sourceTree = "<group>"; };
 		37D0615D17DB647000F94E30 /* CMPopTipView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMPopTipView.h; sourceTree = "<group>"; };
 		37D0615E17DB647100F94E30 /* CMPopTipView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMPopTipView.m; sourceTree = "<group>"; };
-		4A2F2F6C17F1D28C0017E97A /* NSString+MD5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+MD5.h"; path = "lib/NSString+MD5.h"; sourceTree = "<group>"; };
-		4A2F2F6D17F1D28C0017E97A /* NSString+MD5.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+MD5.m"; path = "lib/NSString+MD5.m"; sourceTree = "<group>"; };
+		4A2F2F6C17F1D28C0017E97A /* NSString+SHA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+SHA.h"; path = "lib/NSString+SHA.h"; sourceTree = "<group>"; };
+		4A2F2F6D17F1D28C0017E97A /* NSString+SHA.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+SHA.m"; path = "lib/NSString+SHA.m"; sourceTree = "<group>"; };
 		4A2F2F6F17F1D8C50017E97A /* TweetsManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TweetsManager.h; sourceTree = "<group>"; };
 		4A2F2F7017F1D8C50017E97A /* TweetsManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TweetsManager.m; sourceTree = "<group>"; };
 		4A4564F917E1C04F00DA3013 /* paper.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = paper.wav; sourceTree = "<group>"; };
@@ -540,8 +540,8 @@
 			children = (
 				4A6FF2DF17DDA71500410BF5 /* BasicRequest.h */,
 				4A6FF2E017DDA71500410BF5 /* BasicRequest.m */,
-				4A2F2F6C17F1D28C0017E97A /* NSString+MD5.h */,
-				4A2F2F6D17F1D28C0017E97A /* NSString+MD5.m */,
+				4A2F2F6C17F1D28C0017E97A /* NSString+SHA.h */,
+				4A2F2F6D17F1D28C0017E97A /* NSString+SHA.m */,
 			);
 			name = Helper;
 			sourceTree = "<group>";
@@ -732,7 +732,7 @@
 				37CAC20017DDB7F000854D4D /* HeaderView.m in Sources */,
 				37CAC23B17DED99900854D4D /* FavoriteViewController.m in Sources */,
 				37CAC23F17DEDB8F00854D4D /* FavoriteCustomVIewCell.m in Sources */,
-				4A2F2F6E17F1D28C0017E97A /* NSString+MD5.m in Sources */,
+				4A2F2F6E17F1D28C0017E97A /* NSString+SHA.m in Sources */,
 				4A2F2F7117F1D8C50017E97A /* TweetsManager.m in Sources */,
 				4AEE6B0F180E800D000C945A /* STHTTPRequest+STTwitter.m in Sources */,
 			);

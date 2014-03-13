@@ -7,7 +7,7 @@
 //
 
 #import "TweetsManager.h"
-#import "NSString+MD5.h"
+#import "NSString+SHA.h"
 
 @implementation TweetsManager
 
@@ -18,16 +18,16 @@ NSString* const applicationHashTag = @"つぶやぎ";
 
 +(NSString *)makeHashFromTweet:(NSString *)tweet tweetOwner:(NSString*)owner{
     NSString *seed=[owner stringByAppendingString:tweet];
-    NSString *hash =[seed getMD5ForAuth];
+    NSString *hash =[seed getSHAForAuth];
     return hash;
 }
 
-//ユーザー情報をハッシュの種にしないと、パクツイできてしまう
-//しかしユーザー情報をハッシュの種にすると、ユーザーIDを変更したユーザーが今までのツイートを認証できなくなってしまう
-//Twitter APIのユーザーidは、 @hogeの形式ではなく連番？
-//注意！！idは使わない、id_strを使う
-//TweetにもUserにもid_str属性があるので間違えないように。
-
+/*ユーザー情報をハッシュの種にしないと、パクツイできてしまう
+  しかしユーザー情報をハッシュの種にすると、ユーザーIDを変更したユーザーが今までのツイートを認証できなくなってしまう
+  Twitter APIのユーザーidは、 @hogeの形式ではなく連番？
+  注意！！idは使わない、id_strを使う
+  TweetにもUserにもid_str属性があるので間違えないように。
+*/
 
 +(NSString *)makeTweet:(NSString *)content{
     NSString *hash = [TweetsManager makeHashFromTweet:content tweetOwner:[TweetsManager getMyTwitterID]];
