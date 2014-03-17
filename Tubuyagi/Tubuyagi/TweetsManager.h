@@ -12,7 +12,7 @@
 
 @interface TweetsManager : NSObject
 {
-    
+    STTwitterAPI   *twitterAPIClient;
 }
 
 /*
@@ -28,6 +28,6 @@
 /*ツイートを投稿する*/
 +(void)postTweet:(NSString *)content twitterAPI:(STTwitterAPI *)twitter successBlock:(void(^)(NSDictionary *status))successBlock errorBlock:(void(^)(NSError *error))error;
 
-
+- (void)loginTwitter;
 
 @end

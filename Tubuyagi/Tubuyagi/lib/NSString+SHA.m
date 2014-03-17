@@ -8,6 +8,8 @@
 
 #import "NSString+SHA.h"
 #import <CommonCrypto/CommonDigest.h> // for CC_SHA
+#import "AuthentificationKeys.h"
+// AuthentificationKeysはgitの管理外にあります。ほしい人は kan.tan.san @ gmail.com まで
 
 @implementation NSString (SHA)
 - (NSString *) SHAString
@@ -28,10 +30,7 @@
 
 -(NSString*)getSHAForAuth
 {
-#warning AppStore公開直前にpassword変える
-    // 総当りで解析できてしまうので、十分に長いpasswordにすること
-    NSString *password = @"つぶやぎ　はチーム石原が提供します。";
     NSLog(@"Hashfor%@",self);
-    return [[NSString stringWithFormat: @"%@%@", self, password] SHAString];
+    return [[NSString stringWithFormat: @"%@%@", self, kSHA_PASSWORD] SHAString];
 }
 @end

@@ -17,6 +17,8 @@
 +(NSString *)decodeString:(NSString *)encodedString;
 +(NSString *)makeTweet:(NSString *)content;
 +(BOOL)isValidTubuyaki:(NSDictionary *)tweet;
++(NSString *)makeHashFromTweet:(NSString *)tweet twitterID:(NSString*)twitterID;
++(BOOL)checkHash:(NSString *)hash tweetContent:(NSString*)content twitterID:(NSString *)twitterID;
 @end
 
 @implementation TweetsManager(Test2)

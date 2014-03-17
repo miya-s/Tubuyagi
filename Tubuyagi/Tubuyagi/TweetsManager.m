@@ -9,6 +9,7 @@
 #import "TweetsManager.h"
 #import "NSString+SHA.h"
 #import "AuthentificationKeys.h"
+// AuthentificationKeysはgitの管理外にあります。ほしい人は kan.tan.san @ gmail.com まで
 
 @implementation TweetsManager
 
@@ -25,6 +26,9 @@ static NSString* const applicationHashTag = @"つぶやぎ";
  　・ランキングのツイート
      ・ツイートの判定
  ・ツイートの投稿
+ 
+ 
+ TODO　クラス関数じゃなくていいよね
  */
 
 #warning    もしかしたら、screen_nameの大文字小文字の違いとかが変な影響を及ぼすかもしれない
@@ -192,5 +196,21 @@ static NSString* const applicationHashTag = @"つぶやぎ";
     
 }
 
+- (void)loginTwitter
+{
+    twitterAPIClient = [STTwitterAPI twitterAPIWithOAuthConsumerKey:kAPI_KEY
+                                                     consumerSecret:kAPI_SECRET
+                                                         oauthToken:kACCESS_TOKEN
+                                                   oauthTokenSecret:kACCESS_TOKEN_SECRET];
+    [twitterAPIClient verifyCredentialsWithSuccessBlock:^(NSString *username) {
+        // ログイン成功
+        NSLog(@"granted");
+        //[self getTimeline];
+        //[self getUserStream];
+    } errorBlock:^(NSError *error) {
+        // ログイン失敗
+        NSLog(@"error : %@", error);
+    }];
+}
 
 @end
