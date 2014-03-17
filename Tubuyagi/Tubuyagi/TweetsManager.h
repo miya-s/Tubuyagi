@@ -19,16 +19,12 @@
  ツイートの管理を行うクラス
  */
 
-+(NSString *)makeHashFromTweet:(NSString *)tweet twitterID:(NSString*)twitterID ;
-
-+(NSString *)makeTweet:(NSString *)content;
-
-+(BOOL)checkHash:(NSString *)hash tweetContent:(NSString*)content twitterID:(NSString *)twitterID;
-
 /*使い物になるツイートだけ収集する*/
 +(NSMutableArray *)getAvailableTweets:(NSArray *)tweets;
 
 /*ツイートを投稿する*/
 +(void)postTweet:(NSString *)content twitterAPI:(STTwitterAPI *)twitter successBlock:(void(^)(NSDictionary *status))successBlock errorBlock:(void(^)(NSError *error))error;
+
+
 
 @end
