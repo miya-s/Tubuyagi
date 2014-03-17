@@ -8,13 +8,13 @@
 
 #import "TweetsManager.h"
 #import "NSString+SHA.h"
+#import "AuthentificationKeys.h"
 
 @implementation TweetsManager
 
 
 static NSString* const applicationURI = @"https://github.com/miya-s/Tubuyagi";
 static NSString* const applicationHashTag = @"つぶやぎ";
-
 
 /*
  ツイートの管理を行うクラス
@@ -177,13 +177,20 @@ static NSString* const applicationHashTag = @"つぶやぎ";
     return availableTweets;
 }
 
+
+
+/***************************
+ API インターフェイス
+ **************************/
+
 /*ツイート投稿*/
 +(void)postTweet:(NSString *)content twitterAPI:(STTwitterAPI *)twitter successBlock:(void(^)(NSDictionary *status))successBlock errorBlock:(void(^)(NSError *error))errorBlock{
-
+    
     NSString *tweetContent = [TweetsManager makeTweet:content];
-
+    
     [twitter postStatusUpdate:tweetContent inReplyToStatusID:nil latitude:nil longitude:nil placeID:nil displayCoordinates:nil trimUser:nil successBlock:successBlock errorBlock:errorBlock];
-
+    
 }
+
 
 @end

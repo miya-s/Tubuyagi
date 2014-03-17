@@ -236,6 +236,7 @@
 		4A8B068017E0438E00B408BB /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		4A8B068217E0481D00B408BB /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
 		4A8B068417E0484300B408BB /* icon-mini.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-mini.png"; sourceTree = "<group>"; };
+		4A9CBCF018D701FD00E32BD9 /* AuthentificationKeys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AuthentificationKeys.h; sourceTree = "<group>"; };
 		4AA1DEAE17E04EC80023B26E /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		4AA7A6D0180EAAA500F0B13B /* real_a.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = real_a.png; sourceTree = "<group>"; };
 		4AA7A6D1180EAAA500F0B13B /* real_doutai.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = real_doutai.png; sourceTree = "<group>"; };
@@ -578,6 +579,7 @@
 				4A6FF2E017DDA71500410BF5 /* BasicRequest.m */,
 				4A2F2F6C17F1D28C0017E97A /* NSString+SHA.h */,
 				4A2F2F6D17F1D28C0017E97A /* NSString+SHA.m */,
+				4A9CBCF018D701FD00E32BD9 /* AuthentificationKeys.h */,
 			);
 			name = Helper;
 			sourceTree = "<group>";
@@ -1052,6 +1054,7 @@
 				4AE36E6E18D22070000A8084 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

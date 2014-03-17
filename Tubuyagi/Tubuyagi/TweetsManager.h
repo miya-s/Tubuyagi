@@ -17,8 +17,11 @@
 
 /*
  ツイートの管理を行うクラス
+ 参考: http://blog.himajinworks.net/archives/150
+ アカウントページ: https://apps.twitter.com/app/5905926
  */
 
+#warning 将来的にはこれをインターフェイスにするのではなく、Twitter APIからツイートを取ってくる部分も含めた処理をinterfaceに
 /*使い物になるツイートだけ収集する*/
 +(NSMutableArray *)getAvailableTweets:(NSArray *)tweets;
 
