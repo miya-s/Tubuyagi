@@ -28,6 +28,16 @@
       shouldUseLaunchSchemeArgsEnv = "YES"
       buildConfiguration = "Debug">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "4AE36E5C18D2206F000A8084"
+               BuildableName = "Tubuyagi Tests.xctest"
+               BlueprintName = "Tubuyagi Tests"
+               ReferencedContainer = "container:Tubuyagi.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference

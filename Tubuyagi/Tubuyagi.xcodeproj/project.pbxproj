@@ -108,6 +108,12 @@
 		4AA7A6FC180EAAAD00F0B13B /* normal_yoko.png in Resources */ = {isa = PBXBuildFile; fileRef = 4AA7A6F1180EAAAD00F0B13B /* normal_yoko.png */; };
 		4ABA5EC517E27DED0041FB3C /* tutorial.png in Resources */ = {isa = PBXBuildFile; fileRef = 4ABA5EC417E27DED0041FB3C /* tutorial.png */; };
 		4ABA5EC717E27E740041FB3C /* tutorial_new3.png in Resources */ = {isa = PBXBuildFile; fileRef = 4ABA5EC617E27E740041FB3C /* tutorial_new3.png */; };
+		4AE36E5F18D2206F000A8084 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4AE36E5E18D2206F000A8084 /* XCTest.framework */; };
+		4AE36E6018D2206F000A8084 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 374D792B17D822D000FAE80C /* Foundation.framework */; };
+		4AE36E6118D2206F000A8084 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 374D792917D822D000FAE80C /* UIKit.framework */; };
+		4AE36E6718D2206F000A8084 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4AE36E6518D2206F000A8084 /* InfoPlist.strings */; };
+		4AE36E6918D2206F000A8084 /* Tubuyagi_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AE36E6818D2206F000A8084 /* Tubuyagi_Tests.m */; };
+		4AE36E7118D22202000A8084 /* TweetsManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AE36E7018D22202000A8084 /* TweetsManagerTests.m */; };
 		4AEE6B0E180E800D000C945A /* NSString+STTwitter.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AEE6AFF180E800D000C945A /* NSString+STTwitter.m */; };
 		4AEE6B0F180E800D000C945A /* STHTTPRequest+STTwitter.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AEE6B01180E800D000C945A /* STHTTPRequest+STTwitter.m */; };
 		4AEE6B10180E800D000C945A /* STTwitterAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AEE6B04180E800D000C945A /* STTwitterAPI.m */; };
@@ -119,6 +125,16 @@
 		4AEE6B1D180E802E000C945A /* JSONSyntaxHighlight.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AEE6B19180E802E000C945A /* JSONSyntaxHighlight.m */; };
 		4AEE6B1E180E802E000C945A /* STHTTPRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AEE6B1B180E802E000C945A /* STHTTPRequest.m */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		4AE36E6B18D2206F000A8084 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 374D791E17D822CF00FAE80C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 374D792517D822CF00FAE80C;
+			remoteInfo = Tubuyagi;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		3741853D17DFFF3300D68688 /* kamikuzu.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = kamikuzu.png; path = YImages/kamikuzu.png; sourceTree = "<group>"; };
@@ -245,6 +261,13 @@
 		4AA7A6F1180EAAAD00F0B13B /* normal_yoko.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = normal_yoko.png; sourceTree = "<group>"; };
 		4ABA5EC417E27DED0041FB3C /* tutorial.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial.png; sourceTree = "<group>"; };
 		4ABA5EC617E27E740041FB3C /* tutorial_new3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial_new3.png; sourceTree = "<group>"; };
+		4AE36E5D18D2206F000A8084 /* Tubuyagi Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tubuyagi Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		4AE36E5E18D2206F000A8084 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		4AE36E6418D2206F000A8084 /* Tubuyagi Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Tubuyagi Tests-Info.plist"; sourceTree = "<group>"; };
+		4AE36E6618D2206F000A8084 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		4AE36E6818D2206F000A8084 /* Tubuyagi_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Tubuyagi_Tests.m; sourceTree = "<group>"; };
+		4AE36E6A18D2206F000A8084 /* Tubuyagi Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Tubuyagi Tests-Prefix.pch"; sourceTree = "<group>"; };
+		4AE36E7018D22202000A8084 /* TweetsManagerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TweetsManagerTests.m; sourceTree = "<group>"; };
 		4AEE6AFE180E800D000C945A /* NSString+STTwitter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+STTwitter.h"; path = "STTwitter/STTwitter/NSString+STTwitter.h"; sourceTree = "<group>"; };
 		4AEE6AFF180E800D000C945A /* NSString+STTwitter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+STTwitter.m"; path = "STTwitter/STTwitter/NSString+STTwitter.m"; sourceTree = "<group>"; };
 		4AEE6B00180E800D000C945A /* STHTTPRequest+STTwitter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "STHTTPRequest+STTwitter.h"; path = "STTwitter/STTwitter/STHTTPRequest+STTwitter.h"; sourceTree = "<group>"; };
@@ -282,6 +305,16 @@
 				374D792A17D822D000FAE80C /* UIKit.framework in Frameworks */,
 				374D792C17D822D000FAE80C /* Foundation.framework in Frameworks */,
 				374D792E17D822D000FAE80C /* CoreGraphics.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4AE36E5A18D2206F000A8084 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4AE36E5F18D2206F000A8084 /* XCTest.framework in Frameworks */,
+				4AE36E6118D2206F000A8084 /* UIKit.framework in Frameworks */,
+				4AE36E6018D2206F000A8084 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -342,6 +375,7 @@
 				4A8B067E17E042EF00B408BB /* Default@2x.png */,
 				4A63EA9E17D890F400C93F86 /* libsqlite3.0.dylib */,
 				374D792F17D822D000FAE80C /* Tubuyagi */,
+				4AE36E6218D2206F000A8084 /* Tubuyagi Tests */,
 				374D792817D822CF00FAE80C /* Frameworks */,
 				374D792717D822CF00FAE80C /* Products */,
 			);
@@ -351,6 +385,7 @@
 			isa = PBXGroup;
 			children = (
 				374D792617D822CF00FAE80C /* Tubuyagi.app */,
+				4AE36E5D18D2206F000A8084 /* Tubuyagi Tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -365,6 +400,7 @@
 				374D792917D822D000FAE80C /* UIKit.framework */,
 				374D792B17D822D000FAE80C /* Foundation.framework */,
 				374D792D17D822D000FAE80C /* CoreGraphics.framework */,
+				4AE36E5E18D2206F000A8084 /* XCTest.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -431,8 +467,6 @@
 				374D797C17D8552B00FAE80C /* bubbleView.m */,
 				37CAC23D17DEDB8F00854D4D /* FavoriteCustomVIewCell.h */,
 				37CAC23E17DEDB8F00854D4D /* FavoriteCustomVIewCell.m */,
-				4A2F2F6F17F1D8C50017E97A /* TweetsManager.h */,
-				4A2F2F7017F1D8C50017E97A /* TweetsManager.m */,
 			);
 			name = SubClass;
 			sourceTree = "<group>";
@@ -538,6 +572,8 @@
 		4AE36E5418D1CD24000A8084 /* Helper */ = {
 			isa = PBXGroup;
 			children = (
+				4A2F2F6F17F1D8C50017E97A /* TweetsManager.h */,
+				4A2F2F7017F1D8C50017E97A /* TweetsManager.m */,
 				4A6FF2DF17DDA71500410BF5 /* BasicRequest.h */,
 				4A6FF2E017DDA71500410BF5 /* BasicRequest.m */,
 				4A2F2F6C17F1D28C0017E97A /* NSString+SHA.h */,
@@ -555,6 +591,26 @@
 				37D0612417DB422300F94E30 /* YagiView.m */,
 			);
 			name = YagiBehavior;
+			sourceTree = "<group>";
+		};
+		4AE36E6218D2206F000A8084 /* Tubuyagi Tests */ = {
+			isa = PBXGroup;
+			children = (
+				4AE36E6818D2206F000A8084 /* Tubuyagi_Tests.m */,
+				4AE36E6318D2206F000A8084 /* Supporting Files */,
+			);
+			path = "Tubuyagi Tests";
+			sourceTree = "<group>";
+		};
+		4AE36E6318D2206F000A8084 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				4AE36E6418D2206F000A8084 /* Tubuyagi Tests-Info.plist */,
+				4AE36E6518D2206F000A8084 /* InfoPlist.strings */,
+				4AE36E6A18D2206F000A8084 /* Tubuyagi Tests-Prefix.pch */,
+				4AE36E7018D22202000A8084 /* TweetsManagerTests.m */,
+			);
+			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		4AEE6B15180E802E000C945A /* Vendor */ = {
@@ -591,6 +647,24 @@
 			productReference = 374D792617D822CF00FAE80C /* Tubuyagi.app */;
 			productType = "com.apple.product-type.application";
 		};
+		4AE36E5C18D2206F000A8084 /* Tubuyagi Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4AE36E6F18D22070000A8084 /* Build configuration list for PBXNativeTarget "Tubuyagi Tests" */;
+			buildPhases = (
+				4AE36E5918D2206F000A8084 /* Sources */,
+				4AE36E5A18D2206F000A8084 /* Frameworks */,
+				4AE36E5B18D2206F000A8084 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4AE36E6C18D2206F000A8084 /* PBXTargetDependency */,
+			);
+			name = "Tubuyagi Tests";
+			productName = "Tubuyagi Tests";
+			productReference = 4AE36E5D18D2206F000A8084 /* Tubuyagi Tests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -599,6 +673,11 @@
 			attributes = {
 				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = "Genki Ishibashi";
+				TargetAttributes = {
+					4AE36E5C18D2206F000A8084 = {
+						TestTargetID = 374D792517D822CF00FAE80C;
+					};
+				};
 			};
 			buildConfigurationList = 374D792117D822CF00FAE80C /* Build configuration list for PBXProject "Tubuyagi" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -613,6 +692,7 @@
 			projectRoot = "";
 			targets = (
 				374D792517D822CF00FAE80C /* Tubuyagi */,
+				4AE36E5C18D2206F000A8084 /* Tubuyagi Tests */,
 			);
 		};
 /* End PBXProject section */
@@ -698,6 +778,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		4AE36E5B18D2206F000A8084 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4AE36E6718D2206F000A8084 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -738,7 +826,24 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		4AE36E5918D2206F000A8084 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4AE36E6918D2206F000A8084 /* Tubuyagi_Tests.m in Sources */,
+				4AE36E7118D22202000A8084 /* TweetsManagerTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		4AE36E6C18D2206F000A8084 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 374D792517D822CF00FAE80C /* Tubuyagi */;
+			targetProxy = 4AE36E6B18D2206F000A8084 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		374D793217D822D000FAE80C /* InfoPlist.strings */ = {
@@ -755,6 +860,14 @@
 				374D794517D822D000FAE80C /* en */,
 			);
 			name = ViewController.xib;
+			sourceTree = "<group>";
+		};
+		4AE36E6518D2206F000A8084 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				4AE36E6618D2206F000A8084 /* en */,
+			);
+			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -850,6 +963,67 @@
 			};
 			name = Release;
 		};
+		4AE36E6D18D22070000A8084 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Tubuyagi.app/Tubuyagi";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Tubuyagi Tests/Tubuyagi Tests-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				INFOPLIST_FILE = "Tubuyagi Tests/Tubuyagi Tests-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Debug;
+		};
+		4AE36E6E18D22070000A8084 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Tubuyagi.app/Tubuyagi";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				ENABLE_NS_ASSERTIONS = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Tubuyagi Tests/Tubuyagi Tests-Prefix.pch";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				INFOPLIST_FILE = "Tubuyagi Tests/Tubuyagi Tests-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -870,6 +1044,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		4AE36E6F18D22070000A8084 /* Build configuration list for PBXNativeTarget "Tubuyagi Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4AE36E6D18D22070000A8084 /* Debug */,
+				4AE36E6E18D22070000A8084 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 	};
