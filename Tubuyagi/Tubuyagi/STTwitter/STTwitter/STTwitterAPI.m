@@ -170,8 +170,12 @@ static NSDateFormatter *dateFormatter = nil;
     return dateFormatter;
 }
 
+- (void)postTokenRequest:(void(^)(NSURL *url, NSString *oauthToken))successBlock forceLogin:(NSNumber *)forceLogin screenName:(NSString *)screenName oauthCallback:(NSString *)oauthCallback errorBlock:(void(^)(NSError *error))errorBlock {
+    [_oauth postTokenRequest:successBlock forceLogin:forceLogin screenName:screenName oauthCallback:oauthCallback errorBlock:errorBlock];
+}
+
 - (void)postTokenRequest:(void(^)(NSURL *url, NSString *oauthToken))successBlock oauthCallback:(NSString *)oauthCallback errorBlock:(void(^)(NSError *error))errorBlock {
-    [_oauth postTokenRequest:successBlock oauthCallback:oauthCallback errorBlock:errorBlock];
+    [_oauth postTokenRequest:successBlock forceLogin:nil screenName:nil oauthCallback:oauthCallback errorBlock:errorBlock];
 }
 
 - (void)postAccessTokenRequestWithPIN:(NSString *)pin
@@ -243,77 +247,85 @@ static NSDateFormatter *dateFormatter = nil;
 
 #pragma mark Generic methods to GET and POST
 
-- (NSString *)fetchResource:(NSString *)resource
-                 HTTPMethod:(NSString *)HTTPMethod
-              baseURLString:(NSString *)baseURLString
-                 parameters:(NSDictionary *)params
-              progressBlock:(void (^)(NSString *requestID, id response))progressBlock
-               successBlock:(void (^)(NSString *requestID, NSDictionary *requestHeaders, NSDictionary *responseHeaders, id response))successBlock
-                 errorBlock:(void (^)(NSString *requestID, NSDictionary *requestHeaders, NSDictionary *responseHeaders, NSError *error))errorBlock {
+- (id)fetchResource:(NSString *)resource
+         HTTPMethod:(NSString *)HTTPMethod
+      baseURLString:(NSString *)baseURLString
+         parameters:(NSDictionary *)params
+uploadProgressBlock:(void(^)(NSInteger bytesWritten, NSInteger totalBytesWritten, NSInteger totalBytesExpectedToWrite))uploadProgressBlock
+downloadProgressBlock:(void(^)(id request, id response))downloadProgressBlock
+       successBlock:(void(^)(id request, NSDictionary *requestHeaders, NSDictionary *responseHeaders, id response))successBlock
+         errorBlock:(void(^)(id request, NSDictionary *requestHeaders, NSDictionary *responseHeaders, NSError *error))errorBlock {
     
     return [_oauth fetchResource:resource
                       HTTPMethod:HTTPMethod
                    baseURLString:baseURLString
                       parameters:params
-                   progressBlock:progressBlock
+             uploadProgressBlock:uploadProgressBlock
+           downloadProgressBlock:downloadProgressBlock
                     successBlock:successBlock
                       errorBlock:errorBlock];
 }
 
-- (void)getResource:(NSString *)resource
-      baseURLString:(NSString *)baseURLString
-         parameters:(NSDictionary *)parameters
-      progressBlock:(void(^)(id json))progressBlock
-       successBlock:(void(^)(NSDictionary *rateLimits, id json))successBlock
-         errorBlock:(void(^)(NSError *error))errorBlock {
+- (id)getResource:(NSString *)resource
+    baseURLString:(NSString *)baseURLString
+       parameters:(NSDictionary *)parameters
+//uploadProgressBlock:(void(^)(NSInteger bytesWritten, NSInteger totalBytesWritten, NSInteger totalBytesExpectedToWrite))uploadProgressBlock
+downloadProgressBlock:(void(^)(id json))downloadProgressBlock
+     successBlock:(void(^)(NSDictionary *rateLimits, id json))successBlock
+       errorBlock:(void(^)(NSError *error))errorBlock {
     
-    [_oauth fetchResource:resource
-               HTTPMethod:@"GET"
-            baseURLString:baseURLString
-               parameters:parameters
-            progressBlock:^(NSString *requestID, id response) {
-                if(progressBlock) progressBlock(response);
-            } successBlock:^(NSString *requestID, NSDictionary *requestHeaders, NSDictionary *responseHeaders, id response) {
-                if(successBlock) successBlock(responseHeaders, response);
-            } errorBlock:^(NSString *requestID, NSDictionary *requestHeaders, NSDictionary *responseHeaders, NSError *error) {
-                if(errorBlock) errorBlock(error);
-            }];
+    return [_oauth fetchResource:resource
+                      HTTPMethod:@"GET"
+                   baseURLString:baseURLString
+                      parameters:parameters
+             uploadProgressBlock:nil
+           downloadProgressBlock:^(id request, id response) {
+               if(downloadProgressBlock) downloadProgressBlock(response);
+           } successBlock:^(id request, NSDictionary *requestHeaders, NSDictionary *responseHeaders, id response) {
+               if(successBlock) successBlock(responseHeaders, response);
+           } errorBlock:^(id request, NSDictionary *requestHeaders, NSDictionary *responseHeaders, NSError *error) {
+               if(errorBlock) errorBlock(error);
+           }];
+}
+
+- (id)postResource:(NSString *)resource
+     baseURLString:(NSString *)baseURLString
+        parameters:(NSDictionary *)parameters
+uploadProgressBlock:(void(^)(NSInteger bytesWritten, NSInteger totalBytesWritten, NSInteger totalBytesExpectedToWrite))uploadProgressBlock
+downloadProgressBlock:(void(^)(id json))downloadProgressBlock
+      successBlock:(void(^)(NSDictionary *rateLimits, id response))successBlock
+        errorBlock:(void(^)(NSError *error))errorBlock {
+    
+    return [_oauth fetchResource:resource
+                      HTTPMethod:@"POST"
+                   baseURLString:baseURLString
+                      parameters:parameters
+             uploadProgressBlock:uploadProgressBlock
+           downloadProgressBlock:^(id request, id response) {
+               if(downloadProgressBlock) downloadProgressBlock(response);
+           } successBlock:^(id request, NSDictionary *requestHeaders, NSDictionary *responseHeaders, id response) {
+               if(successBlock) successBlock(responseHeaders, response);
+           } errorBlock:^(id request, NSDictionary *requestHeaders, NSDictionary *responseHeaders, NSError *error) {
+               if(errorBlock) errorBlock(error);
+           }];
 }
 
 - (void)postResource:(NSString *)resource
        baseURLString:(NSString *)baseURLString
           parameters:(NSDictionary *)parameters
-       progressBlock:(void(^)(id json))progressBlock
-        successBlock:(void(^)(NSDictionary *rateLimits, id response))successBlock
+ uploadProgressBlock:(void(^)(NSInteger bytesWritten, NSInteger totalBytesWritten, NSInteger totalBytesExpectedToWrite))uploadProgressBlock
+downloadProgressBlock:(void(^)(id json))downloadProgressBlock
           errorBlock:(void(^)(NSError *error))errorBlock {
     
     [_oauth fetchResource:resource
                HTTPMethod:@"POST"
             baseURLString:baseURLString
                parameters:parameters
-            progressBlock:^(NSString *requestID, id response) {
-                if(progressBlock) progressBlock(response);
-            } successBlock:^(NSString *requestID, NSDictionary *requestHeaders, NSDictionary *responseHeaders, id response) {
-                if(successBlock) successBlock(responseHeaders, response);
-            } errorBlock:^(NSString *requestID, NSDictionary *requestHeaders, NSDictionary *responseHeaders, NSError *error) {
-                if(errorBlock) errorBlock(error);
-            }];
-}
-
-- (void)postResource:(NSString *)resource
-       baseURLString:(NSString *)baseURLString
-          parameters:(NSDictionary *)parameters
-       progressBlock:(void(^)(id json))progressBlock
-          errorBlock:(void(^)(NSError *error))errorBlock {
-    
-    [_oauth fetchResource:resource
-               HTTPMethod:@"POST"
-            baseURLString:baseURLString
-               parameters:parameters
-            progressBlock:^(NSString *requestID, id response) {
-                if(progressBlock) progressBlock(response);
-            } successBlock:nil
-               errorBlock:^(NSString *requestID, NSDictionary *requestHeaders, NSDictionary *responseHeaders, NSError *error) {
+      uploadProgressBlock:uploadProgressBlock
+    downloadProgressBlock:^(id request, id response) {
+        if(downloadProgressBlock) downloadProgressBlock(response);
+    } successBlock:nil
+               errorBlock:^(id request, NSDictionary *requestHeaders, NSDictionary *responseHeaders, NSError *error) {
                    errorBlock(error);
                }];
 }
@@ -321,17 +333,18 @@ static NSDateFormatter *dateFormatter = nil;
 - (void)getResource:(NSString *)resource
       baseURLString:(NSString *)baseURLString
          parameters:(NSDictionary *)parameters
-      progressBlock:(void(^)(id json))progressBlock
+downloadProgressBlock:(void(^)(id json))downloadProgressBlock
          errorBlock:(void(^)(NSError *error))errorBlock {
     
     [_oauth fetchResource:resource
                HTTPMethod:@"GET"
             baseURLString:baseURLString
                parameters:parameters
-            progressBlock:^(NSString *requestID, id response) {
-                if(progressBlock) progressBlock(response);
-            } successBlock:nil
-               errorBlock:^(NSString *requestID, NSDictionary *requestHeaders, NSDictionary *responseHeaders, NSError *error) {
+      uploadProgressBlock:nil
+    downloadProgressBlock:^(id request, id response) {
+        if(downloadProgressBlock) downloadProgressBlock(response);
+    } successBlock:nil
+               errorBlock:^(id request, NSDictionary *requestHeaders, NSDictionary *responseHeaders, NSError *error) {
                    errorBlock(error);
                }];
 }
@@ -345,11 +358,12 @@ static NSDateFormatter *dateFormatter = nil;
     [self getResource:resource
         baseURLString:kBaseURLStringAPI
            parameters:parameters
-        progressBlock:progressBlock
+downloadProgressBlock:progressBlock
          successBlock:successBlock
            errorBlock:errorBlock];
 }
 
+// convenience
 - (void)getAPIResource:(NSString *)resource
             parameters:(NSDictionary *)parameters
           successBlock:(void(^)(NSDictionary *rateLimits, id json))successBlock
@@ -358,13 +372,14 @@ static NSDateFormatter *dateFormatter = nil;
     [self getResource:resource
         baseURLString:kBaseURLStringAPI
            parameters:parameters
-        progressBlock:nil
+downloadProgressBlock:nil
          successBlock:successBlock
            errorBlock:errorBlock];
 }
 
 - (void)postAPIResource:(NSString *)resource
              parameters:(NSDictionary *)parameters
+    uploadProgressBlock:(void(^)(NSInteger bytesWritten, NSInteger totalBytesWritten, NSInteger totalBytesExpectedToWrite))uploadProgressBlock
           progressBlock:(void(^)(id json))progressBlock
            successBlock:(void(^)(NSDictionary *rateLimits, id json))successBlock
              errorBlock:(void(^)(NSError *error))errorBlock {
@@ -372,11 +387,13 @@ static NSDateFormatter *dateFormatter = nil;
     [self postResource:resource
          baseURLString:kBaseURLStringAPI
             parameters:parameters
-         progressBlock:progressBlock
+   uploadProgressBlock:uploadProgressBlock
+ downloadProgressBlock:progressBlock
           successBlock:successBlock
             errorBlock:errorBlock];
 }
 
+// convenience
 - (void)postAPIResource:(NSString *)resource
              parameters:(NSDictionary *)parameters
            successBlock:(void(^)(NSDictionary *rateLimits, id json))successBlock
@@ -385,7 +402,8 @@ static NSDateFormatter *dateFormatter = nil;
     [self postResource:resource
          baseURLString:kBaseURLStringAPI
             parameters:parameters
-         progressBlock:nil
+   uploadProgressBlock:nil
+ downloadProgressBlock:nil
           successBlock:successBlock
             errorBlock:errorBlock];
 }
@@ -425,9 +443,9 @@ static NSDateFormatter *dateFormatter = nil;
 
              errorBlock:(void(^)(NSError *error))errorBlock {
     
-	[self getUserInformationFor:screenName
-				   successBlock:^(NSDictionary *response) {
-					   NSString *imageURLString = [response objectForKey:@"profile_image_url"];
+    [self getUserInformationFor:screenName
+                   successBlock:^(NSDictionary *response) {
+                       NSString *imageURLString = [response objectForKey:@"profile_image_url"];
                        
                        __block STHTTPRequest *r = [STHTTPRequest requestWithURLString:imageURLString];
                        __weak STHTTPRequest *wr = r;
@@ -447,9 +465,9 @@ static NSDateFormatter *dateFormatter = nil;
                        r.errorBlock = ^(NSError *error) {
                            errorBlock(error);
                        };
-				   } errorBlock:^(NSError *error) {
-					   errorBlock(error);
-				   }];
+                   } errorBlock:^(NSError *error) {
+                       errorBlock(error);
+                   }];
 }
 
 #pragma mark Timelines
@@ -480,9 +498,9 @@ static NSDateFormatter *dateFormatter = nil;
 }
 
 - (void)getMentionsTimelineSinceID:(NSString *)sinceID
-							 count:(NSUInteger)count
-					  successBlock:(void(^)(NSArray *statuses))successBlock
-						errorBlock:(void(^)(NSError *error))errorBlock {
+                             count:(NSUInteger)count
+                      successBlock:(void(^)(NSArray *statuses))successBlock
+                        errorBlock:(void(^)(NSError *error))errorBlock {
     
     [self getStatusesMentionTimelineWithCount:[@(count) description]
                                       sinceID:nil
@@ -542,7 +560,7 @@ static NSDateFormatter *dateFormatter = nil;
                               errorBlock:(void(^)(NSError *error))errorBlock {
     
     NSMutableDictionary *md = [NSMutableDictionary dictionary];
-        
+    
     if(count) md[@"count"] = count;
     if(sinceID) md[@"since_id"] = sinceID;
     if(maxID) md[@"max_id"] = maxID;
@@ -619,7 +637,7 @@ static NSDateFormatter *dateFormatter = nil;
 - (void)getUserTimelineWithScreenName:(NSString *)screenName
                               sinceID:(NSString *)sinceID
                                 maxID:(NSString *)maxID
-								count:(NSUInteger)count
+                                count:(NSUInteger)count
                          successBlock:(void(^)(NSArray *statuses))successBlock
                            errorBlock:(void(^)(NSError *error))errorBlock {
     
@@ -640,11 +658,11 @@ static NSDateFormatter *dateFormatter = nil;
 }
 
 - (void)getUserTimelineWithScreenName:(NSString *)screenName
-								count:(NSUInteger)count
+                                count:(NSUInteger)count
                          successBlock:(void(^)(NSArray *statuses))successBlock
                            errorBlock:(void(^)(NSError *error))errorBlock {
     
-	[self getUserTimelineWithScreenName:screenName
+    [self getUserTimelineWithScreenName:screenName
                                 sinceID:nil
                                   maxID:nil
                                   count:count
@@ -800,7 +818,7 @@ static NSDateFormatter *dateFormatter = nil;
               errorBlock:(void(^)(NSError *error))errorBlock {
     
     if(status == nil) {
-        NSError *error = [NSError errorWithDomain:NSStringFromClass([self class]) code:0 userInfo:@{NSLocalizedDescriptionKey : @"cannot post empty status"}];
+        NSError *error = [NSError errorWithDomain:NSStringFromClass([self class]) code:STTwitterAPICannotPostEmptyStatus userInfo:@{NSLocalizedDescriptionKey : @"cannot post empty status"}];
         errorBlock(error);
         return;
     }
@@ -835,6 +853,7 @@ static NSDateFormatter *dateFormatter = nil;
                longitude:(NSString *)longitude
                  placeID:(NSString *)placeID
       displayCoordinates:(NSNumber *)displayCoordinates
+     uploadProgressBlock:(void(^)(NSInteger bytesWritten, NSInteger totalBytesWritten, NSInteger totalBytesExpectedToWrite))uploadProgressBlock
             successBlock:(void(^)(NSDictionary *status))successBlock
               errorBlock:(void(^)(NSError *error))errorBlock {
     
@@ -852,11 +871,14 @@ static NSDateFormatter *dateFormatter = nil;
     md[@"media[]"] = [mediaDataArray objectAtIndex:0];
     md[kSTPOSTDataKey] = @"media[]";
     
-    [self postAPIResource:@"statuses/update_with_media.json" parameters:md successBlock:^(NSDictionary *rateLimits, id response) {
-        successBlock(response);
-    } errorBlock:^(NSError *error) {
-        errorBlock(error);
-    }];
+    [self postResource:@"statuses/update_with_media.json"
+         baseURLString:kBaseURLStringAPI
+            parameters:md
+   uploadProgressBlock:uploadProgressBlock
+ downloadProgressBlock:nil
+          successBlock:^(NSDictionary *rateLimits, id response) {
+              successBlock(response);
+          } errorBlock:errorBlock];
 }
 
 - (void)postStatusUpdate:(NSString *)status
@@ -865,13 +887,14 @@ static NSDateFormatter *dateFormatter = nil;
                  placeID:(NSString *)placeID
                 latitude:(NSString *)latitude
                longitude:(NSString *)longitude
+     uploadProgressBlock:(void(^)(NSInteger bytesWritten, NSInteger totalBytesWritten, NSInteger totalBytesExpectedToWrite))uploadProgressBlock
             successBlock:(void(^)(NSDictionary *status))successBlock
               errorBlock:(void(^)(NSError *error))errorBlock {
     
     NSData *data = [NSData dataWithContentsOfURL:mediaURL];
     
     if(data == nil) {
-        NSError *error = [NSError errorWithDomain:NSStringFromClass([self class]) code:0 userInfo:@{NSLocalizedDescriptionKey : @"data is nil"}];
+        NSError *error = [NSError errorWithDomain:NSStringFromClass([self class]) code:STTwitterAPIMediaDataIsEmpty userInfo:@{NSLocalizedDescriptionKey : @"data is nil"}];
         errorBlock(error);
         return;
     }
@@ -884,6 +907,7 @@ static NSDateFormatter *dateFormatter = nil;
                  longitude:longitude
                    placeID:placeID
         displayCoordinates:@(YES)
+       uploadProgressBlock:uploadProgressBlock
               successBlock:^(NSDictionary *status) {
                   successBlock(status);
               } errorBlock:^(NSError *error) {
@@ -908,10 +932,12 @@ static NSDateFormatter *dateFormatter = nil;
     NSParameterAssert(statusID);
     NSParameterAssert(urlString);
     
+#if DEBUG
     if(align) {
         NSArray *validValues = @[@"left", @"right", @"center", @"none"];
         NSAssert([validValues containsObject: align], @"");
     }
+#endif
     
     NSMutableDictionary *md = [NSMutableDictionary dictionary];
     md[@"id"] = statusID;
@@ -1076,8 +1102,8 @@ static NSDateFormatter *dateFormatter = nil;
                            maxID:(NSString *)maxID // eg. "54321"
                  includeEntities:(NSNumber *)includeEntities
                         callback:(NSString *)callback // eg. "processTweets"
-					successBlock:(void(^)(NSDictionary *searchMetadata, NSArray *statuses))successBlock
-					  errorBlock:(void(^)(NSError *error))errorBlock {
+                    successBlock:(void(^)(NSDictionary *searchMetadata, NSArray *statuses))successBlock
+                      errorBlock:(void(^)(NSError *error))errorBlock {
     
     NSMutableDictionary *md = [NSMutableDictionary dictionary];
     
@@ -1108,8 +1134,8 @@ static NSDateFormatter *dateFormatter = nil;
 }
 
 - (void)getSearchTweetsWithQuery:(NSString *)q
-					successBlock:(void(^)(NSDictionary *searchMetadata, NSArray *statuses))successBlock
-					  errorBlock:(void(^)(NSError *error))errorBlock {
+                    successBlock:(void(^)(NSDictionary *searchMetadata, NSArray *statuses))successBlock
+                      errorBlock:(void(^)(NSError *error))errorBlock {
     
     [self getSearchTweetsWithQuery:q
                            geocode:nil
@@ -1138,14 +1164,14 @@ static NSDateFormatter *dateFormatter = nil;
 
 // POST statuses/filter
 
-- (void)postStatusesFilterUserIDs:(NSArray *)userIDs
-                  keywordsToTrack:(NSArray *)keywordsToTrack
-            locationBoundingBoxes:(NSArray *)locationBoundingBoxes
-                        delimited:(NSNumber *)delimited
-                    stallWarnings:(NSNumber *)stallWarnings
-                    progressBlock:(void(^)(id response))progressBlock
-                stallWarningBlock:(void(^)(NSString *code, NSString *message, NSUInteger percentFull))stallWarningBlock
-                       errorBlock:(void(^)(NSError *error))errorBlock {
+- (id)postStatusesFilterUserIDs:(NSArray *)userIDs
+                keywordsToTrack:(NSArray *)keywordsToTrack
+          locationBoundingBoxes:(NSArray *)locationBoundingBoxes
+                      delimited:(NSNumber *)delimited
+                  stallWarnings:(NSNumber *)stallWarnings
+                  progressBlock:(void(^)(NSDictionary *tweet))progressBlock
+              stallWarningBlock:(void(^)(NSString *code, NSString *message, NSUInteger percentFull))stallWarningBlock
+                     errorBlock:(void(^)(NSError *error))errorBlock {
     
     NSString *follow = [userIDs componentsJoinedByString:@","];
     NSString *keywords = [keywordsToTrack componentsJoinedByString:@","];
@@ -1161,123 +1187,122 @@ static NSDateFormatter *dateFormatter = nil;
     if([keywords length]) md[@"track"] = keywords;
     if([locations length]) md[@"locations"] = locations;
     
-    [self postResource:@"statuses/filter.json"
-         baseURLString:kBaseURLStringStream
-            parameters:md
-         progressBlock:^(id json) {
-             
-             NSDictionary *stallWarning = [[self class] stallWarningDictionaryFromJSON:json];
-             if(stallWarning && stallWarningBlock) {
-                 stallWarningBlock([stallWarning valueForKey:@"code"],
-                                   [stallWarning valueForKey:@"message"],
-                                   [[stallWarning valueForKey:@"percent_full"] integerValue]);
-             } else {
-                 progressBlock(json);
-             }
-             
-         } successBlock:^(NSDictionary *rateLimits, id response) {
-             // reaching successBlock for a stream request is an error
-             errorBlock(response);
-         } errorBlock:^(NSError *error) {
-             errorBlock(error);
-         }];
+    return [self postResource:@"statuses/filter.json"
+                baseURLString:kBaseURLStringStream
+                   parameters:md
+          uploadProgressBlock:nil
+        downloadProgressBlock:^(id json) {
+            
+            NSDictionary *stallWarning = [[self class] stallWarningDictionaryFromJSON:json];
+            if(stallWarning && stallWarningBlock) {
+                stallWarningBlock([stallWarning valueForKey:@"code"],
+                                  [stallWarning valueForKey:@"message"],
+                                  [[stallWarning valueForKey:@"percent_full"] integerValue]);
+            } else {
+                progressBlock(json);
+            }
+            
+        } successBlock:^(NSDictionary *rateLimits, id response) {
+            progressBlock(response);
+        } errorBlock:^(NSError *error) {
+            errorBlock(error);
+        }];
 }
 
 // convenience
-- (void)postStatusesFilterKeyword:(NSString *)keyword
-                    progressBlock:(void(^)(id response))progressBlock
-                       errorBlock:(void(^)(NSError *error))errorBlock {
+- (id)postStatusesFilterKeyword:(NSString *)keyword
+                  progressBlock:(void(^)(NSDictionary *tweet))progressBlock
+                     errorBlock:(void(^)(NSError *error))errorBlock {
     
     NSParameterAssert(keyword);
     
-    [self postStatusesFilterUserIDs:nil
-                    keywordsToTrack:@[keyword]
-              locationBoundingBoxes:nil
-                          delimited:nil
-                      stallWarnings:nil
-                      progressBlock:progressBlock
-                  stallWarningBlock:nil
-                         errorBlock:errorBlock];
+    return [self postStatusesFilterUserIDs:nil
+                           keywordsToTrack:@[keyword]
+                     locationBoundingBoxes:nil
+                                 delimited:nil
+                             stallWarnings:nil
+                             progressBlock:progressBlock
+                         stallWarningBlock:nil
+                                errorBlock:errorBlock];
 }
 
 // GET statuses/sample
-- (void)getStatusesSampleDelimited:(NSNumber *)delimited
+- (id)getStatusesSampleDelimited:(NSNumber *)delimited
+                   stallWarnings:(NSNumber *)stallWarnings
+                   progressBlock:(void(^)(id response))progressBlock
+               stallWarningBlock:(void(^)(NSString *code, NSString *message, NSUInteger percentFull))stallWarningBlock
+                      errorBlock:(void(^)(NSError *error))errorBlock {
+    
+    NSMutableDictionary *md = [NSMutableDictionary dictionary];
+    if(delimited) md[@"delimited"] = [delimited boolValue] ? @"1" : @"0";
+    if(stallWarnings) md[@"stall_warnings"] = [stallWarnings boolValue] ? @"1" : @"0";
+    
+    return [self getResource:@"statuses/sample.json"
+               baseURLString:kBaseURLStringStream
+                  parameters:md
+       downloadProgressBlock:^(id json) {
+           
+           NSDictionary *stallWarning = [[self class] stallWarningDictionaryFromJSON:json];
+           if(stallWarning && stallWarningBlock) {
+               stallWarningBlock([stallWarning valueForKey:@"code"],
+                                 [stallWarning valueForKey:@"message"],
+                                 [[stallWarning valueForKey:@"percent_full"] integerValue]);
+           } else {
+               progressBlock(json);
+           }
+           
+       } successBlock:^(NSDictionary *rateLimits, id json) {
+           // reaching successBlock for a stream request is an error
+           errorBlock(json);
+       } errorBlock:^(NSError *error) {
+           errorBlock(error);
+       }];
+}
+
+// GET statuses/firehose
+- (id)getStatusesFirehoseWithCount:(NSString *)count
+                         delimited:(NSNumber *)delimited
                      stallWarnings:(NSNumber *)stallWarnings
                      progressBlock:(void(^)(id response))progressBlock
                  stallWarningBlock:(void(^)(NSString *code, NSString *message, NSUInteger percentFull))stallWarningBlock
                         errorBlock:(void(^)(NSError *error))errorBlock {
     
     NSMutableDictionary *md = [NSMutableDictionary dictionary];
-    if(delimited) md[@"delimited"] = [delimited boolValue] ? @"1" : @"0";
-    if(stallWarnings) md[@"stall_warnings"] = [stallWarnings boolValue] ? @"1" : @"0";
-    
-    [self getResource:@"statuses/sample.json"
-        baseURLString:kBaseURLStringStream
-           parameters:md
-        progressBlock:^(id json) {
-            
-            NSDictionary *stallWarning = [[self class] stallWarningDictionaryFromJSON:json];
-            if(stallWarning && stallWarningBlock) {
-                stallWarningBlock([stallWarning valueForKey:@"code"],
-                                  [stallWarning valueForKey:@"message"],
-                                  [[stallWarning valueForKey:@"percent_full"] integerValue]);
-            } else {
-                progressBlock(json);
-            }
-            
-        } successBlock:^(NSDictionary *rateLimits, id json) {
-            // reaching successBlock for a stream request is an error
-            errorBlock(json);
-        } errorBlock:^(NSError *error) {
-            errorBlock(error);
-        }];
-}
-
-// GET statuses/firehose
-- (void)getStatusesFirehoseWithCount:(NSString *)count
-                           delimited:(NSNumber *)delimited
-                       stallWarnings:(NSNumber *)stallWarnings
-                       progressBlock:(void(^)(id response))progressBlock
-                   stallWarningBlock:(void(^)(NSString *code, NSString *message, NSUInteger percentFull))stallWarningBlock
-                          errorBlock:(void(^)(NSError *error))errorBlock {
-    
-    NSMutableDictionary *md = [NSMutableDictionary dictionary];
     if(count) md[@"count"] = count;
     if(delimited) md[@"delimited"] = [delimited boolValue] ? @"1" : @"0";
     if(stallWarnings) md[@"stall_warnings"] = [stallWarnings boolValue] ? @"1" : @"0";
     
-    [self getResource:@"statuses/firehose.json"
-        baseURLString:kBaseURLStringStream
-           parameters:md
-        progressBlock:^(id json) {
-            
-            NSDictionary *stallWarning = [[self class] stallWarningDictionaryFromJSON:json];
-            if(stallWarning && stallWarningBlock) {
-                stallWarningBlock([stallWarning valueForKey:@"code"],
-                                  [stallWarning valueForKey:@"message"],
-                                  [[stallWarning valueForKey:@"percent_full"] integerValue]);
-            } else {
-                progressBlock(json);
-            }
-            
-        } successBlock:^(NSDictionary *rateLimits, id json) {
-            // reaching successBlock for a stream request is an error
-            errorBlock(json);
-        } errorBlock:^(NSError *error) {
-            errorBlock(error);
-        }];
+    return [self getResource:@"statuses/firehose.json"
+               baseURLString:kBaseURLStringStream
+                  parameters:md
+       downloadProgressBlock:^(id json) {
+           
+           NSDictionary *stallWarning = [[self class] stallWarningDictionaryFromJSON:json];
+           if(stallWarning && stallWarningBlock) {
+               stallWarningBlock([stallWarning valueForKey:@"code"],
+                                 [stallWarning valueForKey:@"message"],
+                                 [[stallWarning valueForKey:@"percent_full"] integerValue]);
+           } else {
+               progressBlock(json);
+           }
+           
+       } successBlock:^(NSDictionary *rateLimits, id json) {
+           progressBlock(json);
+       } errorBlock:^(NSError *error) {
+           errorBlock(error);
+       }];
 }
 
 // GET user
-- (void)getUserStreamDelimited:(NSNumber *)delimited
-                 stallWarnings:(NSNumber *)stallWarnings
+- (id)getUserStreamDelimited:(NSNumber *)delimited
+               stallWarnings:(NSNumber *)stallWarnings
 includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccounts
-                includeReplies:(NSNumber *)includeReplies
-               keywordsToTrack:(NSArray *)keywordsToTrack
-         locationBoundingBoxes:(NSArray *)locationBoundingBoxes
-                 progressBlock:(void(^)(id response))progressBlock
-             stallWarningBlock:(void(^)(NSString *code, NSString *message, NSUInteger percentFull))stallWarningBlock
-                    errorBlock:(void(^)(NSError *error))errorBlock {
+              includeReplies:(NSNumber *)includeReplies
+             keywordsToTrack:(NSArray *)keywordsToTrack
+       locationBoundingBoxes:(NSArray *)locationBoundingBoxes
+               progressBlock:(void(^)(id response))progressBlock
+           stallWarningBlock:(void(^)(NSString *code, NSString *message, NSUInteger percentFull))stallWarningBlock
+                  errorBlock:(void(^)(NSError *error))errorBlock {
     
     NSMutableDictionary *md = [NSMutableDictionary dictionary];
     md[@"stringify_friend_ids"] = @"1";
@@ -1292,37 +1317,36 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
     if([keywords length]) md[@"keywords"] = keywords;
     if([locations length]) md[@"locations"] = locations;
     
-    [self getResource:@"user.json"
-        baseURLString:kBaseURLStringUserStream
-           parameters:md
-        progressBlock:^(id json) {
-            
-            NSDictionary *stallWarning = [[self class] stallWarningDictionaryFromJSON:json];
-            if(stallWarning && stallWarningBlock) {
-                stallWarningBlock([stallWarning valueForKey:@"code"],
-                                  [stallWarning valueForKey:@"message"],
-                                  [[stallWarning valueForKey:@"percent_full"] integerValue]);
-            } else {
-                progressBlock(json);
-            }
-            
-        } successBlock:^(NSDictionary *rateLimits, id json) {
-            // reaching successBlock for a stream request is an error
-            errorBlock(json);
-        } errorBlock:^(NSError *error) {
-            errorBlock(error);
-        }];
+    return [self getResource:@"user.json"
+               baseURLString:kBaseURLStringUserStream
+                  parameters:md
+       downloadProgressBlock:^(id json) {
+           
+           NSDictionary *stallWarning = [[self class] stallWarningDictionaryFromJSON:json];
+           if(stallWarning && stallWarningBlock) {
+               stallWarningBlock([stallWarning valueForKey:@"code"],
+                                 [stallWarning valueForKey:@"message"],
+                                 [[stallWarning valueForKey:@"percent_full"] integerValue]);
+           } else {
+               progressBlock(json);
+           }
+           
+       } successBlock:^(NSDictionary *rateLimits, id json) {
+           progressBlock(json);
+       } errorBlock:^(NSError *error) {
+           errorBlock(error);
+       }];
 }
 
 // GET site
-- (void)getSiteStreamForUserIDs:(NSArray *)userIDs
-                      delimited:(NSNumber *)delimited
-                  stallWarnings:(NSNumber *)stallWarnings
-         restrictToUserMessages:(NSNumber *)restrictToUserMessages
-                 includeReplies:(NSNumber *)includeReplies
-                  progressBlock:(void(^)(id response))progressBlock
-              stallWarningBlock:(void(^)(NSString *code, NSString *message, NSUInteger percentFull))stallWarningBlock
-                     errorBlock:(void(^)(NSError *error))errorBlock {
+- (id)getSiteStreamForUserIDs:(NSArray *)userIDs
+                    delimited:(NSNumber *)delimited
+                stallWarnings:(NSNumber *)stallWarnings
+       restrictToUserMessages:(NSNumber *)restrictToUserMessages
+               includeReplies:(NSNumber *)includeReplies
+                progressBlock:(void(^)(id response))progressBlock
+            stallWarningBlock:(void(^)(NSString *code, NSString *message, NSUInteger percentFull))stallWarningBlock
+                   errorBlock:(void(^)(NSError *error))errorBlock {
     
     NSMutableDictionary *md = [NSMutableDictionary dictionary];
     md[@"stringify_friend_ids"] = @"1";
@@ -1334,26 +1358,25 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
     NSString *follow = [userIDs componentsJoinedByString:@","];
     if([follow length]) md[@"follow"] = follow;
     
-    [self getResource:@"site.json"
-        baseURLString:kBaseURLStringSiteStream
-           parameters:md
-        progressBlock:^(id json) {
-            
-            NSDictionary *stallWarning = [[self class] stallWarningDictionaryFromJSON:json];
-            if(stallWarning && stallWarningBlock) {
-                stallWarningBlock([stallWarning valueForKey:@"code"],
-                                  [stallWarning valueForKey:@"message"],
-                                  [[stallWarning valueForKey:@"percent_full"] integerValue]);
-            } else {
-                progressBlock(json);
-            }
-            
-        } successBlock:^(NSDictionary *rateLimits, id json) {
-            // reaching successBlock for a stream request is an error
-            errorBlock(json);
-        } errorBlock:^(NSError *error) {
-            errorBlock(error);
-        }];
+    return [self getResource:@"site.json"
+               baseURLString:kBaseURLStringSiteStream
+                  parameters:md
+       downloadProgressBlock:^(id json) {
+           
+           NSDictionary *stallWarning = [[self class] stallWarningDictionaryFromJSON:json];
+           if(stallWarning && stallWarningBlock) {
+               stallWarningBlock([stallWarning valueForKey:@"code"],
+                                 [stallWarning valueForKey:@"message"],
+                                 [[stallWarning valueForKey:@"percent_full"] integerValue]);
+           } else {
+               progressBlock(json);
+           }
+           
+       } successBlock:^(NSDictionary *rateLimits, id json) {
+           progressBlock(json);
+       } errorBlock:^(NSError *error) {
+           errorBlock(error);
+       }];
 }
 
 #pragma mark Direct Messages
@@ -1382,9 +1405,9 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
 
 // convenience
 - (void)getDirectMessagesSinceID:(NSString *)sinceID
-						   count:(NSUInteger)count
-					successBlock:(void(^)(NSArray *messages))successBlock
-					  errorBlock:(void(^)(NSError *error))errorBlock {
+                           count:(NSUInteger)count
+                    successBlock:(void(^)(NSArray *messages))successBlock
+                      errorBlock:(void(^)(NSError *error))errorBlock {
     
     NSString *countString = count > 0 ? [@(count) description] : nil;
     
@@ -1438,10 +1461,10 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
 
 - (void)postDestroyDirectMessageWithID:(NSString *)messageID
                        includeEntities:(NSNumber *)includeEntities
-						  successBlock:(void(^)(NSDictionary *message))successBlock
-							errorBlock:(void(^)(NSError *error))errorBlock {
+                          successBlock:(void(^)(NSDictionary *message))successBlock
+                            errorBlock:(void(^)(NSError *error))errorBlock {
     
-	NSMutableDictionary *md = [NSMutableDictionary dictionary];
+    NSMutableDictionary *md = [NSMutableDictionary dictionary];
     md[@"id"] = messageID;
     if(includeEntities) md[@"include_entities"] = [includeEntities boolValue] ? @"1" : @"0";
     
@@ -1456,7 +1479,7 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
 					   to:(NSString *)screenName
              successBlock:(void(^)(NSDictionary *message))successBlock
                errorBlock:(void(^)(NSError *error))errorBlock {
-	NSMutableDictionary *md = [NSMutableDictionary dictionaryWithObject:status forKey:@"text"];
+    NSMutableDictionary *md = [NSMutableDictionary dictionaryWithObject:status forKey:@"text"];
     [md setObject:screenName forKey:@"screen_name"];
     
     [self postAPIResource:@"direct_messages/new.json" parameters:md successBlock:^(NSDictionary *rateLimits, id response) {
@@ -1516,7 +1539,7 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
 }
 
 - (void)getFriendsIDsForScreenName:(NSString *)screenName
-				      successBlock:(void(^)(NSArray *friends))successBlock
+                      successBlock:(void(^)(NSArray *friends))successBlock
                         errorBlock:(void(^)(NSError *error))errorBlock {
     
     [self getFriendsIDsForUserID:nil
@@ -1564,7 +1587,7 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
 }
 
 - (void)getFollowersIDsForScreenName:(NSString *)screenName
-					    successBlock:(void(^)(NSArray *followers))successBlock
+                        successBlock:(void(^)(NSArray *followers))successBlock
                           errorBlock:(void(^)(NSError *error))errorBlock {
     
     [self getFollowersIDsForUserID:nil
@@ -1666,8 +1689,8 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
 }
 
 - (void)postFollow:(NSString *)screenName
-	  successBlock:(void(^)(NSDictionary *user))successBlock
-		errorBlock:(void(^)(NSError *error))errorBlock {
+      successBlock:(void(^)(NSDictionary *user))successBlock
+        errorBlock:(void(^)(NSError *error))errorBlock {
     
     [self postFriendshipsCreateForScreenName:screenName orUserID:nil successBlock:^(NSDictionary *user) {
         successBlock(user);
@@ -1695,9 +1718,9 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
 }
 
 - (void)postUnfollow:(NSString *)screenName
-		successBlock:(void(^)(NSDictionary *user))successBlock
-		  errorBlock:(void(^)(NSError *error))errorBlock {
-	
+        successBlock:(void(^)(NSDictionary *user))successBlock
+          errorBlock:(void(^)(NSError *error))errorBlock {
+    
     [self postFriendshipsDestroyScreenName:screenName orUserID:nil successBlock:^(NSDictionary *user) {
         successBlock(user);
     } errorBlock:^(NSError *error) {
@@ -1816,7 +1839,7 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
 }
 
 - (void)getFriendsForScreenName:(NSString *)screenName
-				   successBlock:(void(^)(NSArray *friends))successBlock
+                   successBlock:(void(^)(NSArray *friends))successBlock
                      errorBlock:(void(^)(NSError *error))errorBlock {
     
     [self getFriendsListForUserID:nil
@@ -1867,10 +1890,10 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
 
 // convenience
 - (void)getFollowersForScreenName:(NSString *)screenName
-					 successBlock:(void(^)(NSArray *followers))successBlock
+                     successBlock:(void(^)(NSArray *followers))successBlock
                        errorBlock:(void(^)(NSError *error))errorBlock {
     
-	[self getFollowersListForUserID:nil
+    [self getFollowersListForUserID:nil
                        orScreenName:screenName
                              cursor:nil
                          skipStatus:nil
@@ -1993,7 +2016,7 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
 - (void)postUpdateProfile:(NSDictionary *)profileData
 			 successBlock:(void(^)(NSDictionary *myInfo))successBlock
 			   errorBlock:(void(^)(NSError *error))errorBlock {
-	[self postAPIResource:@"account/update_profile.json" parameters:profileData successBlock:^(NSDictionary *rateLimits, id response) {
+    [self postAPIResource:@"account/update_profile.json" parameters:profileData successBlock:^(NSDictionary *rateLimits, id response) {
         successBlock(response);
     } errorBlock:^(NSError *error) {
         errorBlock(error);
@@ -2222,8 +2245,8 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
 }
 
 - (void)getUserInformationFor:(NSString *)screenName
-				 successBlock:(void(^)(NSDictionary *user))successBlock
-				   errorBlock:(void(^)(NSError *error))errorBlock {
+                 successBlock:(void(^)(NSDictionary *user))successBlock
+                   errorBlock:(void(^)(NSError *error))errorBlock {
     
     [self getUsersShowForUserID:nil orScreenName:screenName includeEntities:nil successBlock:^(NSDictionary *user) {
         successBlock(user);
@@ -2244,7 +2267,7 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
     
     NSMutableDictionary *md = [NSMutableDictionary dictionary];
     
-    md[@"query"] = [query st_stringByAddingRFC3986PercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    md[@"q"] = [query st_stringByAddingRFC3986PercentEscapesUsingEncoding:NSUTF8StringEncoding];
     if(page) md[@"page"] = page;
     if(count) md[@"count"] = count;
     if(includeEntities) md[@"include_entities"] = [includeEntities boolValue] ? @"1" : @"0";
@@ -2636,13 +2659,13 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
 // POST lists/members/destroy
 
 - (void)postListsMembersDestroyForListID:(NSString *)listID
-                            successBlock:(void(^)())successBlock
+                            successBlock:(void(^)(id response))successBlock
                               errorBlock:(void(^)(NSError *error))errorBlock {
     
     NSDictionary *d = @{ @"list_id" : listID };
     
     [self postAPIResource:@"lists/members/destroy" parameters:d successBlock:^(NSDictionary *rateLimits, id response) {
-        successBlock();
+        successBlock(response);
     } errorBlock:^(NSError *error) {
         errorBlock(error);
     }];
@@ -2715,7 +2738,7 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
                             cursor:(NSString *)cursor
                    includeEntities:(NSNumber *)includeEntities
                         skipStatus:(NSNumber *)skipStatus
-                      successBlock:(void(^)())successBlock
+                      successBlock:(void(^)(NSArray *users, NSString *previousCursor, NSString *nextCursor))successBlock
                         errorBlock:(void(^)(NSError *error))errorBlock {
     
     NSParameterAssert(slug);
@@ -2747,7 +2770,7 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
                               cursor:(NSString *)cursor
                      includeEntities:(NSNumber *)includeEntities
                           skipStatus:(NSNumber *)skipStatus
-                        successBlock:(void(^)())successBlock
+                        successBlock:(void(^)(NSArray *users, NSString *previousCursor, NSString *nextCursor))successBlock
                           errorBlock:(void(^)(NSError *error))errorBlock {
     
     NSParameterAssert(listID);
@@ -2771,7 +2794,7 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
 // POST	lists/subscribers/create
 
 - (void)postListSubscribersCreateForListID:(NSString *)listID
-                              successBlock:(void(^)())successBlock
+                              successBlock:(void(^)(id response))successBlock
                                 errorBlock:(void(^)(NSError *error))errorBlock {
     
     NSParameterAssert(listID);
@@ -2780,7 +2803,7 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
     md[@"list_id"] = listID;
     
     [self postAPIResource:@"lists/subscribers/create.json" parameters:md successBlock:^(NSDictionary *rateLimits, id response) {
-        successBlock();
+        successBlock(response);
     } errorBlock:^(NSError *error) {
         errorBlock(error);
     }];
@@ -2789,7 +2812,7 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
 - (void)postListSubscribersCreateForSlug:(NSString *)slug
                          ownerScreenName:(NSString *)ownerScreenName
                                orOwnerID:(NSString *)ownerID
-                            successBlock:(void(^)())successBlock
+                            successBlock:(void(^)(id response))successBlock
                               errorBlock:(void(^)(NSError *error))errorBlock {
     
     NSParameterAssert(slug);
@@ -2801,7 +2824,7 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
     if(ownerID) md[@"owner_id"] = ownerID;
     
     [self postAPIResource:@"lists/subscribers/create.json" parameters:md successBlock:^(NSDictionary *rateLimits, id response) {
-        successBlock();
+        successBlock(response);
     } errorBlock:^(NSError *error) {
         errorBlock(error);
     }];
@@ -2814,7 +2837,7 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
                             orScreenName:(NSString *)screenName
                          includeEntities:(NSNumber *)includeEntities
                               skipStatus:(NSNumber *)skipStatus
-                            successBlock:(void(^)())successBlock
+                            successBlock:(void(^)(id response))successBlock
                               errorBlock:(void(^)(NSError *error))errorBlock {
     NSParameterAssert(listID);
     NSAssert((userID || screenName), @"missing userID or screenName");
@@ -2827,7 +2850,7 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
     if(skipStatus) md[@"skip_status"] = [skipStatus boolValue] ? @"1" : @"0";
     
     [self getAPIResource:@"lists/subscribers/show.json" parameters:md successBlock:^(NSDictionary *rateLimits, id response) {
-        successBlock();
+        successBlock(response);
     } errorBlock:^(NSError *error) {
         errorBlock(error);
     }];
@@ -2840,7 +2863,7 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
                           orScreenName:(NSString *)screenName
                        includeEntities:(NSNumber *)includeEntities
                             skipStatus:(NSNumber *)skipStatus
-                          successBlock:(void(^)())successBlock
+                          successBlock:(void(^)(id response))successBlock
                             errorBlock:(void(^)(NSError *error))errorBlock {
     NSParameterAssert(slug);
     NSAssert((ownerScreenName || ownerID), @"missing ownerScreenName or ownerID");
@@ -2856,7 +2879,7 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
     if(skipStatus) md[@"skip_status"] = [skipStatus boolValue] ? @"1" : @"0";
     
     [self getAPIResource:@"lists/subscribers/show.json" parameters:md successBlock:^(NSDictionary *rateLimits, id response) {
-        successBlock();
+        successBlock(response);
     } errorBlock:^(NSError *error) {
         errorBlock(error);
     }];
@@ -2865,7 +2888,7 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
 // POST	lists/subscribers/destroy
 
 - (void)postListSubscribersDestroyForListID:(NSString *)listID
-                               successBlock:(void(^)())successBlock
+                               successBlock:(void(^)(id response))successBlock
                                  errorBlock:(void(^)(NSError *error))errorBlock {
     
     NSParameterAssert(listID);
@@ -2874,7 +2897,7 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
     md[@"list_id"] = listID;
     
     [self postAPIResource:@"lists/subscribers/destroy.json" parameters:md successBlock:^(NSDictionary *rateLimits, id response) {
-        successBlock();
+        successBlock(response);
     } errorBlock:^(NSError *error) {
         errorBlock(error);
     }];
@@ -2883,7 +2906,7 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
 - (void)postListSubscribersDestroyForSlug:(NSString *)slug
                           ownerScreenName:(NSString *)ownerScreenName
                                 orOwnerID:(NSString *)ownerID
-                             successBlock:(void(^)())successBlock
+                             successBlock:(void(^)(id response))successBlock
                                errorBlock:(void(^)(NSError *error))errorBlock {
     
     NSParameterAssert(slug);
@@ -2895,7 +2918,7 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
     if(ownerID) md[@"owner_id"] = ownerID;
     
     [self postAPIResource:@"lists/subscribers/destroy.json" parameters:md successBlock:^(NSDictionary *rateLimits, id response) {
-        successBlock();
+        successBlock(response);
     } errorBlock:^(NSError *error) {
         errorBlock(error);
     }];
@@ -2906,7 +2929,7 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
 - (void)postListsMembersCreateAllForListID:(NSString *)listID
                                    userIDs:(NSArray *)userIDs // array of strings
                              orScreenNames:(NSArray *)screenNames // array of strings
-                              successBlock:(void(^)())successBlock
+                              successBlock:(void(^)(id response))successBlock
                                 errorBlock:(void(^)(NSError *error))errorBlock {
     NSParameterAssert(listID);
     NSAssert((userIDs || screenNames), @"missing usersIDs or screenNames");
@@ -2921,7 +2944,7 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
     }
     
     [self postAPIResource:@"lists/members/create_all.json" parameters:md successBlock:^(NSDictionary *rateLimits, id response) {
-        successBlock();
+        successBlock(response);
     } errorBlock:^(NSError *error) {
         errorBlock(error);
     }];
@@ -2932,7 +2955,7 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
                                orOwnerID:(NSString *)ownerID
                                  userIDs:(NSArray *)userIDs // array of strings
                            orScreenNames:(NSArray *)screenNames // array of strings
-                            successBlock:(void(^)())successBlock
+                            successBlock:(void(^)(id response))successBlock
                               errorBlock:(void(^)(NSError *error))errorBlock {
     NSParameterAssert(slug);
     NSAssert((ownerScreenName || ownerID), @"missing ownerScreenName or ownerID");
@@ -2954,7 +2977,7 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
     }
     
     [self postAPIResource:@"lists/members/create_all.json" parameters:md successBlock:^(NSDictionary *rateLimits, id response) {
-        successBlock();
+        successBlock(response);
     } errorBlock:^(NSError *error) {
         errorBlock(error);
     }];
@@ -3077,7 +3100,7 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
 - (void)postListMemberCreateForListID:(NSString *)listID
                                userID:(NSString *)userID
                            screenName:(NSString *)screenName
-                         successBlock:(void(^)())successBlock
+                         successBlock:(void(^)(id response))successBlock
                            errorBlock:(void(^)(NSError *error))errorBlock {
     
     NSParameterAssert(listID);
@@ -3090,7 +3113,7 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
     md[@"screen_name"] = screenName;
     
     [self postAPIResource:@"lists/members/create.json" parameters:md successBlock:^(NSDictionary *rateLimits, id response) {
-        successBlock();
+        successBlock(response);
     } errorBlock:^(NSError *error) {
         errorBlock(error);
     }];
@@ -3101,7 +3124,7 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
                           orOwnerID:(NSString *)ownerID
                              userID:(NSString *)userID
                          screenName:(NSString *)screenName
-                       successBlock:(void(^)())successBlock
+                       successBlock:(void(^)(id response))successBlock
                          errorBlock:(void(^)(NSError *error))errorBlock {
     
     NSParameterAssert(slug);
@@ -3115,7 +3138,7 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
     md[@"screen_name"] = screenName;
     
     [self postAPIResource:@"lists/members/create.json" parameters:md successBlock:^(NSDictionary *rateLimits, id response) {
-        successBlock();
+        successBlock(response);
     } errorBlock:^(NSError *error) {
         errorBlock(error);
     }];
@@ -3124,7 +3147,7 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
 // POST	lists/destroy
 
 - (void)postListsDestroyForListID:(NSString *)listID
-                     successBlock:(void(^)())successBlock
+                     successBlock:(void(^)(id response))successBlock
                        errorBlock:(void(^)(NSError *error))errorBlock {
     
     NSParameterAssert(listID);
@@ -3133,7 +3156,7 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
     md[@"list_id"] = listID;
     
     [self postAPIResource:@"lists/destroy.json" parameters:md successBlock:^(NSDictionary *rateLimits, id response) {
-        successBlock();
+        successBlock(response);
     } errorBlock:^(NSError *error) {
         errorBlock(error);
     }];
@@ -3142,7 +3165,7 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
 - (void)postListsDestroyForSlug:(NSString *)slug
                 ownerScreenName:(NSString *)ownerScreenName
                       orOwnerID:(NSString *)ownerID
-                   successBlock:(void(^)())successBlock
+                   successBlock:(void(^)(id response))successBlock
                      errorBlock:(void(^)(NSError *error))errorBlock {
     
     NSParameterAssert(slug);
@@ -3154,7 +3177,7 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
     if(ownerID) md[@"owner_id"] = ownerID;
     
     [self postAPIResource:@"lists/destroy.json" parameters:md successBlock:^(NSDictionary *rateLimits, id response) {
-        successBlock();
+        successBlock(response);
     } errorBlock:^(NSError *error) {
         errorBlock(error);
     }];
@@ -3166,7 +3189,7 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
                             name:(NSString *)name
                        isPrivate:(BOOL)isPrivate
                      description:(NSString *)description
-                    successBlock:(void(^)())successBlock
+                    successBlock:(void(^)(id response))successBlock
                       errorBlock:(void(^)(NSError *error))errorBlock {
     
     NSParameterAssert(listID);
@@ -3190,7 +3213,7 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
                           name:(NSString *)name
                      isPrivate:(BOOL)isPrivate
                    description:(NSString *)description
-                  successBlock:(void(^)())successBlock
+                  successBlock:(void(^)(id response))successBlock
                     errorBlock:(void(^)(NSError *error))errorBlock {
     
     NSParameterAssert(slug);
@@ -3277,7 +3300,7 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
 - (void)postListsMembersDestroyAllForListID:(NSString *)listID
                                     userIDs:(NSArray *)userIDs // array of strings
                               orScreenNames:(NSArray *)screenNames // array of strings
-                               successBlock:(void(^)())successBlock
+                               successBlock:(void(^)(id response))successBlock
                                  errorBlock:(void(^)(NSError *error))errorBlock {
     
     NSParameterAssert(listID);
@@ -3293,7 +3316,7 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
     }
     
     [self postAPIResource:@"lists/members/destroy_all.json" parameters:md successBlock:^(NSDictionary *rateLimits, id response) {
-        successBlock();
+        successBlock(response);
     } errorBlock:^(NSError *error) {
         errorBlock(error);
     }];
@@ -3304,7 +3327,7 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
                                 orOwnerID:(NSString *)ownerID
                                   userIDs:(NSArray *)userIDs // array of strings
                             orScreenNames:(NSArray *)screenNames // array of strings
-                             successBlock:(void(^)())successBlock
+                             successBlock:(void(^)(id response))successBlock
                                errorBlock:(void(^)(NSError *error))errorBlock {
     
     NSParameterAssert(slug);
@@ -3327,7 +3350,7 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
     }
     
     [self postAPIResource:@"lists/members/destroy_all.json" parameters:md successBlock:^(NSDictionary *rateLimits, id response) {
-        successBlock();
+        successBlock(response);
     } errorBlock:^(NSError *error) {
         errorBlock(error);
     }];
@@ -3607,6 +3630,8 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
 
 // POST get/place
 
+// WARNING: deprecated since December 2nd, 2013 https://dev.twitter.com/discussions/22452
+
 - (void)postGeoPlaceWithName:(NSString *)name // eg. "Twitter HQ"
      placeIDContaintedWithin:(NSString *)placeIDContaintedWithin // eg. "247f43d441defc03"
            similarPlaceToken:(NSString *)similarPlaceToken // eg. "36179c9bf78835898ebf521c1defd4be"
@@ -3738,7 +3763,7 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
 // GET help/configuration
 - (void)getHelpConfigurationWithSuccessBlock:(void(^)(NSDictionary *currentConfiguration))successBlock
                                   errorBlock:(void(^)(NSError *error))errorBlock {
-	[self getAPIResource:@"help/configuration.json" parameters:nil successBlock:^(NSDictionary *rateLimits, id response) {
+    [self getAPIResource:@"help/configuration.json" parameters:nil successBlock:^(NSDictionary *rateLimits, id response) {
         successBlock(response);
     } errorBlock:^(NSError *error) {
         errorBlock(error);
@@ -3748,7 +3773,7 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
 // GET help/languages
 - (void)getHelpLanguagesWithSuccessBlock:(void (^)(NSArray *languages))successBlock
                               errorBlock:(void (^)(NSError *))errorBlock {
-	[self getAPIResource:@"help/languages.json" parameters:nil successBlock:^(NSDictionary *rateLimits, id response) {
+    [self getAPIResource:@"help/languages.json" parameters:nil successBlock:^(NSDictionary *rateLimits, id response) {
         successBlock(response);
     } errorBlock:^(NSError *error) {
         errorBlock(error);
@@ -3758,7 +3783,7 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
 // GET help/privacy
 - (void)getHelpPrivacyWithSuccessBlock:(void(^)(NSString *tos))successBlock
                             errorBlock:(void(^)(NSError *error))errorBlock {
-	[self getAPIResource:@"help/privacy.json" parameters:nil successBlock:^(NSDictionary *rateLimits, id response) {
+    [self getAPIResource:@"help/privacy.json" parameters:nil successBlock:^(NSDictionary *rateLimits, id response) {
         successBlock([response valueForKey:@"privacy"]);
     } errorBlock:^(NSError *error) {
         errorBlock(error);
@@ -3768,7 +3793,7 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
 // GET help/tos
 - (void)getHelpTermsOfServiceWithSuccessBlock:(void(^)(NSString *tos))successBlock
                                    errorBlock:(void(^)(NSError *error))errorBlock {
-	[self getAPIResource:@"help/tos.json" parameters:nil successBlock:^(NSDictionary *rateLimits, id response) {
+    [self getAPIResource:@"help/tos.json" parameters:nil successBlock:^(NSDictionary *rateLimits, id response) {
         successBlock([response valueForKey:@"tos"]);
     } errorBlock:^(NSError *error) {
         errorBlock(error);
@@ -3777,12 +3802,12 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
 
 // GET application/rate_limit_status
 - (void)getRateLimitsForResources:(NSArray *)resources // eg. statuses,friends,trends,help
-					 successBlock:(void(^)(NSDictionary *rateLimits))successBlock
-					   errorBlock:(void(^)(NSError *error))errorBlock {
-	NSDictionary *d = nil;
-	if (resources)
+                     successBlock:(void(^)(NSDictionary *rateLimits))successBlock
+                       errorBlock:(void(^)(NSError *error))errorBlock {
+    NSDictionary *d = nil;
+    if (resources)
         d = @{ @"resources" : [resources componentsJoinedByString:@","] };
-	[self getAPIResource:@"application/rate_limit_status.json" parameters:d successBlock:^(NSDictionary *rateLimits, id response) {
+    [self getAPIResource:@"application/rate_limit_status.json" parameters:d successBlock:^(NSDictionary *rateLimits, id response) {
         successBlock(response);
     } errorBlock:^(NSError *error) {
         errorBlock(error);
@@ -3814,7 +3839,7 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
     if(modelVersion) md[@"model_version"] = [modelVersion boolValue] ? @"true" : @"false";
     if(sendErrorCodes) md[@"send_error_codes"] = [sendErrorCodes boolValue] ? @"1" : @"0";
     
-	[self getAPIResource:@"activity/about_me.json" parameters:md successBlock:^(NSDictionary *rateLimits, id response) {
+    [self getAPIResource:@"activity/about_me.json" parameters:md successBlock:^(NSDictionary *rateLimits, id response) {
         successBlock(response);
     } errorBlock:^(NSError *error) {
         errorBlock(error);
@@ -3844,7 +3869,7 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
     if(latestResults) md[@"latest_results"] = [latestResults boolValue] ? @"true" : @"false";
     if(sendErrorCodes) md[@"send_error_codes"] = [sendErrorCodes boolValue] ? @"1" : @"0";
     
-	[self getAPIResource:@"activity/by_friends.json" parameters:md successBlock:^(NSDictionary *rateLimits, id response) {
+    [self getAPIResource:@"activity/by_friends.json" parameters:md successBlock:^(NSDictionary *rateLimits, id response) {
         successBlock(response);
     } errorBlock:^(NSError *error) {
         errorBlock(error);
@@ -3858,7 +3883,7 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
     
     NSString *resource = [NSString stringWithFormat:@"statuses/%@/activity/summary.json", statusID];
     
-	[self getAPIResource:resource parameters:nil successBlock:^(NSDictionary *rateLimits, id response) {
+    [self getAPIResource:resource parameters:nil successBlock:^(NSDictionary *rateLimits, id response) {
         
         NSArray *favoriters = [response valueForKey:@"favoriters"];
         NSArray *repliers = [response valueForKey:@"repliers"];
@@ -3882,7 +3907,7 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
     
     NSDictionary *d = @{@"id":statusID};
     
-	[self getAPIResource:@"conversation/show.json" parameters:d successBlock:^(NSDictionary *rateLimits, id response) {
+    [self getAPIResource:@"conversation/show.json" parameters:d successBlock:^(NSDictionary *rateLimits, id response) {
         successBlock(response);
     } errorBlock:^(NSError *error) {
         errorBlock(error);
@@ -3893,7 +3918,7 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
 - (void)_getDiscoverHighlightWithSuccessBlock:(void(^)(NSDictionary *metadata, NSArray *modules))successBlock
                                    errorBlock:(void(^)(NSError *error))errorBlock {
     
-	[self getAPIResource:@"discover/highlight.json" parameters:nil successBlock:^(NSDictionary *rateLimits, id response) {
+    [self getAPIResource:@"discover/highlight.json" parameters:nil successBlock:^(NSDictionary *rateLimits, id response) {
         
         NSDictionary *metadata = [response valueForKey:@"metadata"];
         NSArray *modules = [response valueForKey:@"modules"];
@@ -3908,7 +3933,7 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
 - (void)_getDiscoverUniversalWithSuccessBlock:(void(^)(NSDictionary *metadata, NSArray *modules))successBlock
                                    errorBlock:(void(^)(NSError *error))errorBlock {
     
-	[self getAPIResource:@"discover/universal.json" parameters:nil successBlock:^(NSDictionary *rateLimits, id response) {
+    [self getAPIResource:@"discover/universal.json" parameters:nil successBlock:^(NSDictionary *rateLimits, id response) {
         
         NSDictionary *metadata = [response valueForKey:@"metadata"];
         NSArray *modules = [response valueForKey:@"modules"];
@@ -3923,7 +3948,7 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
 - (void)_getMediaTimelineWithSuccessBlock:(void(^)(NSArray *statuses))successBlock
                                errorBlock:(void(^)(NSError *error))errorBlock {
     
-	[self getAPIResource:@"statuses/media_timeline.json" parameters:nil successBlock:^(NSDictionary *rateLimits, id response) {
+    [self getAPIResource:@"statuses/media_timeline.json" parameters:nil successBlock:^(NSDictionary *rateLimits, id response) {
         
         successBlock(response);
     } errorBlock:^(NSError *error) {
@@ -3935,7 +3960,7 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
 - (void)_getUsersRecommendationsWithSuccessBlock:(void(^)(NSArray *recommendations))successBlock
                                       errorBlock:(void(^)(NSError *error))errorBlock {
     
-	[self getAPIResource:@"users/recommendations.json" parameters:nil successBlock:^(NSDictionary *rateLimits, id response) {
+    [self getAPIResource:@"users/recommendations.json" parameters:nil successBlock:^(NSDictionary *rateLimits, id response) {
         successBlock(response);
     } errorBlock:^(NSError *error) {
         errorBlock(error);
@@ -3946,7 +3971,7 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
 - (void)_getTimelineHomeWithSuccessBlock:(void(^)(id response))successBlock
                               errorBlock:(void(^)(NSError *error))errorBlock {
     
-	[self getAPIResource:@"timeline/home.json" parameters:nil successBlock:^(NSDictionary *rateLimits, id response) {
+    [self getAPIResource:@"timeline/home.json" parameters:nil successBlock:^(NSDictionary *rateLimits, id response) {
         successBlock(response);
     } errorBlock:^(NSError *error) {
         errorBlock(error);
@@ -3967,7 +3992,7 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
     if(includeEntities) md[@"include_entities"] = [includeEntities boolValue] ? @"true" : @"false";
     if(includeMyRetweet) md[@"include_my_retweet"] = [includeMyRetweet boolValue] ? @"true" : @"false";
     
-	[self getAPIResource:@"statuses/mentions_timeline.json" parameters:md successBlock:^(NSDictionary *rateLimits, id response) {
+    [self getAPIResource:@"statuses/mentions_timeline.json" parameters:md successBlock:^(NSDictionary *rateLimits, id response) {
         successBlock(response);
     } errorBlock:^(NSError *error) {
         errorBlock(error);
@@ -3978,7 +4003,7 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
 - (void)_getTrendsAvailableWithSuccessBlock:(void(^)(NSArray *places))successBlock
                                  errorBlock:(void(^)(NSError *error))errorBlock {
     
-	[self getAPIResource:@"trends/available.json" parameters:nil successBlock:^(NSDictionary *rateLimits, id response) {
+    [self getAPIResource:@"trends/available.json" parameters:nil successBlock:^(NSDictionary *rateLimits, id response) {
         successBlock(response);
     } errorBlock:^(NSError *error) {
         errorBlock(error);
@@ -4035,13 +4060,33 @@ includeMessagesFromFollowedAccounts:(NSNumber *)includeMessagesFromFollowedAccou
     [self postResource:@"account/generate.json"
          baseURLString:@"https://api.twitter.com/1"
             parameters:md
-         progressBlock:^(id json) {
-             //
-         } successBlock:^(NSDictionary *rateLimits, id response) {
-             successBlock(response);
-         } errorBlock:^(NSError *error) {
-             errorBlock(error);
-         }];
+   uploadProgressBlock:nil
+ downloadProgressBlock:^(id json) {
+     //
+ } successBlock:^(NSDictionary *rateLimits, id response) {
+     successBlock(response);
+ } errorBlock:^(NSError *error) {
+     errorBlock(error);
+ }];
+}
+
+// GET search/typeahead.json
+- (void)_getSearchTypeaheadQuery:(NSString *)query
+                      resultType:(NSString *)resultType // "all"
+                  sendErrorCodes:(NSNumber *)sendErrorCodes
+                    successBlock:(void(^)(id results))successBlock
+                      errorBlock:(void(^)(NSError *error))errorBlock {
+    
+    NSMutableDictionary *md = [NSMutableDictionary dictionary];
+    md[@"q"] = query;
+    if(resultType) md[@"result_type"] = resultType;
+    if(sendErrorCodes) md[@"send_error_codes"] = @([sendErrorCodes boolValue]);
+    
+    [self getAPIResource:@"search/typeahead.json" parameters:md successBlock:^(NSDictionary *rateLimits, id response) {
+        successBlock(response);
+    } errorBlock:^(NSError *error) {
+        errorBlock(error);
+    }];
 }
 
 @end

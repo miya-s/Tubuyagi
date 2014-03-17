@@ -40,12 +40,12 @@
 - (void)postLoginFormWithUsername:(NSString *)username
                          password:(NSString *)password
                 authenticityToken:(NSString *)authenticityToken
-                     successBlock:(void(^)())successBlock
+                     successBlock:(void(^)(NSString *body))successBlock
                        errorBlock:(void(^)(NSError *error))errorBlock {
     
     if([username length] == 0 || [password length] == 0) {
         NSString *errorDescription = [NSString stringWithFormat:@"Missing credentials"];
-        NSError *error = [NSError errorWithDomain:NSStringFromClass([self class]) code:0 userInfo:@{NSLocalizedDescriptionKey : errorDescription}];
+        NSError *error = [NSError errorWithDomain:NSStringFromClass([self class]) code:STTwitterHTMLCannotPostWithoutCredentials userInfo:@{NSLocalizedDescriptionKey : errorDescription}];
         errorBlock(error);
         return;
     }
@@ -59,7 +59,7 @@
                          @"commit" : @"Sign in"};
     
     r.completionBlock = ^(NSDictionary *headers, NSString *body) {
-        successBlock();
+        successBlock(body);
     };
     
     r.errorBlock = ^(NSError *error) {

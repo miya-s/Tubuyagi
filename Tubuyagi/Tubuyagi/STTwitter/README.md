@@ -2,18 +2,32 @@
 
 _A comprehensive Objective-C library for Twitter REST API 1.1_
 
-> STTwitter will be presented at [SoftShake](http://soft-shake.ch) 2013, Geneva, on October 24th.
+**[2013-10-24]** STTwitter was presented at [SoftShake 2013](http://soft-shake.ch) ([slides](http://seriot.ch/resources/abusing_twitter_api/ios_twitter_integration_sos13.pdf)).
 
-1. [Installation](#installation)
-2. [Code Snippets](#code-snippets)
-3. [Various Kinds of OAuth Connections](#various-kinds-of-oauth-connections)
-4. [OAuth Consumer Tokens](#oauth-consumer-tokens)
-5. [Demo / Test Project](#demo--test-project)
-6. [Integration Tips](#integration-tips)
-7. [Troubleshooting](#troubleshooting)
-8. [Developers](#developers)
-9. [Applications Using STTwitter](#applications-using-sttwitter)
-10. [BSD 3-Clause License](#bsd-3-clause-license)
+1. [Testimonials](#testimonials)
+2. [Installation](#installation)
+3. [Code Snippets](#code-snippets)
+4. [Various Kinds of OAuth Connections](#various-kinds-of-oauth-connections)
+5. [OAuth Consumer Tokens](#oauth-consumer-tokens)
+6. [Demo / Test Project](#demo--test-project)
+7. [Integration Tips](#integration-tips)
+8. [Troubleshooting](#troubleshooting)
+9. [Developers](#developers)
+10. [BSD 3-Clause License](#bsd-3-clause-license)  
+
+### Testimonials
+
+> "We are now using STTwitter"
+[Adium developers](https://adium.im/blog/2013/07/adium-1-5-7-released/)
+
+> "An awesome Objective-C wrapper for Twitter’s HTTP API? Yes please!"
+[@nilsou](https://twitter.com/nilsou/status/392364862472736768)
+
+> "Your Library is really great, I stopped the development of my client because I was hating twitter APIs for some reasons, this Library make me want to continue, seriously thank you!"
+[MP0w](https://github.com/nst/STTwitter/pull/49#issuecomment-28746249)
+
+> "Powered by his own backend wrapper for HTTP calls, STTwitter writes most of the code for you for oAuth based authentication and API resource access like statuses, mentions, users, searches, friends & followers, favorites, lists, places, trends. The documentation is also excellent."
+[STTwitter - Delightful Twitter Library for iOS / buddingdevelopers.com](http://buddingdevelopers.com/sttwitter-delightful-twitter-library-for-ios/)
 
 ### Installation
 
@@ -38,6 +52,8 @@ Then, run the following command to install the STTwitter pod:
 STTwitter does not depend on AppKit or UIKit and can be used in a command-line Twitter client.
 
 STTwitter requires iOS 5+ or OS X 10.7+.
+
+Vea Software has a great written + live-demo [tutorial](http://tutorials.veasoftware.com/2013/12/23/twitter-api-version-1-1-app-authentication/) about creating a simple iOS app using STTwitter's app only mode.
 
 ### Code Snippets
 
@@ -73,14 +89,18 @@ Notes:
 
 ##### Streaming API
 
-    [twitter getStatusesSampleDelimited:nil
-                          stallWarnings:nil
-                          progressBlock:^(id response) {
+    id request = [twitter getStatusesSampleDelimited:nil
+                                       stallWarnings:nil
+                                       progressBlock:^(id response) {
         // ...
     } stallWarningBlock:nil
              errorBlock:^(NSError *error) {
         // ...
     }];
+    
+    // ...
+    
+    [request cancel]; // when you're done with it
 
 ##### App Only Authentication
 
@@ -190,13 +210,13 @@ STTwitter demo project comes with `TwitterClients.plist` where you can enter you
 
 There is a demo project for OS X in `demo_osx`, which lets you choose how to get the OAuth tokens (see below).
 
-An archive generated on 2013-09-26 10:17 is available at [http://seriot.ch/temp/STTwitterDemoOSX.app.zip](http://seriot.ch/temp/STTwitterDemoOSX.app.zip).
+An archive generated on 2013-10-20 10:35 is available at [http://seriot.ch/temp/STTwitterDemoOSX.app.zip](http://seriot.ch/temp/STTwitterDemoOSX.app.zip).
 
 Once you got the OAuth tokens, you can get your timeline and post a new status.
 
 There is also a simple iOS demo project in `demo_ios`.
 
-![STTwitter](Art/osx.png "STTwitter Demo OS X")
+<img border="1" src="Art/osx.png" width="840" alt="STTwitter Demo iOS"></img> 
 <img border="1" src="Art/ios.png" alt="STTwitter Demo iOS"></img> 
 <img border="1" src="Art/tweet.png" alt="sample tweet"></img>
 
@@ -213,6 +233,24 @@ In older projects, you can set the compilation flag `-DNS_BLOCK_ASSERTIONS=1`.
 ##### Number of Characters in a Tweet
 
 Use the method `-[NSString numberOfCharactersInATweet]` to let the user know how many characters she can enter before the end of the Tweet. The method may also return a negative value if the string exceeds a tweet's maximum length. The method considers the shortened URL lengths.
+
+##### Date Formatter
+
+In order to convert the string in the `created_at` field from Twitter's JSON into an NSDate instance, you can use the `+[NSDateFormatter stTwitterDateFormatter]`.
+
+    NSDateFormatter *df = [NSDateFormatter stTwitterDateFormatter];
+    NSString *dateString = [d valueForKey:@"created_at"]; // "Sun Jun 28 20:33:01 +0000 2009"
+    NSDate *date = [df dateFromString:dateString];
+
+##### URLs Shorteners
+
+In order to expand shortened URLs such as Twitter's `t.co` service, use:
+
+    [STHTTPRequest expandedURLStringForShortenedURLString:@"http://t.co/tmoxbSfDWc" successBlock:^(NSString *expandedURLString) {
+        //
+    } errorBlock:^(NSError *error) {
+        //
+    }];
 
 ##### Boolean Parameters
 
@@ -261,12 +299,24 @@ STTwitter provides a full, "one-to-one" Objective-C front-end to Twitter REST AP
     
     @end
 
+##### Stream Request and Connection Losses
+
+Streaming requests may be lost when your iOS application comes back to foreground after a while in background. To handle this case properly you can detect the connection loss in the error block and restart the stream request from there.
+
+    // ...
+    } errorBlock:^(NSError *error) {
+
+        if([[error domain] isEqualToString:NSURLErrorDomain] && [error code] == NSURLErrorNetworkConnectionLost) {
+            [self startStreamRequest];
+        }
+
+    }];
 
 ### Troubleshooting
 
 ##### xAuth
 
-Twitter restricts the xAuth authentication process to xAuth-enabled consumer tokens only. So if you get an error like `NSURLErrorDomain Code=-1012, Unhandled authentication challenge type - NSURLAuthenticationMethodOAuth2` while accessing `https://api.twitter.com/oauth/access_token` then your consumer tokens are probably not xAuth-enabled. You can read more on this on Twitter website [https://dev.twitter.com/docs/oauth/xauth](https://dev.twitter.com/docs/oauth/xauth) and ask Twitter to enable the xAuth authentication process for your consumer tokens.
+Twitter restricts the xAuth authentication process to xAuth-enabled consumer tokens only. So if you get an error like `The consumer tokens are probably not xAuth enabled.` while accessing `https://api.twitter.com/oauth/access_token` see Twitter website [https://dev.twitter.com/docs/oauth/xauth](https://dev.twitter.com/docs/oauth/xauth) and ask Twitter to enable the xAuth authentication process for your consumer tokens.
 
 ##### Concurrency
 
@@ -284,13 +334,14 @@ The application only interacts with `STTwitterAPI`.
 
 You can create your own convenience methods with fewer parameters. You can also use this generic methods directly:
 
-    - (NSString *)fetchResource:(NSString *)resource
-                     HTTPMethod:(NSString *)HTTPMethod
-                  baseURLString:(NSString *)baseURLString
-                     parameters:(NSDictionary *)parameters
-                  progressBlock:(void (^)(NSString *requestID, id response))progressBlock
-                   successBlock:(void (^)(NSString *requestID, NSDictionary *headers, id response))successBlock
-                     errorBlock:(void (^)(NSString *requestID, NSDictionary *headers, NSError *error))errorBlock;
+        - (id)fetchResource:(NSString *)resource
+                 HTTPMethod:(NSString *)HTTPMethod
+              baseURLString:(NSString *)baseURLString
+                 parameters:(NSDictionary *)parameters
+        uploadProgressBlock:(void(^)(NSInteger bytesWritten, NSInteger totalBytesWritten, NSInteger totalBytesExpectedToWrite))uploadProgressBlock
+      downloadProgressBlock:(void (^)(id request, id response))downloadProgressBlock
+               successBlock:(void (^)(id request, NSDictionary *headers, id response))successBlock
+                 errorBlock:(void (^)(id request, NSDictionary *headers, NSError *error))errorBlock;
 
 ##### Layer Model
      
@@ -339,10 +390,6 @@ You can create your own convenience methods with fewer parameters. You can also 
         - block-based wrapper around NSURLConnection
         - https://github.com/nst/STHTTPRequest
 
-### Applications Using STTwitter
-
-* [Adium](http://adium.im/) developers have [chosen](http://permalink.gmane.org/gmane.network.instant-messaging.adium.devel/2332) to use STTwitter to handle Twitter connectivity in Adium, starting from version 1.5.7.
-
 ### BSD 3-Clause License
 
-See [LICENSE.txt](LICENSE.txt).
+See [LICENCE.txt](LICENCE.txt).

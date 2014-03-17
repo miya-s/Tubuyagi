@@ -36,7 +36,7 @@
 - (IBAction)loginWithiOSAction:(id)sender {
     
     self.twitter = [STTwitterAPI twitterAPIOSWithFirstAccount];
-
+    
     _loginStatusLabel.text = @"Trying to login with iOS...";
     _loginStatusLabel.text = @"";
     
@@ -47,7 +47,7 @@
     } errorBlock:^(NSError *error) {
         _loginStatusLabel.text = [error localizedDescription];
     }];
-
+    
 }
 
 - (IBAction)loginInSafariAction:(id)sender {
@@ -63,20 +63,36 @@
         NSLog(@"-- oauthToken: %@", oauthToken);
         
         [[UIApplication sharedApplication] openURL:url];
-        
-    } oauthCallback:@"myapp://twitter_access_tokens/"
+    } forceLogin:@(YES)
+                    screenName:nil
+                 oauthCallback:@"myapp://twitter_access_tokens/"
                     errorBlock:^(NSError *error) {
                         NSLog(@"-- error: %@", error);
                         _loginStatusLabel.text = [error localizedDescription];
                     }];
 }
 
-- (void)setOAuthToken:(NSString *)token oauthVerifier:(NSString *)verfier {
+- (void)setOAuthToken:(NSString *)token oauthVerifier:(NSString *)verifier {
     
-    [_twitter postAccessTokenRequestWithPIN:verfier successBlock:^(NSString *oauthToken, NSString *oauthTokenSecret, NSString *userID, NSString *screenName) {
+    [_twitter postAccessTokenRequestWithPIN:verifier successBlock:^(NSString *oauthToken, NSString *oauthTokenSecret, NSString *userID, NSString *screenName) {
         NSLog(@"-- screenName: %@", screenName);
         
         _loginStatusLabel.text = screenName;
+        
+        /*
+         At this point, the user can use the API and you can read his access tokens with:
+         
+         _twitter.oauthAccessToken;
+         _twitter.oauthAccessTokenSecret;
+         
+         You can store these tokens (in user default, or in keychain) so that the user doesn't need to authenticate again on next launches.
+         
+         Next time, just instanciate STTwitter with the class method:
+         
+         +[STTwitterAPI twitterAPIWithOAuthConsumerKey:consumerSecret:oauthToken:oauthTokenSecret:]
+         
+         Don't forget to call the -[STTwitter verifyCredentialsWithSuccessBlock:errorBlock:] after that.
+         */
         
     } errorBlock:^(NSError *error) {
         
@@ -90,20 +106,20 @@
     self.getTimelineStatusLabel.text = @"";
     
     [_twitter getHomeTimelineSinceID:nil
-                              count:20
-                       successBlock:^(NSArray *statuses) {
-                           
-                           NSLog(@"-- statuses: %@", statuses);
-                           
-                           self.getTimelineStatusLabel.text = [NSString stringWithFormat:@"%lu statuses", (unsigned long)[statuses count]];
-                           
-                           self.statuses = statuses;
-                           
-                           [self.tableView reloadData];
-                           
-                       } errorBlock:^(NSError *error) {
-                           self.getTimelineStatusLabel.text = [error localizedDescription];
-                       }];
+                               count:20
+                        successBlock:^(NSArray *statuses) {
+                            
+                            NSLog(@"-- statuses: %@", statuses);
+                            
+                            self.getTimelineStatusLabel.text = [NSString stringWithFormat:@"%lu statuses", (unsigned long)[statuses count]];
+                            
+                            self.statuses = statuses;
+                            
+                            [self.tableView reloadData];
+                            
+                        } errorBlock:^(NSError *error) {
+                            self.getTimelineStatusLabel.text = [error localizedDescription];
+                        }];
 }
 
 #pragma mark UITableViewDataSource
