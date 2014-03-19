@@ -250,7 +250,7 @@ NSMutableArray *TYChooseAvailableTweets(NSArray *tweets){
         if(TYTweetIsQualified(tweet, &error)) {
             [availableTweets addObject:tweet];
         }
-        NSCAssert(!error, [error description]);
+        NSCAssert(!error, [error localizedDescription]);
     }
     return availableTweets;
 }
@@ -268,7 +268,7 @@ NSMutableArray *TYChooseAvailableTweets(NSArray *tweets){
     
     NSString *tweetContent = TYMakeTweet(content);
     
-    [twitterAPIClient postStatusUpdate:tweetContent
+    [_twitterAPIClient postStatusUpdate:tweetContent
                      inReplyToStatusID:nil
                               latitude:nil
                              longitude:nil
@@ -287,8 +287,8 @@ NSMutableArray *TYChooseAvailableTweets(NSArray *tweets){
      OAuthTokenSecret:(NSString **)OAuthAccessTokenSecret
 {
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-    NSString * existOAuthAccessToken = [ud stringForKey: @"TYOAuthAccessToken"];
-    NSString * existOAuthAccessTokenSecret = [ud stringForKey: @"TYOAuthAccessTokenSecret"];
+    NSString * existOAuthAccessToken = [ud stringForKey: @"TDOAuthAccessToken"];
+    NSString * existOAuthAccessTokenSecret = [ud stringForKey: @"TDOAuthAccessTokenSecret"];
     if (existOAuthAccessToken && existOAuthAccessTokenSecret){
         *OAuthAccessToken = existOAuthAccessToken;
         *OAuthAccessTokenSecret = existOAuthAccessTokenSecret;
@@ -304,8 +304,8 @@ NSMutableArray *TYChooseAvailableTweets(NSArray *tweets){
      OAuthTokenSecret:(NSString *)OAuthAccessTokenSecret
 {
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-    [ud setObject:OAuthAccessToken forKey: @"TYOAuthAccessToken"];
-    [ud setObject:OAuthAccessTokenSecret forKey: @"TYOAuthAccessTokenSecret"];
+    [ud setObject:OAuthAccessToken forKey: @"TDOAuthAccessToken"];
+    [ud setObject:OAuthAccessTokenSecret forKey: @"TDOAuthAccessTokenSecret"];
     [ud synchronize];
 }
 
@@ -316,9 +316,9 @@ NSMutableArray *TYChooseAvailableTweets(NSArray *tweets){
 - (void)loginTwitterWithiOSWithSuccessBlock:(void(^)(NSString *username))successBlock
                                  errorBlock:(void(^)(NSError *error))errorBlock{
     
-    twitterAPIClient = [STTwitterAPI twitterAPIOSWithFirstAccount];
+    self.twitterAPIClient = [STTwitterAPI twitterAPIOSWithFirstAccount];
     
-    [twitterAPIClient verifyCredentialsWithSuccessBlock:successBlock
+    [_twitterAPIClient verifyCredentialsWithSuccessBlock:successBlock
                                              errorBlock:errorBlock];
     
 }
@@ -334,20 +334,20 @@ NSMutableArray *TYChooseAvailableTweets(NSArray *tweets){
     NSString *OAuthTokenSecret;
     if ([self getOAuthToken:&OAuthToken OAuthTokenSecret:&OAuthTokenSecret]){
         /*もしすでにTokenを得ていたら*/
-        twitterAPIClient = [STTwitterAPI twitterAPIWithOAuthConsumerKey:TYConsumerKey
+        self.twitterAPIClient = [STTwitterAPI twitterAPIWithOAuthConsumerKey:TYConsumerKey
                                                          consumerSecret:TYConsumerSecret
                                                              oauthToken:OAuthToken
                                                        oauthTokenSecret:OAuthTokenSecret];
         
-        [twitterAPIClient verifyCredentialsWithSuccessBlock:successBlock
+        [_twitterAPIClient verifyCredentialsWithSuccessBlock:successBlock
                                                  errorBlock:errorBlock];
     
     } else {
         /*まだTokenを得ていなかったら*/
-        twitterAPIClient = [STTwitterAPI twitterAPIWithOAuthConsumerKey:TYConsumerKey
+        self.twitterAPIClient = [STTwitterAPI twitterAPIWithOAuthConsumerKey:TYConsumerKey
                                                          consumerSecret:TYConsumerSecret];
         
-        [twitterAPIClient postTokenRequest: ^(NSURL *url, NSString *oauthToken) {
+        [_twitterAPIClient postTokenRequest: ^(NSURL *url, NSString *oauthToken) {
             successBlockAfterAuthorized = successBlock;
             
             [[UIApplication sharedApplication] openURL:url];
@@ -366,11 +366,11 @@ NSMutableArray *TYChooseAvailableTweets(NSArray *tweets){
         oauthVerifier:(NSString *)verifier
            errorBlock:(void(^)(NSError *error))errorBlock
 {
-    [twitterAPIClient postAccessTokenRequestWithPIN:verifier
+    [_twitterAPIClient postAccessTokenRequestWithPIN:verifier
                                        successBlock:^(NSString *oauthToken, NSString *oauthTokenSecret, NSString *userID, NSString *screenName) {
 
-                                           [self setOAuthToken:twitterAPIClient.oauthAccessToken
-                                              OAuthTokenSecret:twitterAPIClient.oauthAccessTokenSecret];
+                                           [self setOAuthToken:_twitterAPIClient.oauthAccessToken
+                                              OAuthTokenSecret:_twitterAPIClient.oauthAccessTokenSecret];
 
                                            successBlockAfterAuthorized(screenName);
         

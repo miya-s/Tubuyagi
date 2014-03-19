@@ -81,7 +81,7 @@ NSString *TYMakeHashFromTweet(NSString *tweet, NSString*twitterID);
                                     ];
     NSError *error = nil;
     BOOL result = TYTweetIsQualified(validTweet, &error);
-    NSAssert(result, [error description]);
+    NSAssert(result, [error localizedDescription]);
     XCTAssertTrue(TYTweetIsQualified(validTweet, &error));
     for (NSDictionary *invalidTweet in invalidTweets){
         XCTAssertFalse(TYTweetIsQualified(invalidTweet, &error));

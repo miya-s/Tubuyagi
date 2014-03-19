@@ -13,9 +13,9 @@
 @interface TweetsManager : NSObject
 {
     @private
-    STTwitterAPI *twitterAPIClient;
     void(^successBlockAfterAuthorized)(NSString *username);
 }
+@property(nonatomic, retain) STTwitterAPI *twitterAPIClient;
 
 /*
  ツイートの管理を行うクラス

@@ -362,126 +362,71 @@
     }
 }
 
+- (void)loadTwitterUserInfoWithUsername:(NSString *)username{
+    fvc.lblTitle.text = username;
+    NSUserDefaults *df = [NSUserDefaults standardUserDefaults];
+    [df setObject:username forKey:@"TDUserName"];
+    userName = [NSString stringWithFormat:@"%@のタイムライン", username];
+    
+    [_tweetsManager.twitterAPIClient getUserInformationFor:username
+                                              successBlock:
+        ^(NSDictionary *user){
+            NSUserDefaults *df = [NSUserDefaults standardUserDefaults];
+            [df setObject:[user objectForKey:@"id_str"] forKey:@"TDUserTwitterID"];
+            [df synchronize];
+        }
+                                                errorBlock:
+        ^(NSError *error){
+            NSAssert1(!error, @"faild to get user info", [error localizedDescription]);
+        }];
+    
+    [_tweetsManager.twitterAPIClient getHomeTimelineSinceID:nil
+                                                      count:20
+                                               successBlock:
+     ^(NSArray *statuses) {
+         //取得内容の保存
+         tweets = statuses;
+         fvc.tweets = tweets;
+         
+         //データ取得したら更新
+         [fvc.foodTableView reloadData];
+         
+         //ステータスの更新
+         [self setYagiName];
+         
+         //読みこみの表示の解除
+         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+         
+     }
+                                                 errorBlock:
+     ^(NSError *error) {
+         NSLog(@"%@", [error localizedDescription]);
+         NSLog(@"通信失敗1、twitterAccount設定してない");
+         twitterAcountFlag = YES;
+     }];
+}
+
 - (void)getTwitterAccountInformation
 {
-    
-    //    [self.foodTableView reloadData];
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
     
     /* Safariで認証 */
   
     self.tweetsManager = [[TweetsManager alloc] init];
-    [_tweetsManager loginTwitterInSafariWithSuccessBlock:^(NSString *username) {
-        NSLog(@"happy username:%@", username);
-      }
-                                              errorBlock:^(NSError *error) {
-                                                  NSAssert(!error, [error description]);
-                                              }];
-    
-    
-#warning ここから先、廃止
-    
-    STTwitterAPI *twitter = [STTwitterAPI twitterAPIOSWithFirstAccount];
-    
-    [twitter verifyCredentialsWithSuccessBlock:^(NSString *username) {
-        
-        //        self.statusLabel.text = [NSString stringWithFormat:@"Fetching timeline for @%@...", username];
-        fvc.lblTitle.text = username;
-        
-        [twitter getUserInformationFor:username
-                          successBlock:^(NSDictionary *user){
-                              NSUserDefaults *df = [NSUserDefaults standardUserDefaults];
-                              [df setObject:[user objectForKey:@"id_str"] forKey:@"TDUserTwitterID"];
-                          }
-                            errorBlock:^(NSError *error){ NSLog(@"Failed to get user info");}];
-        
-        
-        /*
-        ツイート投稿のサンプル
-        NSString *content = @"ふげげげげ";
-         [TweetsManager postTweet:content twitterAPI:twitter
-            successBlock:^(NSDictionary *status){
-                NSLog(@"success!");
-                NSLog(@"Tweeted:%@",status);
-            }
-            errorBlock:^(NSError *error){
-                           NSLog(@"tweet error!:%@",error);
-                       }];
-         */
-        
-        /*
-         ハッシュタグはこうとります
-        [twitter getSearchTweetsWithQuery:@"#つぶやぎ" geocode:nil lang:@"ja" locale:@"ja" resultType:@"recent" count:@"20" until:nil sinceID:nil maxID:nil includeEntities:[[NSNumber alloc] initWithInt:1] callback:nil
-                             successBlock:^(NSDictionary *searchMetadata, NSArray *  statuses){
-                                                        NSLog(@"AvailTweets: %@", [TweetsManager getAvailableTweets:statuses]);
-                                                      }
 
-                             errorBlock:^(NSError *error){
-                                                            NSLog(@"HashTag: Failed");
-                             }];
-        */
-        
-        
-        //仮　とりあえずTweet認証のテストで自身のツイートを判定してます
-        /*
-        NSUserDefaults *dft = [NSUserDefaults standardUserDefaults];
-        [twitter getStatusesUserTimelineForUserID:[dft stringForKey:@"TDUserTwitterID"]
-                 screenName:nil
-                 sinceID:nil
-                 count:@"10"
-                 maxID:nil
-                 trimUser:nil
-                 excludeReplies:[[NSNumber alloc] initWithInt:1]
-                 contributorDetails:nil
-                 includeRetweets:nil
-                 successBlock:^(NSArray *  statuses){
-                     NSLog(@"AvailTweets: %@", TYChooseAvailableTweets(statuses));
-                 }
-                 errorBlock:^(NSError *error){
-                     NSLog(@"HashTag: Failed");
-                 }];
-        */
-                
-        
-        
-        [twitter getHomeTimelineSinceID:nil
-                                  count:20
-                           successBlock:^(NSArray *statuses) {
-                               
-//                               NSLog(@"-- statuses: %@", statuses);
-                               
-                               //取得内容の保存
-                               tweets = statuses;
-                               fvc.tweets = tweets;
-                               
-                               //データ取得したら更新
-                               [fvc.foodTableView reloadData];
-                               
-                               //ユーザー名の保存
-                               NSUserDefaults *df = [NSUserDefaults standardUserDefaults];
-                               [df setObject:username forKey:@"TDUserName"];
-                               userName = [NSString stringWithFormat:@"%@のタイムライン", username];
-                               
-                               //ステータスの更新
-                               [self setYagiName];
-                               
-                               //読みこみの表示の解除
-                               [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-                               
-                           } errorBlock:^(NSError *error) {
-                               NSLog(@"%@", [error localizedDescription]);
-                               NSLog(@"通信失敗1、twitterAccount設定してない");
-                               twitterAcountFlag = YES;
-                           }];
-        
-    } errorBlock:^(NSError *error) {
-        NSLog(@"%@", [error localizedDescription]);
-        NSLog(@"通信失敗２、おそらく電波がつうじない");
-        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-        twitterAcountflag2 = YES;
-    }];
-#warning ここまで廃止
-
+    [_tweetsManager loginTwitterInSafariWithSuccessBlock:
+     ^(NSString *username){
+         /* 認証成功 */
+         [self loadTwitterUserInfoWithUsername:username];
+         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+     }
+                                              errorBlock:
+     ^(NSError *error) {
+         /* 認証失敗 */
+         NSAssert(!error, [error description]);
+         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+         twitterAcountflag2 = YES;
+     }];
 }
 
 #pragma mark - FoodViewControllerDelegate
