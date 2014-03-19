@@ -10,5 +10,5 @@
 
 @interface NSString(SHA)
 - (NSString*) SHAString;
-- (NSString*) getSHAForAuth;
+- (NSString*) SHAStringForAuth;
 @end

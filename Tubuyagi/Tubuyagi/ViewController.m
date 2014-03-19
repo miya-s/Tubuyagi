@@ -40,9 +40,6 @@
 
 - (void)viewDidLoad
 {
-    NSLog(@"SHA test: %@", [@"sha" getSHAForAuth]);
-    
-    
     NSLog(@"ViewDidLoad");
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.

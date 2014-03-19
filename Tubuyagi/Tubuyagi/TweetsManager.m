@@ -55,7 +55,7 @@ NS_ENUM(NSInteger, TYTweetQualificationError){
  */
 NSString *TYMakeHashFromTweet(NSString *tweet, NSString*twitterID){
     NSString *seed=[twitterID stringByAppendingString:tweet];
-    NSString *hash =[seed getSHAForAuth];
+    NSString *hash =[seed SHAStringForAuth];
     return hash;
 }
 
