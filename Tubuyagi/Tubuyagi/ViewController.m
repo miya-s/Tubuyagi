@@ -11,14 +11,12 @@
 #import "MarkovTextGenerator.h"
 #import "STTwitter.h"
 #import "BasicRequest.h"
-#import "TweetsManager.h"
 #import "NSString+SHA.h"
 
 #define alertStrTweet 10
 #define alertDeleteAllBigramData 11
 #define alertDelegateTextField 12
 @interface ViewController ()
-
 @end
 
 @implementation ViewController
@@ -366,10 +364,23 @@
 
 - (void)getTwitterAccountInformation
 {
-    //STTwitter
-//    [self.foodTableView reloadData];
     
+    //    [self.foodTableView reloadData];
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+    
+    /* Safariで認証 */
+  
+    self.tweetsManager = [[TweetsManager alloc] init];
+    [_tweetsManager loginTwitterInSafariWithSuccessBlock:^(NSString *username) {
+        NSLog(@"happy username:%@", username);
+      }
+                                              errorBlock:^(NSError *error) {
+                                                  NSAssert(!error, [error description]);
+                                              }];
+    
+    
+#warning ここから先、廃止
+    
     STTwitterAPI *twitter = [STTwitterAPI twitterAPIOSWithFirstAccount];
     
     [twitter verifyCredentialsWithSuccessBlock:^(NSString *username) {
@@ -412,6 +423,7 @@
         
         
         //仮　とりあえずTweet認証のテストで自身のツイートを判定してます
+        /*
         NSUserDefaults *dft = [NSUserDefaults standardUserDefaults];
         [twitter getStatusesUserTimelineForUserID:[dft stringForKey:@"TDUserTwitterID"]
                  screenName:nil
@@ -428,7 +440,7 @@
                  errorBlock:^(NSError *error){
                      NSLog(@"HashTag: Failed");
                  }];
-        
+        */
                 
         
         
@@ -468,9 +480,9 @@
         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
         twitterAcountflag2 = YES;
     }];
+#warning ここまで廃止
 
 }
-
 
 #pragma mark - FoodViewControllerDelegate
 

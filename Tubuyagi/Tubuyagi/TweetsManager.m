@@ -262,7 +262,7 @@ NSMutableArray *TYChooseAvailableTweets(NSArray *tweets){
  **************************/
 
 /*ツイート投稿*/
--(void)postTweet:(NSString *)content
+- (void)postTweet:(NSString *)content
     successBlock:(void(^)(NSDictionary *status))successBlock
       errorBlock:(void(^)(NSError *error))errorBlock{
     
@@ -280,21 +280,101 @@ NSMutableArray *TYChooseAvailableTweets(NSArray *tweets){
     
 }
 
-- (void)loginTwitter
+/*
+ OAuthTokenを前回起動時に取得したか否か
+ */
+- (BOOL)getOAuthToken:(NSString **)OAuthAccessToken
+     OAuthTokenSecret:(NSString **)OAuthAccessTokenSecret
 {
-    twitterAPIClient = [STTwitterAPI twitterAPIWithOAuthConsumerKey:TYAPIKey
-                                                     consumerSecret:TYAPISecret
-                                                         oauthToken:TYAccessToken
-                                                   oauthTokenSecret:TYAccessTokenSecret];
-    [twitterAPIClient verifyCredentialsWithSuccessBlock:^(NSString *username) {
-        // ログイン成功
-        NSLog(@"granted");
-        //[self getTimeline];
-        //[self getUserStream];
-    } errorBlock:^(NSError *error) {
-        // ログイン失敗
-        NSLog(@"error : %@", error);
-    }];
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    NSString * existOAuthAccessToken = [ud stringForKey: @"TYOAuthAccessToken"];
+    NSString * existOAuthAccessTokenSecret = [ud stringForKey: @"TYOAuthAccessTokenSecret"];
+    if (existOAuthAccessToken && existOAuthAccessTokenSecret){
+        *OAuthAccessToken = existOAuthAccessToken;
+        *OAuthAccessTokenSecret = existOAuthAccessTokenSecret;
+        return YES;
+    }
+    return NO;
+}
+
+/*
+ OAuthTokenを次回起動時も使えるように保持する
+ */
+- (void)setOAuthToken:(NSString *)OAuthAccessToken
+     OAuthTokenSecret:(NSString *)OAuthAccessTokenSecret
+{
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    [ud setObject:OAuthAccessToken forKey: @"TYOAuthAccessToken"];
+    [ud setObject:OAuthAccessTokenSecret forKey: @"TYOAuthAccessTokenSecret"];
+    [ud synchronize];
+}
+
+/*
+ Twitterログイン（iOSの一番上に登録されているもの）
+ ログインが保証できなくてトラブルの元になることを想定して今回は使用しない
+ */
+- (void)loginTwitterWithiOSWithSuccessBlock:(void(^)(NSString *username))successBlock
+                                 errorBlock:(void(^)(NSError *error))errorBlock{
+    
+    twitterAPIClient = [STTwitterAPI twitterAPIOSWithFirstAccount];
+    
+    [twitterAPIClient verifyCredentialsWithSuccessBlock:successBlock
+                                             errorBlock:errorBlock];
+    
+}
+
+/*
+ Safari経由でAccessTokenを取得してAPI権限を得る
+ */
+- (void)loginTwitterInSafariWithSuccessBlock:(void(^)(NSString *username))successBlock
+                                  errorBlock:(void(^)(NSError *error))errorBlock{
+
+
+    NSString *OAuthToken;
+    NSString *OAuthTokenSecret;
+    if ([self getOAuthToken:&OAuthToken OAuthTokenSecret:&OAuthTokenSecret]){
+        /*もしすでにTokenを得ていたら*/
+        twitterAPIClient = [STTwitterAPI twitterAPIWithOAuthConsumerKey:TYConsumerKey
+                                                         consumerSecret:TYConsumerSecret
+                                                             oauthToken:OAuthToken
+                                                       oauthTokenSecret:OAuthTokenSecret];
+        
+        [twitterAPIClient verifyCredentialsWithSuccessBlock:successBlock
+                                                 errorBlock:errorBlock];
+    
+    } else {
+        /*まだTokenを得ていなかったら*/
+        twitterAPIClient = [STTwitterAPI twitterAPIWithOAuthConsumerKey:TYConsumerKey
+                                                         consumerSecret:TYConsumerSecret];
+        
+        [twitterAPIClient postTokenRequest: ^(NSURL *url, NSString *oauthToken) {
+            successBlockAfterAuthorized = successBlock;
+            
+            [[UIApplication sharedApplication] openURL:url];
+        }
+                                forceLogin:@(YES)
+                                screenName:nil
+                             oauthCallback:@"tsubuyagi://twitter_access_tokens/"
+                                errorBlock:errorBlock];
+    }
+}
+
+/*
+ もらってきたTokenを保存し、successBlockを実行
+ */
+- (void)setOAuthToken:(NSString *)token
+        oauthVerifier:(NSString *)verifier
+           errorBlock:(void(^)(NSError *error))errorBlock
+{
+    [twitterAPIClient postAccessTokenRequestWithPIN:verifier
+                                       successBlock:^(NSString *oauthToken, NSString *oauthTokenSecret, NSString *userID, NSString *screenName) {
+
+                                           [self setOAuthToken:twitterAPIClient.oauthAccessToken
+                                              OAuthTokenSecret:twitterAPIClient.oauthAccessTokenSecret];
+
+                                           successBlockAfterAuthorized(screenName);
+        
+    } errorBlock:errorBlock];
 }
 
 @end

@@ -16,6 +16,7 @@
 #import "bubbleView.h"
 #import "YagiView.h"
 #import "CMPopTipView.h"
+#import "TweetsManager.h"
 
 @interface ViewController : UIViewController<FoodViewControllerDelegate, UIActionSheetDelegate,
                                                 UIAlertViewDelegate, DeleteWordTabelViewControllerDelegate,
@@ -37,6 +38,7 @@
 @property (nonatomic, retain) ACAccountStore *accountStore;
 @property (nonatomic, retain) NSArray *twitterAccounts;
 @property (nonatomic, retain) YagiView *yagiView;
+@property (nonatomic, retain) TweetsManager *tweetsManager;
 @property (strong, nonatomic) IBOutlet UIButton *btnChooseFood;
 @property (strong, nonatomic) IBOutlet UIButton *btnshowFavolite;
 @property (strong, nonatomic) IBOutlet UIImageView *imgSaku;
@@ -49,6 +51,7 @@
 @property (strong, nonatomic) IBOutlet UITextField *txfYagiName;
 @property (strong, nonatomic) IBOutlet UIView *configView;
 
+
 - (IBAction)chooseFood:(UIButton *)sender;
 - (IBAction)setConfig:(UIButton *)sender;
 - (IBAction)forgetWord:(UIButton *)sender;
@@ -57,4 +60,6 @@
 - (void)availableButton;
 - (IBAction)closeConfigView:(id)sender;
 - (void)alert;
+
+
 @end

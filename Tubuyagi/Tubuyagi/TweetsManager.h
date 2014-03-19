@@ -13,7 +13,8 @@
 @interface TweetsManager : NSObject
 {
     @private
-    STTwitterAPI   *twitterAPIClient;
+    STTwitterAPI *twitterAPIClient;
+    void(^successBlockAfterAuthorized)(NSString *username);
 }
 
 /*
@@ -29,6 +30,14 @@
 /*ツイートを投稿する*/
 //+(void)postTweet:(NSString *)content twitterAPI:(STTwitterAPI *)twitter successBlock:(void(^)(NSDictionary *status))successBlock errorBlock:(void(^)(NSError *error))error;
 NSMutableArray *TYChooseAvailableTweets(NSArray *tweets);
-- (void)loginTwitter;
+
+//- (void)loginTwitter;
+- (void)loginTwitterInSafariWithSuccessBlock:(void(^)(NSString *username))successBlock
+                                  errorBlock:(void(^)(NSError *error))errorBlock;
+
+
+- (void)setOAuthToken:(NSString *)token
+        oauthVerifier:(NSString *)verifier
+           errorBlock:(void(^)(NSError *error))errorBlock;
 
 @end
