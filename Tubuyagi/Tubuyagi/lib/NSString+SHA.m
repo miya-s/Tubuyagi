@@ -31,6 +31,6 @@
 -(NSString*)getSHAForAuth
 {
     NSLog(@"Hashfor%@",self);
-    return [[NSString stringWithFormat: @"%@%@", self, kSHA_PASSWORD] SHAString];
+    return [[NSString stringWithFormat: @"%@%@", self, TYSHAPassword] SHAString];
 }
 @end

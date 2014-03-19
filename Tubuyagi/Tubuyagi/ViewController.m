@@ -426,7 +426,7 @@
                  contributorDetails:nil
                  includeRetweets:nil
                  successBlock:^(NSArray *  statuses){
-                     NSLog(@"AvailTweets: %@", [TweetsManager getAvailableTweets:statuses]);
+                     NSLog(@"AvailTweets: %@", TYChooseAvailableTweets(statuses));
                  }
                  errorBlock:^(NSError *error){
                      NSLog(@"HashTag: Failed");

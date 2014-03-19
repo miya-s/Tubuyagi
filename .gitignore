@@ -5,3 +5,4 @@
 .DS_Store
 Tubuyagi/Tubuyagi.xcodeproj/project.xcworkspace/xcuserdata/*.xcuserdatad/UserInterfaceState.xcuserstate
 Tubuyagi/Tubuyagi/AuthenticiationKeys.h
+Tubuyagi/Tubuyagi/AuthenticiationKeys.m

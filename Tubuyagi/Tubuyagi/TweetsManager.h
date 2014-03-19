@@ -12,6 +12,7 @@
 
 @interface TweetsManager : NSObject
 {
+    @private
     STTwitterAPI   *twitterAPIClient;
 }
 
@@ -23,11 +24,11 @@
 
 #warning 将来的にはこれをインターフェイスにするのではなく、Twitter APIからツイートを取ってくる部分も含めた処理をinterfaceに
 /*使い物になるツイートだけ収集する*/
-+(NSMutableArray *)getAvailableTweets:(NSArray *)tweets;
+//+(NSMutableArray *)availableTweets:(NSArray *)tweets;
 
 /*ツイートを投稿する*/
-+(void)postTweet:(NSString *)content twitterAPI:(STTwitterAPI *)twitter successBlock:(void(^)(NSDictionary *status))successBlock errorBlock:(void(^)(NSError *error))error;
-
+//+(void)postTweet:(NSString *)content twitterAPI:(STTwitterAPI *)twitter successBlock:(void(^)(NSDictionary *status))successBlock errorBlock:(void(^)(NSError *error))error;
+NSMutableArray *TYChooseAvailableTweets(NSArray *tweets);
 - (void)loginTwitter;
 
 @end

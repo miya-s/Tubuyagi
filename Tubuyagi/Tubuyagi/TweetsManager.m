@@ -7,15 +7,24 @@
 //
 
 #import "TweetsManager.h"
+
 #import "NSString+SHA.h"
 #import "AuthentificationKeys.h"
 // AuthentificationKeysはgitの管理外にあります。ほしい人は kan.tan.san @ gmail.com まで
 
 @implementation TweetsManager
 
+NSString * const TYApplicationDomain = @"I.GA.Tsubuyagi";
+NSString * const TYApplicationURI = @"https://github.com/miya-s/Tubuyagi";
+NSString * const TYApplicationHashTag = @"つぶやぎ";
 
-static NSString* const applicationURI = @"https://github.com/miya-s/Tubuyagi";
-static NSString* const applicationHashTag = @"つぶやぎ";
+NS_ENUM(NSInteger, TYTweetQualificationError){
+    TYLackingURLInTweet,
+    TYLackingUserIDInTweet,
+    TYLackingElementsInURL,
+    TYLackingTypesOfElementsInURL,
+    TYHashDoesntMatch
+};
 
 /*
  ツイートの管理を行うクラス
@@ -44,7 +53,7 @@ static NSString* const applicationHashTag = @"つぶやぎ";
     注意！！idは使わない、id_strを使う because idは桁落ちする可能性がある
     TweetにもUserにもid_str属性があるので混同しないように。
  */
-+(NSString *)makeHashFromTweet:(NSString *)tweet twitterID:(NSString*)twitterID{
+NSString *TYMakeHashFromTweet(NSString *tweet, NSString*twitterID){
     NSString *seed=[twitterID stringByAppendingString:tweet];
     NSString *hash =[seed getSHAForAuth];
     return hash;
@@ -57,7 +66,7 @@ static NSString* const applicationHashTag = @"つぶやぎ";
  http://csfun.blog49.fc2.com/blog-entry-126.html
  http://blog.daisukeyamashita.com/post/1686.html
  */
-+(NSString *)encodeString:(NSString *)plainString{
+NSString *TYEncodeString(NSString *plainString){
     NSString *encodedText = (__bridge_transfer NSString *)CFURLCreateStringByAddingPercentEscapes(
                                                                                 NULL,
                                                                                 (__bridge CFStringRef)plainString,
@@ -67,7 +76,7 @@ static NSString* const applicationHashTag = @"つぶやぎ";
     return encodedText;
 }
 
-+(NSString *)decodeString:(NSString *)encodedString{
+NSString *TYDecodeString(NSString *encodedString){
     NSString *decodedText = (__bridge_transfer NSString *)CFURLCreateStringByReplacingPercentEscapesUsingEncoding(
                                                                                NULL,
                                                                                (__bridge CFStringRef)encodedString,
@@ -83,100 +92,165 @@ static NSString* const applicationHashTag = @"つぶやぎ";
  　url, ハッシュタグ, 画像url
  */
 
-+(NSString *)makeTweet:(NSString *)content{
-    NSString *hash = [TweetsManager makeHashFromTweet:content twitterID:[TweetsManager getMyTwitterID]];
-    NSString *yagiNameEncoded = [TweetsManager encodeString:[TweetsManager getMyYagiName]];
-    NSString *contentEncoded = [TweetsManager encodeString:content];
+NSString *TYMakeTweet(NSString *content){
+
+    NSString *hash = TYMakeHashFromTweet(content, TYMyTwitterID());
+    NSString *yagiNameEncoded = TYEncodeString(TYMyYagiName());
+    NSString *contentEncoded = TYEncodeString(content);
+
     NSString *tweet = [NSString stringWithFormat:@"%@?auth=%@&yaginame=%@&content=%@ #%@",
-                                                  applicationURI,
+                                                  TYApplicationURI,
                                         hash,
                                         yagiNameEncoded,
                                         contentEncoded,
-                                        applicationHashTag];
+                                        TYApplicationHashTag];
     return tweet;
 }
 
-+(NSString *)getMyYagiName{
+NSString *TYMyYagiName(void){
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-    return [ud stringForKey: @"TDYagiName"];
+    NSString *yagiName = [ud stringForKey: @"TDYagiName"];
+    NSCAssert(yagiName, @"yagi name がTDYaginameに設定されていない");
+    return yagiName;
 }
 
-+(NSString *)getMyTwitterID{
+NSString *TYMyTwitterID(void){
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
     NSString *myId = [ud stringForKey: @"TDUserTwitterID"];
-    if (!myId){
-        @throw @"Runtime Error: Twitter IDがTDUserTwitterIDに設定されていない";
-    }
+    NSCAssert(myId, @"Twitter IDがTDUserTwitterIDに設定されていない");
     return myId;
 }
 
 /*
- そのツイートのHashが正規のものかをチェック
+ そのツイートの|hash|が正規のものかをチェック
  */
-+(BOOL)checkHash:(NSString *)hash tweetContent:(NSString*)content twitterID:(NSString *)twitterID{
-    NSString *new_hash = [TweetsManager makeHashFromTweet:content twitterID:twitterID];
+BOOL TYCheckHash(NSString *hash, NSString*content, NSString *twitterID){
+    NSString *new_hash = TYMakeHashFromTweet(content, twitterID);
+    NSCAssert(new_hash, @"ハッシュ生成失敗");
+    NSCAssert(hash, @"ハッシュ取得失敗");
+    NSCAssert(twitterID, @"twitter ID 取得失敗");
     return [new_hash isEqualToString:hash];
 }
 
-/*正規のつぶやきかどうかを判定する*/
-+(BOOL)isValidTubuyaki:(NSDictionary *)tweet{
-    NSError *error = nil;
-    NSString*text = (NSString *)[tweet objectForKey:@"text"];
+/* urlに記述されたヴァリデーション用の情報などを獲得する */
+NSDictionary *TYExtractElementsFromURL(NSString *url, NSError **error){
+    NSMutableDictionary *extractedElements = [NSMutableDictionary dictionaryWithDictionary:@{}];
 
-    /*ハッシュタグが適切に含まれているか*/
-    //TODO ここの「#つぶやぎ」をapplicationHashTagにしたい
-    NSRegularExpression *validationChecker = [NSRegularExpression regularExpressionWithPattern:@".*https.*#つぶやぎ" options:0 error:&error];
-    NSTextCheckingResult *match =[validationChecker firstMatchInString:text options:0 range:NSMakeRange(0, text.length)];
-    if (!match.numberOfRanges){
-        return false;
+    /*urlの?以降*/
+    NSError *metaInfoError = nil;
+    NSRegularExpression *regexpForURL = [NSRegularExpression regularExpressionWithPattern:@".*\\?(.*)" options:0 error:&metaInfoError];
+    NSTextCheckingResult *matchInURL =[regexpForURL firstMatchInString:url options:0 range:NSMakeRange(0, url.length)];
+    if (metaInfoError || matchInURL.numberOfRanges <= 0){
+        if (error){
+            *error = [NSError errorWithDomain:TYApplicationDomain
+                                         code:TYLackingElementsInURL
+                                     userInfo:@{NSLocalizedDescriptionKey: @"Lacking Elements in URL Or Invalid Regexp"}];
+        }
+
+        return nil;
+    }
+    
+    NSString *metaInfo = [url substringWithRange:[matchInURL rangeAtIndex:1]];
+    NSArray *elementsWithKey = [metaInfo componentsSeparatedByString:@"&"];
+    if ([elementsWithKey count] <= 2){
+        if (error){
+            *error = [NSError errorWithDomain:TYApplicationDomain
+                                         code:TYLackingElementsInURL
+                                     userInfo:@{NSLocalizedDescriptionKey: @"Lacking Elements in URL"}];
+        }
+        
+        return nil;
     }
 
-    /*urlが含まれているか*/
-    if ([[[tweet objectForKey:@"entities"] objectForKey:@"urls"] count] <= 0){
-        return false;
+    for (NSString *element in elementsWithKey){
+        NSArray *pairForKeyAndElement = [element componentsSeparatedByString:@"="];
+        if ([pairForKeyAndElement count] <= 1){
+            if (error){
+                *error = [NSError errorWithDomain:TYApplicationDomain
+                                             code:TYLackingElementsInURL
+                                         userInfo:@{NSLocalizedDescriptionKey: @"lacking elements in URL"}];
+            }
+            return nil;
+        }
+        [extractedElements setObject:TYDecodeString(pairForKeyAndElement[1]) forKey:pairForKeyAndElement[0]];
     }
-
-
-    NSString *url = [[[[tweet objectForKey:@"entities"] objectForKey:@"urls"] objectAtIndex:0] objectForKey:@"expanded_url"];
-    NSMutableDictionary *elementsInURL = [TweetsManager getElementsFromURL:url];
-    NSString* userID = (NSString *)[[tweet objectForKey:@"user"] objectForKey:@"id_str"];
-    /* url内にヴァリデーション用の情報が含まれているか */
-    if ([elementsInURL count] <= 0){
-        return false;
+    
+    NSArray *requiredKeys = @[@"auth", @"yaginame", @"content"];
+    for (NSString *requiredKey in requiredKeys){
+        if (![extractedElements objectForKey:requiredKey]){
+            if (error){
+                *error = [NSError errorWithDomain:TYApplicationDomain
+                                             code:TYLackingTypesOfElementsInURL
+                                         userInfo:@{NSLocalizedDescriptionKey: @"Lacking Types of Elements in URL"}];
+            }
+            
+            return nil;
+        }
+        
     }
-    /* Hashの整合性チェック */
-    return [TweetsManager checkHash:[elementsInURL objectForKey:@"hash"]
-                       tweetContent:[elementsInURL objectForKey:@"content"]
-                          twitterID:userID];
+    return extractedElements;
 }
 
-
-/* urlに記述されたヴァリデーション用の情報などを獲得する */
-+(NSMutableDictionary *)getElementsFromURL:(NSString *)url{
-    NSMutableDictionary *extractedElements = [NSMutableDictionary dictionaryWithDictionary:@{}];
-    NSError *error = nil;
-    NSRegularExpression *regexpForURL = [NSRegularExpression regularExpressionWithPattern:@".*\?auth=([^&]*)&yaginame=([^&]*)&content=([^&]*)" options:0 error:&error];
-    NSTextCheckingResult *matchInURL =[regexpForURL firstMatchInString:url options:0 range:NSMakeRange(0, url.length)];
-
-    /*マッチすべき情報が含まれていなかったら離脱*/
-    if (matchInURL.numberOfRanges <= 2){
-        return extractedElements;
+/*適切な情報を含んだ|tweet|かどうかを判定する*/
+BOOL TYTweetIsQualified(NSDictionary *tweet, NSError** error){
+    /*urlが含まれているか*/
+    if ([[[tweet objectForKey:@"entities"] objectForKey:@"urls"] count] <= 0){
+        if (error){
+            *error = [NSError errorWithDomain:TYApplicationDomain
+                                         code:TYLackingURLInTweet
+                                     userInfo:@{NSLocalizedDescriptionKey: @"No URL In Tweet"}];
+        }
+        return NO;
     }
-    [extractedElements setObject:[TweetsManager decodeString:[url substringWithRange:[matchInURL rangeAtIndex:1]]] forKey:@"hash"];
-    [extractedElements setObject:[TweetsManager decodeString:[url substringWithRange:[matchInURL rangeAtIndex:2]]] forKey:@"yaginame"];
-    [extractedElements setObject:[TweetsManager decodeString:[url substringWithRange:[matchInURL rangeAtIndex:3]]] forKey:@"content"];
-    return extractedElements;
+    
+    
+    NSString *url = [[[[tweet objectForKey:@"entities"] objectForKey:@"urls"] objectAtIndex:0] objectForKey:@"expanded_url"];
+    
+    /* id_str情報が含まれているか */
+    if (![[tweet objectForKey:@"user"] objectForKey:@"id_str"]){
+        if (error){
+            *error = [NSError errorWithDomain:TYApplicationDomain
+                                         code:TYLackingUserIDInTweet
+                                     userInfo:@{NSLocalizedDescriptionKey: @"No UserUD In Tweet"}];
+        }
+        return NO;
+    }
+    NSString* userID = (NSString *)[[tweet objectForKey:@"user"] objectForKey:@"id_str"];
+    
+    /* url内にヴァリデーション用の情報が含まれているか */
+    NSError *errorForExtraction = nil;
+    NSDictionary *elementsInURL = TYExtractElementsFromURL(url, &errorForExtraction);
+    if (errorForExtraction){
+        *error = errorForExtraction;
+        return NO;
+    }
+    
+    /* Hashの整合性チェック */
+    BOOL qualifyTweet = TYCheckHash([elementsInURL objectForKey:@"auth"],
+                                    [elementsInURL objectForKey:@"content"],
+                                    userID);
+    if (!qualifyTweet){
+        if (error){
+            *error = [NSError errorWithDomain:TYApplicationDomain
+                                         code:TYHashDoesntMatch
+                                     userInfo:@{NSLocalizedDescriptionKey: @"Hash doesn't match"}];
+        }
+        return NO;
+    }
+    return YES;
 }
 
 /*
     正規のツイートだけ持ってくる
  */
-+(NSMutableArray *)getAvailableTweets:(NSArray *)tweets{
+NSMutableArray *TYChooseAvailableTweets(NSArray *tweets){
     NSMutableArray *availableTweets = [NSMutableArray array];
     for (NSDictionary *tweet in tweets){
-        if( [TweetsManager isValidTubuyaki:tweet]) {
+        NSError *error = nil;
+        if(TYTweetIsQualified(tweet, &error)) {
             [availableTweets addObject:tweet];
         }
+        NSCAssert(!error, [error description]);
     }
     return availableTweets;
 }
@@ -188,20 +262,30 @@ static NSString* const applicationHashTag = @"つぶやぎ";
  **************************/
 
 /*ツイート投稿*/
-+(void)postTweet:(NSString *)content twitterAPI:(STTwitterAPI *)twitter successBlock:(void(^)(NSDictionary *status))successBlock errorBlock:(void(^)(NSError *error))errorBlock{
+-(void)postTweet:(NSString *)content
+    successBlock:(void(^)(NSDictionary *status))successBlock
+      errorBlock:(void(^)(NSError *error))errorBlock{
     
-    NSString *tweetContent = [TweetsManager makeTweet:content];
+    NSString *tweetContent = TYMakeTweet(content);
     
-    [twitter postStatusUpdate:tweetContent inReplyToStatusID:nil latitude:nil longitude:nil placeID:nil displayCoordinates:nil trimUser:nil successBlock:successBlock errorBlock:errorBlock];
+    [twitterAPIClient postStatusUpdate:tweetContent
+                     inReplyToStatusID:nil
+                              latitude:nil
+                             longitude:nil
+                               placeID:nil
+                    displayCoordinates:nil
+                              trimUser:nil
+                          successBlock:successBlock
+                            errorBlock:errorBlock];
     
 }
 
 - (void)loginTwitter
 {
-    twitterAPIClient = [STTwitterAPI twitterAPIWithOAuthConsumerKey:kAPI_KEY
-                                                     consumerSecret:kAPI_SECRET
-                                                         oauthToken:kACCESS_TOKEN
-                                                   oauthTokenSecret:kACCESS_TOKEN_SECRET];
+    twitterAPIClient = [STTwitterAPI twitterAPIWithOAuthConsumerKey:TYAPIKey
+                                                     consumerSecret:TYAPISecret
+                                                         oauthToken:TYAccessToken
+                                                   oauthTokenSecret:TYAccessTokenSecret];
     [twitterAPIClient verifyCredentialsWithSuccessBlock:^(NSString *username) {
         // ログイン成功
         NSLog(@"granted");
