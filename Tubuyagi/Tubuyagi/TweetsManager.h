@@ -42,6 +42,8 @@ NS_ENUM(NSInteger, TYTweetQualificationError){
     
     NSString *OAuthToken;
     NSString *OAuthTokenSecret;
+    
+    UIImage *recentScreenShot;
 }
 @property(readwrite) ACAccount* twitterAccount;
 @property(readonly) NSArray *twitterAccounts;
@@ -73,4 +75,13 @@ NS_ENUM(NSInteger, TYTweetQualificationError){
 - (void)checkTimelineWithSuccessBlock:(void(^)(NSArray *statuses))successBlock
                            errorBlock:(void(^)(NSError *error))errorBlock;
 
+/* 投稿 */
+- (void)openTweetPostWindowFromViewController:(UIViewController *)viewConttoller
+                                      content:(NSString *)content;
+
+- (void)postDirectlyTweet:(NSString *)content
+             successBlock:(void(^)(NSDictionary *status))successBlock
+               errorBlock:(void(^)(NSError *error))errorBlock;
+
+- (void)takeScreenShot;
 @end

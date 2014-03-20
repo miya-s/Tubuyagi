@@ -26,6 +26,16 @@ NSString * const TYApplicationDomain = @"I.GA.Tubuyagi";
 NSString * const TYApplicationURI = @"https://github.com/miya-s/Tubuyagi";
 NSString * const TYApplicationHashTag = @"つぶやぎ";
 
+NSString *TYEncodeString(NSString *plainString);
+NSString *TYMakeHashFromTweet(NSString *tweet, NSString*twitterID);
+NSString *TYDecodeString(NSString *encodedString);
+NSString *TYMyYagiName(void);
+UIImage* TYTakeScreenShot(void);
+BOOL TYCheckHash(NSString *hash, NSString*content, NSString *twitterID);
+NSDictionary *TYExtractElementsFromURL(NSString *url, NSError **error);
+BOOL TYTweetIsQualified(NSDictionary *tweet, NSError** error);
+NSMutableArray *TYChooseAvailableTweets(NSArray *tweets);
+
 /*
  ツイートの管理を行うクラス
  
@@ -35,6 +45,8 @@ NSString * const TYApplicationHashTag = @"つぶやぎ";
  　・ランキングのツイート
      ・ツイートの判定
  ・ツイートの投稿
+ 
+ TODO ModelとControllerの分離
  */
 
 /*************************
@@ -84,32 +96,6 @@ NSString *TYMyYagiName(void){
     NSString *yagiName = [ud stringForKey: @"TDYagiName"];
     NSCAssert(yagiName, @"yagi name がTDYaginameに設定されていない");
     return yagiName;
-}
-
-/*
- 投稿用スクリーンショットを撮る
- TODO ここに書くべきではないかも、ただViewControllerがカオスになってるのでいじりたくない
- 参考 : http://www.yoheim.net/blog.php?q=20130706
- */
-UIImage* TYTakeScreenShot(void){
-    // キャプチャ対象をWindowに
-    UIWindow *window = [[UIApplication sharedApplication] keyWindow];
-    
-    // キャプチャ画像を描画する対象を生成
-    UIGraphicsBeginImageContextWithOptions(window.bounds.size, NO, 0.0f);
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    
-    // Windowの現在の表示内容を１つずつ描画
-    for (UIWindow *aWindow in [[UIApplication sharedApplication] windows]) {
-        [aWindow.layer renderInContext:context];
-    }
-    
-    // 描画した内容をUIImageとして受け取る
-    UIImage *capturedImage = UIGraphicsGetImageFromCurrentImageContext();
-    
-    UIGraphicsEndImageContext();
-    
-    return capturedImage;
 }
 
 /*
@@ -310,6 +296,10 @@ NSMutableArray *TYChooseAvailableTweets(NSArray *tweets){
     }
 }
 
+
+/*************************
+ Twitter機能利用
+ ************************/
 //タイムライン取得
 //参考: http://qiita.com/paming/items/9a6b51fa56915d1f1d64
 - (void)checkTimelineWithSuccessBlock:(void(^)(NSArray *statuses))successBlock
@@ -396,6 +386,32 @@ NSMutableArray *TYChooseAvailableTweets(NSArray *tweets){
     return tweetURL;
 }
 
+/*
+ 投稿用スクリーンショットを撮る
+ 参考 : http://www.yoheim.net/blog.php?q=20130706
+ */
+- (void)takeScreenShot{
+    // キャプチャ対象をWindowに
+    UIWindow *window = [[UIApplication sharedApplication] keyWindow];
+    
+    // キャプチャ画像を描画する対象を生成
+    UIGraphicsBeginImageContextWithOptions(window.bounds.size, NO, 0.0f);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    // Windowの現在の表示内容を１つずつ描画
+    for (UIWindow *aWindow in [[UIApplication sharedApplication] windows]) {
+        [aWindow.layer renderInContext:context];
+    }
+    
+    // 描画した内容をUIImageとして受け取る
+    UIImage *capturedImage = UIGraphicsGetImageFromCurrentImageContext();
+    
+    UIGraphicsEndImageContext();
+    
+    recentScreenShot = capturedImage;
+}
+
+
 //投稿ウィンドウを開く(iOS認証を行った場合のみ)
 //引数content: ヤギの発言
 // viewのほうに移すべきかも
@@ -406,7 +422,7 @@ NSMutableArray *TYChooseAvailableTweets(NSArray *tweets){
     
     [twitterComposeViewController setInitialText:@" #つぶやぎ"];
     [twitterComposeViewController addURL:[NSURL URLWithString:[self makeTweetURLWithContent:content]]];
-    [twitterComposeViewController addImage:TYTakeScreenShot()];
+    [twitterComposeViewController addImage:recentScreenShot];
 
     twitterComposeViewController.completionHandler = ^(SLComposeViewControllerResult result){
         if(result == SLComposeViewControllerResultDone){
@@ -428,9 +444,9 @@ NSMutableArray *TYChooseAvailableTweets(NSArray *tweets){
 
     
     NSString *tweetURL = [self makeTweetURLWithContent:content];
-    NSString *tweetContent = [NSString stringWithFormat:@"%@ %@", tweetURL, TYApplicationHashTag];
+    NSString *tweetContent = [NSString stringWithFormat:@"%@のつぶやき：%@… %@ #%@", TYMyYagiName(), [content substringToIndex:5], tweetURL, TYApplicationHashTag];
     
-    UIImage *screenShot = TYTakeScreenShot();
+    UIImage *screenShot = recentScreenShot;
     NSData *dataToSend = [[NSData alloc] initWithData:UIImagePNGRepresentation(screenShot)];
     [twitterAPIClient postStatusUpdate:tweetContent
                          mediaDataArray:@[dataToSend]

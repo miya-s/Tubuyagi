@@ -282,15 +282,20 @@ NS_ENUM(NSInteger, TYActionSheets){
         alert.tag = 10;
         [alert show];
     }else{
-        
-    
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"発言の共有"
-                                                    message:strShare
-                                                   delegate:self
-                                          cancelButtonTitle:@"OK"
-                                          otherButtonTitles:@"キャンセル",nil];
-    alert.tag = 10;
-    [alert show];
+        [self.tweetsManager takeScreenShot];
+        if (self.tweetsManager.authorizeType == TYAuthorizediOS){
+            //iOS認証の場合はiOSの投稿画面を出す
+            [self.tweetsManager openTweetPostWindowFromViewController:self content:strCurrTweet];
+        } else {
+            //Safari認証の場合は共有確認ボタンを出す
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"発言の共有"
+                                                            message:strShare
+                                                           delegate:self
+                                                  cancelButtonTitle:@"OK"
+                                                  otherButtonTitles:@"キャンセル",nil];
+            alert.tag = 10;
+            [alert show];
+        }
     }
 }
 
@@ -580,6 +585,12 @@ NS_ENUM(NSInteger, TYActionSheets){
                         break;
                     }
                     addWaraToMyTubuyaki(strCurrTweet);
+                    [self.tweetsManager postDirectlyTweet:strCurrTweet
+                                             successBlock:^(NSDictionary *status) {
+                                                 // TODO  投稿しました
+                                             } errorBlock:^(NSError *error) {
+                                                 // TODO　もう一度投稿
+                                             }];
                     break;
                     
                 default:
