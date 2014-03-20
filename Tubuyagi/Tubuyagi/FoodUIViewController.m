@@ -106,8 +106,9 @@
     } else if ([key isEqualToString:@"user"]){//ユーザー名の配列を返す
         NSArray *users = [[self.tweets valueForKeyPath:@"user"] valueForKeyPath:@"screen_name"];
         return users;
-    } else
+    } else {
         return nil;
+    }
 }
 
 - (void)getTwitterInformation

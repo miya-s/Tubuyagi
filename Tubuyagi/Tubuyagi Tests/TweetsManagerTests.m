@@ -28,10 +28,6 @@ NSString *TYMakeHashFromTweet(NSString *tweet, NSString*twitterID);
 {
     [super setUp];
     // Put setup code here. This method is called before the invocation of each test method in the class.
-    
-    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-    [ud setObject:@"Tubuyagi" forKey:@"TDUserTwitterID"];
-    [ud synchronize];
 }
 
 - (void)tearDown

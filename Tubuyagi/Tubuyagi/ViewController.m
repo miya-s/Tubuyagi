@@ -13,6 +13,12 @@
 #import "BasicRequest.h"
 #import "NSString+SHA.h"
 
+NS_ENUM(NSInteger, TYAlertTags){
+    alertStrTweet = 10,
+    alertDeleteAllBigramData = 11,
+    alertDelegateTextField = 12,
+    alertTwitterAccessFailed = 13
+};
 #define alertStrTweet 10
 #define alertDeleteAllBigramData 11
 #define alertDelegateTextField 12
@@ -84,7 +90,7 @@
     [self.view addSubview:lblYagiTweet];
     
     //twitter情報の取得
-    [self performSelector:@selector(getTwitterAccountInformation)
+    [self performSelector:@selector(getTwitterAccountsInformation)
                withObject:nil
                afterDelay:0.1];//getTwitterAccountInformation];
     
@@ -362,6 +368,8 @@
     }
 }
 
+/*
+ 以下、Social.Frameworkを使用しない場合の実装
 - (void)loadTwitterUserInfoWithUsername:(NSString *)username{
     fvc.lblTitle.text = username;
     NSUserDefaults *df = [NSUserDefaults standardUserDefaults];
@@ -410,23 +418,88 @@
 {
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
     
-    /* Safariで認証 */
+    //Safariで認証
   
     self.tweetsManager = [[TweetsManager alloc] init];
 
     [_tweetsManager loginTwitterInSafariWithSuccessBlock:
      ^(NSString *username){
-         /* 認証成功 */
+         // 認証成功
          [self loadTwitterUserInfoWithUsername:username];
          [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
      }
                                               errorBlock:
      ^(NSError *error) {
-         /* 認証失敗 */
+         // 認証失敗
          NSAssert(!error, [error description]);
          [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
          twitterAcountflag2 = YES;
      }];
+}*/
+
+- (void)loadTimeLine:(NSArray *)statuses{
+    //これたぶんメインスレッドにもってかなきゃいけないと思う
+    //取得内容の保存
+    tweets = statuses;
+    fvc.tweets = statuses;
+    
+    //データ取得したら更新
+    [fvc.foodTableView reloadData];
+    
+    //ステータスの更新
+    [self setYagiName];
+    
+    //読みこみの表示の解除
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+    
+}
+
+- (void)loadTwitterUserInfo{
+    NSString *newUserName = _tweetsManager.twitterAccount.username;
+    fvc.lblTitle.text = newUserName;
+    NSUserDefaults *df = [NSUserDefaults standardUserDefaults];
+    [df setObject:newUserName forKey:@"TDUserName"];
+    userName = [NSString stringWithFormat:@"%@のタイムライン", newUserName];
+    
+    [_tweetsManager checkTimelineWithSuccessBlock:^(NSArray *statuses) {
+        [self performSelectorOnMainThread:@selector(loadTimeLine:)
+                               withObject:statuses
+                            waitUntilDone:YES];
+    } errorBlock:^(NSError *error) {
+        NSLog(@"%@", [error localizedDescription]);
+        NSLog(@"通信失敗1");
+        twitterAcountFlag = YES;
+    }];
+}
+
+
+- (void)getTwitterAccountsInformation
+{
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+    __block __weak UIViewController *weakSelf = self;
+    
+    self.tweetsManager = [[TweetsManager alloc] init];
+    [_tweetsManager setTwitterAccountsWithSuccessBlock:
+     ^(NSArray *accounts) {
+         [weakSelf performSelectorOnMainThread:@selector(loadTwitterUserInfo)
+                                    withObject:nil
+                                 waitUntilDone:YES];
+         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+     } errorBlock:^(NSError *error) {
+         //NSCAssert(!error, [error description]);
+         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+         UIAlertView *alert =
+            [[UIAlertView alloc] initWithTitle:@"Twitterの情報を取得できませんでした"
+                                       message:@"本体に登録されているTwitterアカウントを確認して下さい"
+                                      delegate:weakSelf
+                             cancelButtonTitle:@"設定方法"
+                             otherButtonTitles:nil];
+         alert.tag = alertTwitterAccessFailed;
+         [alert show];
+         
+         //twitterAcountflag2 = YES;
+     }
+     ];
 }
 
 #pragma mark - FoodViewControllerDelegate
@@ -486,6 +559,7 @@
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    NSURL *twSettingURL;
     switch (alertView.tag) {
         case alertStrTweet:
             switch (buttonIndex) {
@@ -525,8 +599,13 @@
                 default:
                     break;
             }
-            default:
+        case alertTwitterAccessFailed:
+            //twSettingURL = [NSURL URLWithString:@"http://support.apple.com/kb/HT5500?viewlocale=ja_JP"];
+            //[[UIApplication sharedApplication] openURL:twSettingURL];
             break;
+        default:
+            break;
+
     }
 }
 

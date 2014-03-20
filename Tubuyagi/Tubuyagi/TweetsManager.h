@@ -8,15 +8,18 @@
 
 #import <Foundation/Foundation.h>
 #import "STTwitter.h"
-
+#import <Social/Social.h>
+#import <Accounts/Accounts.h>
 
 @interface TweetsManager : NSObject
 {
     @private
     void(^successBlockAfterAuthorized)(NSString *username);
 }
-@property(nonatomic, retain) STTwitterAPI *twitterAPIClient;
-
+//@property(nonatomic, retain) STTwitterAPI *twitterAPIClient;
+@property(nonatomic, retain) SLComposeViewController *twitterComposeViewController;
+@property(nonatomic, retain, setter = setTwitterAccount:) ACAccount *twitterAccount;
+@property(nonatomic, retain) NSArray *twitterAccounts;
 /*
  ツイートの管理を行うクラス
  参考: http://blog.himajinworks.net/archives/150
@@ -28,16 +31,18 @@
 //+(NSMutableArray *)availableTweets:(NSArray *)tweets;
 
 /*ツイートを投稿する*/
-//+(void)postTweet:(NSString *)content twitterAPI:(STTwitterAPI *)twitter successBlock:(void(^)(NSDictionary *status))successBlock errorBlock:(void(^)(NSError *error))error;
 NSMutableArray *TYChooseAvailableTweets(NSArray *tweets);
 
-//- (void)loginTwitter;
-- (void)loginTwitterInSafariWithSuccessBlock:(void(^)(NSString *username))successBlock
-                                  errorBlock:(void(^)(NSError *error))errorBlock;
+- (void)setTwitterAccountsWithSuccessBlock:(void(^)(NSArray *accounts))successBlock
+                                errorBlock:(void(^)(NSError *error))errorBlock;
 
+- (void)checkTimelineWithSuccessBlock:(void(^)(NSArray *statuses))successBlock
+                           errorBlock:(void(^)(NSError *error))errorBlock;
+//- (void)loginTwitterInSafariWithSuccessBlock:(void(^)(NSString *username))successBlock
+//                                  errorBlock:(void(^)(NSError *error))errorBlock;
+//- (void)setOAuthToken:(NSString *)token
+//        oauthVerifier:(NSString *)verifier
+//           errorBlock:(void(^)(NSError *error))errorBlock;
 
-- (void)setOAuthToken:(NSString *)token
-        oauthVerifier:(NSString *)verifier
-           errorBlock:(void(^)(NSError *error))errorBlock;
 
 @end

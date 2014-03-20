@@ -275,8 +275,9 @@
 }
 
 /*
- Twitter認証でSafariから戻ってきたときにトークンもってくる
- */
+ Social.frameworkを使用しない場合の実装
+ 
+//Twitter認証でSafariから戻ってきたときにトークンもってくる
 - (NSDictionary *)parametersDictionaryFromQueryString:(NSString *)queryString {
     
     NSMutableDictionary *md = [NSMutableDictionary dictionary];
@@ -313,5 +314,6 @@
 
     return YES;
 }
+*/
 
 @end
