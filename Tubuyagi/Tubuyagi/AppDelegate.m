@@ -274,10 +274,7 @@
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
-/*
- Social.frameworkを使用しない場合の実装
- 
-//Twitter認証でSafariから戻ってきたときにトークンもってくる
+
 - (NSDictionary *)parametersDictionaryFromQueryString:(NSString *)queryString {
     
     NSMutableDictionary *md = [NSMutableDictionary dictionary];
@@ -297,10 +294,11 @@
     return md;
 }
 
+//Twitter認証でSafariから戻ってきたときにトークンもってくる
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
   sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
     
-    if ([[url scheme] isEqualToString:@"tsubuyagi"] == NO) return NO;
+    if (![[url scheme] isEqualToString:TYApplicationScheme]) return NO;
     
     NSDictionary *d = [self parametersDictionaryFromQueryString:[url query]];
     
@@ -308,12 +306,9 @@
     NSString *verifier = d[@"oauth_verifier"];
     
     ViewController *vc = (ViewController *)[[self window] rootViewController];
-    [vc.tweetsManager setOAuthToken:token oauthVerifier:verifier errorBlock:^(NSError *error) {
-        NSAssert(!error, [error localizedDescription]);
-    }];
+    [vc.tweetsManager OAuthWithOAuthToken:token OAuthVerifier:verifier];
 
     return YES;
 }
-*/
 
 @end

@@ -42,7 +42,7 @@
 			<string>I.GA.Tubuyagi</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>tsubuyagi</string>
+				<string>tubuyagi</string>
 			</array>
 		</dict>
 	</array>

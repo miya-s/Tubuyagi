@@ -19,6 +19,11 @@ NS_ENUM(NSInteger, TYAlertTags){
     alertDelegateTextField = 12,
     alertTwitterAccessFailed = 13
 };
+
+NS_ENUM(NSInteger, TYActionSheets){
+    TYTwitterActionSheet = 20,
+    TYForgetActionSheet = 21,
+};
 #define alertStrTweet 10
 #define alertDeleteAllBigramData 11
 #define alertDelegateTextField 12
@@ -90,7 +95,7 @@ NS_ENUM(NSInteger, TYAlertTags){
     [self.view addSubview:lblYagiTweet];
     
     //twitter情報の取得
-    [self performSelector:@selector(getTwitterAccountsInformation)
+    [self performSelector:@selector(getTwitterAccountsInformationiOS)
                withObject:nil
                afterDelay:0.1];//getTwitterAccountInformation];
     
@@ -205,6 +210,7 @@ NS_ENUM(NSInteger, TYAlertTags){
                                            cancelButtonTitle:@"やめる"
                                       destructiveButtonTitle:nil
                                            otherButtonTitles:@"すべて忘れさせる", @"つぶやきを忘れさせる", nil];
+    as.tag = TYForgetActionSheet;
     [as showInView:self.view];
 }
 
@@ -367,78 +373,7 @@ NS_ENUM(NSInteger, TYAlertTags){
         [alert show];
     }
 }
-
-/*
- 以下、Social.Frameworkを使用しない場合の実装
-- (void)loadTwitterUserInfoWithUsername:(NSString *)username{
-    fvc.lblTitle.text = username;
-    NSUserDefaults *df = [NSUserDefaults standardUserDefaults];
-    [df setObject:username forKey:@"TDUserName"];
-    userName = [NSString stringWithFormat:@"%@のタイムライン", username];
-    
-    [_tweetsManager.twitterAPIClient getUserInformationFor:username
-                                              successBlock:
-        ^(NSDictionary *user){
-            NSUserDefaults *df = [NSUserDefaults standardUserDefaults];
-            [df setObject:[user objectForKey:@"id_str"] forKey:@"TDUserTwitterID"];
-            [df synchronize];
-        }
-                                                errorBlock:
-        ^(NSError *error){
-            NSAssert1(!error, @"faild to get user info", [error localizedDescription]);
-        }];
-    
-    [_tweetsManager.twitterAPIClient getHomeTimelineSinceID:nil
-                                                      count:20
-                                               successBlock:
-     ^(NSArray *statuses) {
-         //取得内容の保存
-         tweets = statuses;
-         fvc.tweets = tweets;
-         
-         //データ取得したら更新
-         [fvc.foodTableView reloadData];
-         
-         //ステータスの更新
-         [self setYagiName];
-         
-         //読みこみの表示の解除
-         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-         
-     }
-                                                 errorBlock:
-     ^(NSError *error) {
-         NSLog(@"%@", [error localizedDescription]);
-         NSLog(@"通信失敗1、twitterAccount設定してない");
-         twitterAcountFlag = YES;
-     }];
-}
-
-- (void)getTwitterAccountInformation
-{
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-    
-    //Safariで認証
-  
-    self.tweetsManager = [[TweetsManager alloc] init];
-
-    [_tweetsManager loginTwitterInSafariWithSuccessBlock:
-     ^(NSString *username){
-         // 認証成功
-         [self loadTwitterUserInfoWithUsername:username];
-         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-     }
-                                              errorBlock:
-     ^(NSError *error) {
-         // 認証失敗
-         NSAssert(!error, [error description]);
-         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-         twitterAcountflag2 = YES;
-     }];
-}*/
-
 - (void)loadTimeLine:(NSArray *)statuses{
-    //これたぶんメインスレッドにもってかなきゃいけないと思う
     //取得内容の保存
     tweets = statuses;
     fvc.tweets = statuses;
@@ -454,14 +389,15 @@ NS_ENUM(NSInteger, TYAlertTags){
     
 }
 
+//認証完了後に呼ぶ：基本情報の取得
 - (void)loadTwitterUserInfo{
-    NSString *newUserName = _tweetsManager.twitterAccount.username;
+    NSString *newUserName = self.tweetsManager.username;
     fvc.lblTitle.text = newUserName;
     NSUserDefaults *df = [NSUserDefaults standardUserDefaults];
     [df setObject:newUserName forKey:@"TDUserName"];
     userName = [NSString stringWithFormat:@"%@のタイムライン", newUserName];
     
-    [_tweetsManager checkTimelineWithSuccessBlock:^(NSArray *statuses) {
+    [self.tweetsManager checkTimelineWithSuccessBlock:^(NSArray *statuses) {
         [self performSelectorOnMainThread:@selector(loadTimeLine:)
                                withObject:statuses
                             waitUntilDone:YES];
@@ -472,34 +408,95 @@ NS_ENUM(NSInteger, TYAlertTags){
     }];
 }
 
+- (void)showActionSheetForAccounts:(NSArray *)accounts{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UIActionSheet *actionSheet = [[UIActionSheet alloc]
+                                       
+                                       initWithTitle: @"使用するTwitterアカウントを選んでください"
+                                       delegate: self
+                                       cancelButtonTitle:nil
+                                       destructiveButtonTitle: nil
+                                       otherButtonTitles:nil];
+        actionSheet.tag = TYTwitterActionSheet;
+        for (ACAccount *account in accounts){
+            [actionSheet addButtonWithTitle:account.username];
+        }
+        [actionSheet showInView:[[[[UIApplication sharedApplication] keyWindow] subviews] lastObject]];
+    });
+}
 
-- (void)getTwitterAccountsInformation
+- (void)getTwitterAccountsInformationiOS
 {
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-    __block __weak UIViewController *weakSelf = self;
+    __block __weak ViewController *weakSelf = self;
     
+    //まず最初に、iOSに設定されたアカウントでのtwitter認証を試みる
     self.tweetsManager = [[TweetsManager alloc] init];
-    [_tweetsManager setTwitterAccountsWithSuccessBlock:
-     ^(NSArray *accounts) {
+    [self.tweetsManager checkTwitterAccountsWithSuccessBlock:
+     ^(void) {
+         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
          [weakSelf performSelectorOnMainThread:@selector(loadTwitterUserInfo)
                                     withObject:nil
                                  waitUntilDone:YES];
+     } choicesBlock: ^(NSArray *accounts) {
          [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+         [self showActionSheetForAccounts:accounts];
      } errorBlock:^(NSError *error) {
-         //NSCAssert(!error, [error description]);
+         NSLog(@"Error : %@", [error localizedDescription]);
          [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-         UIAlertView *alert =
-            [[UIAlertView alloc] initWithTitle:@"Twitterの情報を取得できませんでした"
-                                       message:@"本体に登録されているTwitterアカウントを確認して下さい"
-                                      delegate:weakSelf
-                             cancelButtonTitle:@"設定方法"
-                             otherButtonTitles:nil];
-         alert.tag = alertTwitterAccessFailed;
-         [alert show];
+
+         //無理だったら、まずキャッシュされたAccessTokenがないか確認
+         if (weakSelf.tweetsManager.cachedOAuth){
+             [weakSelf.tweetsManager loginTwitterByCachedTokenWithSuccessBlock:
+              ^(NSString *username) {
+                  self.tweetsManager.username = username;
+                  [weakSelf performSelectorOnMainThread:@selector(loadTwitterUserInfo)
+                                             withObject:nil
+                                          waitUntilDone:YES];
+             } errorBlock:^(NSError *error) {
+                 //TODO キャッシュログイン失敗時はsafari認証
+                 NSAssert(!error, [error localizedDescription]);
+             }];
+             return;
+         }
+
+         //それすらなかったらSafariで認証
+         dispatch_async(dispatch_get_main_queue(), ^{
+             UIAlertView *alert =
+             [[UIAlertView alloc] initWithTitle:@"Twitterの情報を取得できませんでした"
+                                        message:@"本体に登録されているTwitterアカウントを確認して下さい"
+                                       delegate:weakSelf
+                              cancelButtonTitle:@"設定方法"
+                              otherButtonTitles:@"Safariで認証", nil];
+             alert.tag = alertTwitterAccessFailed;
+             [alert show];
+         });
          
          //twitterAcountflag2 = YES;
      }
      ];
+}
+
+//Safariで認証
+- (void)getTwitterAccountsInformationSafari
+{
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+    self.tweetsManager = [[TweetsManager alloc] init];
+    
+    [self.tweetsManager
+     loginTwitterInSafariWithSuccessBlock:
+     ^(NSString *username){
+         // 認証成功
+         [self loadTwitterUserInfo];
+         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+     }
+     errorBlock:
+     ^(NSError *error) {
+         // 認証失敗
+         NSAssert(!error, [error description]);
+         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+         twitterAcountflag2 = YES;
+     }];
 }
 
 #pragma mark - FoodViewControllerDelegate
@@ -536,20 +533,32 @@ NS_ENUM(NSInteger, TYAlertTags){
 #pragma mark - UIActionSheetDelegate
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"忘却完了" message:@"全ての単語を忘れさせてもいいですか？？" delegate:self cancelButtonTitle:@"OK" otherButtonTitles: @"キャンセル", nil];
-    alert.tag = alertDeleteAllBigramData;
-    DeleteWordTableViewController *dtvc = [[DeleteWordTableViewController alloc] initWithNibName:@"DeleteWordTableViewController" bundle:nil];
-    dtvc.delegate = self;
-    switch (buttonIndex) {
-        case 0:
-//            deleteAllData();
-            [alert show];
+    UIAlertView *alert;
+    DeleteWordTableViewController *dtvc;
+    switch (actionSheet.tag) {
+        case TYForgetActionSheet:
+            alert = [[UIAlertView alloc] initWithTitle:@"忘却完了" message:@"全ての単語を忘れさせてもいいですか？？" delegate:self cancelButtonTitle:@"OK" otherButtonTitles: @"キャンセル", nil];
+            alert.tag = alertDeleteAllBigramData;
+            dtvc = [[DeleteWordTableViewController alloc] initWithNibName:@"DeleteWordTableViewController" bundle:nil];
+            dtvc.delegate = self;
+            switch (buttonIndex) {
+                case 0:
+                    //            deleteAllData();
+                    [alert show];
+                    break;
+                    
+                case 1:
+                    [self presentViewController:dtvc animated:YES completion:^(void){}];
+                    break;
+                    
+                default:
+                    break;
+            }
             break;
-            
-        case 1:
-            [self presentViewController:dtvc animated:YES completion:^(void){}];
+        case TYTwitterActionSheet:
+            self.tweetsManager.twitterAccount = [self.tweetsManager.twitterAccounts objectAtIndex:buttonIndex];
+            [self loadTwitterUserInfo];
             break;
-        
         default:
             break;
     }
@@ -600,8 +609,19 @@ NS_ENUM(NSInteger, TYAlertTags){
                     break;
             }
         case alertTwitterAccessFailed:
-            //twSettingURL = [NSURL URLWithString:@"http://support.apple.com/kb/HT5500?viewlocale=ja_JP"];
-            //[[UIApplication sharedApplication] openURL:twSettingURL];
+            switch (buttonIndex) {
+                //設定方法参照
+                case 0:
+                    twSettingURL = [NSURL URLWithString:@"http://support.apple.com/kb/HT5500?viewlocale=ja_JP"];
+                    [[UIApplication sharedApplication] openURL:twSettingURL];
+                    break;
+                //Safariで認証
+                default:
+                    [self getTwitterAccountsInformationSafari];
+                    break;
+            }
+            
+            
             break;
         default:
             break;
