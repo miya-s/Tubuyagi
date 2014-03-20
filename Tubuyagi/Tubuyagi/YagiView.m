@@ -97,15 +97,15 @@
         //音の準備
         NSString *path = [[NSBundle mainBundle] pathForResource:@"tarai" ofType:@"wav"];
         NSURL *url = [NSURL fileURLWithPath:path];
-        AudioServicesCreateSystemSoundID((__bridge_retained CFURLRef)url, &soudID);
+        AudioServicesCreateSystemSoundID((__bridge CFURLRef)url, &soudID);
         
         NSString *path2 = [[NSBundle mainBundle] pathForResource:@"paper" ofType:@"wav"];
         NSURL *url2 = [NSURL fileURLWithPath:path2];
-        AudioServicesCreateSystemSoundID((__bridge_retained CFURLRef)url2, &paperSound);
+        AudioServicesCreateSystemSoundID((__bridge CFURLRef)url2, &paperSound);
         
         NSString *path3 = [[NSBundle mainBundle] pathForResource:@"yagi" ofType:@"wav"];
         NSURL *url3 = [NSURL fileURLWithPath:path3];
-        AudioServicesCreateSystemSoundID((__bridge_retained CFURLRef)url3, &yagiSound);
+        AudioServicesCreateSystemSoundID((__bridge CFURLRef)url3, &yagiSound);
     }
     return self;
 }

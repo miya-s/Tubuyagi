@@ -345,7 +345,7 @@ NS_ENUM(NSInteger, TYActionSheets){
     if (showTime < 3) {
         showTime = 3;
     }
-    NSLog(@"time is %d", showTime);
+    NSLog(@"time is %uld", showTime);
     timer = [NSTimer scheduledTimerWithTimeInterval:showTime
                                     target:self
                                   selector:@selector(judgdeWalkRestart)
