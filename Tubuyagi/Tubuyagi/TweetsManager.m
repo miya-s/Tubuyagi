@@ -36,7 +36,8 @@ UIImage* TYTakeScreenShot(void);
 BOOL TYCheckHash(NSString *hash, NSString*content, NSString *twitterID);
 NSDictionary *TYExtractElementsFromURL(NSString *url, NSError **error);
 BOOL TYTweetIsQualified(NSDictionary *tweet, NSError** error);
-NSMutableArray *TYChooseAvailableTweets(NSArray *tweets);
+NSArray *TYChooseAvailableTweets(NSArray *tweets);
+NSArray *TYConvertTweetsToOldStyle(NSArray *tweets);
 
 /*
  ツイートの管理を行うクラス
@@ -199,10 +200,12 @@ NSMutableArray *TYChooseAvailableTweets(NSArray *tweets);
                                          until:nil
                                        sinceID:nil
                                          maxID:nil
-                               includeEntities:[[NSNumber alloc] initWithInt:1] callback:nil
+                               includeEntities:[[NSNumber alloc] initWithInt:1]
+                                      callback:nil
                                   successBlock:^(NSDictionary *searchMetadata, NSArray *  statuses){
-                                      NSArray *tubuyaki = TYChooseAvailableTweets(statuses);
-                                      successBlock(tubuyaki);
+                                      NSArray *tweets = TYChooseAvailableTweets(statuses);
+                                      NSArray *convertedTweets = TYConvertTweetsToOldStyle(tweets);
+                                      successBlock(convertedTweets);
                                   }
      
                                     errorBlock:errorBlock];
@@ -436,20 +439,28 @@ NSDictionary *TYExtractElementsFromURL(NSString *url, NSError **error){
     return extractedElements;
 }
 
-/*適切な情報を含んだ|tweet|かどうかを判定する*/
-BOOL TYTweetIsQualified(NSDictionary *tweet, NSError** error){
-    /*urlが含まれているか*/
+NSDictionary *TYExtractElementsFromTweet(NSDictionary *tweet, NSError **error){
     if ([[[tweet objectForKey:@"entities"] objectForKey:@"urls"] count] <= 0){
         if (error){
             *error = [NSError errorWithDomain:TYApplicationDomain
                                          code:TYLackingURLInTweet
                                      userInfo:@{NSLocalizedDescriptionKey: @"No URL In Tweet"}];
         }
+        return nil;
+    }
+    NSString *url = [[[[tweet objectForKey:@"entities"] objectForKey:@"urls"] objectAtIndex:0] objectForKey:@"expanded_url"];
+    NSDictionary *extractedElements = TYExtractElementsFromURL(url, error);
+    return extractedElements;
+}
+
+
+/*適切な情報を含んだ|tweet|かeどうかを判定する*/
+BOOL TYTweetIsQualified(NSDictionary *tweet, NSError** error){
+    /*urlが含まれているか*/
+    NSDictionary *elementsInURL = TYExtractElementsFromTweet(tweet, error);
+    if (!elementsInURL){
         return NO;
     }
-    
-    
-    NSString *url = [[[[tweet objectForKey:@"entities"] objectForKey:@"urls"] objectAtIndex:0] objectForKey:@"expanded_url"];
     
     /* id_str情報が含まれているか */
     if (![[tweet objectForKey:@"user"] objectForKey:@"id_str"]){
@@ -461,14 +472,6 @@ BOOL TYTweetIsQualified(NSDictionary *tweet, NSError** error){
         return NO;
     }
     NSString* userIDForTweet = (NSString *)[[tweet objectForKey:@"user"] objectForKey:@"id_str"];
-    
-    /* url内にヴァリデーション用の情報が含まれているか */
-    NSError *errorForExtraction = nil;
-    NSDictionary *elementsInURL = TYExtractElementsFromURL(url, &errorForExtraction);
-    if (errorForExtraction){
-        *error = errorForExtraction;
-        return NO;
-    }
     
     /* Hashの整合性チェック */
     BOOL qualifyTweet = TYCheckHash([elementsInURL objectForKey:@"auth"],
@@ -488,17 +491,57 @@ BOOL TYTweetIsQualified(NSDictionary *tweet, NSError** error){
 /*
     正規のツイートだけ持ってくる
  */
-NSMutableArray *TYChooseAvailableTweets(NSArray *tweets){
+NSArray *TYChooseAvailableTweets(NSArray *tweets){
     NSMutableArray *availableTweets = [NSMutableArray array];
     for (NSDictionary *tweet in tweets){
         NSError *error = nil;
         if(TYTweetIsQualified(tweet, &error)) {
             [availableTweets addObject:tweet];
         }
-        NSLog(@"erorr in TYChooseAvailableTweets: %@ ", [error localizedDescription]);
-        //NSCAssert(!error, [error localizedDescription]);
+        if (error){
+            NSLog(@"erorr in TYChooseAvailableTweets: %@ ", [error localizedDescription]);
+        }
+            //NSCAssert(!error, [error localizedDescription]);
     }
     return availableTweets;
+}
+
+/*
+ モックプランで作成したサーバーのレスポンスと同じ形式に変換する（to be depricated）
+ */
+NSDictionary *TYConvertTweetToOldStyle(NSDictionary *oldTweet){
+    NSError *error;
+    NSDictionary *elementsInTweet = TYExtractElementsFromTweet(oldTweet, &error);
+    NSCAssert(!error, [error localizedDescription]); // chooseしたあとなので、ここでエラーは起きないはず
+    NSString * yagi_name = [elementsInTweet objectForKey:@"yaginame"];
+    NSString * content =  [elementsInTweet objectForKey:@"content"];
+    NSString * wara = [oldTweet objectForKey:@"favorite_count"];
+    NSString * date = [oldTweet objectForKey:@"created_at"];
+#warning created_atをもっとわかりやすいけいしきに, 少なくともソートで使えるように
+    NSString * user_name = [[oldTweet objectForKey:@"user"] objectForKey:@"screen_name"];
+    NSString * id_str = [oldTweet objectForKey:@"id_str"];
+    NSCAssert(yagi_name, @"convert error");
+    NSCAssert(content, @"convert error");
+    NSCAssert(wara, @"convert error");
+    NSCAssert(date, @"convert error");
+    NSCAssert(user_name, @"convert error");
+    NSCAssert(id_str, @"convert error");
+    NSDictionary *newTweet = @{@"yagi_name" : yagi_name,
+                               @"content" : content,
+                               @"wara" : wara,
+                               @"date" : date,
+                               @"user_name" : user_name,
+                               @"id" : id_str};
+    return newTweet;
+}
+
+
+NSArray *TYConvertTweetsToOldStyle(NSArray *tweets){
+    NSMutableArray *newTweets = [NSMutableArray array];
+    for (NSDictionary *tweet in tweets){
+        [newTweets addObject:TYConvertTweetToOldStyle(tweet)];
+    }
+    return newTweets;
 }
 
 /*

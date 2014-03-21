@@ -255,6 +255,7 @@ NS_ENUM(NSInteger, TYActionSheets){
         [self.tweetsManager checkSearchResultForRecent:YES
                                           SuccessBlock:^(NSArray *statuses) {
                                               fvvc1.favTweet = statuses;
+                                              NSLog(@"status got:%@", statuses);
                                               [fvvc1.tableView reloadData];
                                               [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
                                           }
