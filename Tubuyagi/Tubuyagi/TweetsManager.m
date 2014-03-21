@@ -50,7 +50,259 @@ NSMutableArray *TYChooseAvailableTweets(NSArray *tweets);
  */
 
 /*************************
+ Twitter API 認証
+ ************************/
+
+//iOSでログイン
+- (void)checkTwitterAccountsWithSuccessBlock:(void(^)(void))successBlock
+                                choicesBlock:(void(^)(NSArray *accounts))choicesblock
+                                  errorBlock:(void(^)(NSError *error))errorBlock{
+	ACAccountStore *accountStore = [[ACAccountStore alloc] init];
+    
+    if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter]) {
+        //Twitterアカウントにアクセスできた場合
+        ACAccountType *accountType;
+        accountType = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
+        //アカウント一覧を取得
+        [accountStore
+         requestAccessToAccountsWithType:accountType
+         options:nil
+         completion:^(BOOL granted, NSError *error) {
+             if (error){
+                 errorBlock(error);
+                 return;
+             }
+             
+             NSArray *accountArray = [accountStore accountsWithAccountType:accountType];
+             if (!granted || accountArray.count == 0){
+                 //注意！simulatorでは常にgrantedがtrueになってしまう
+                 //Twitterアクセスが拒否された場合
+                 NSError *error =[NSError errorWithDomain:TYApplicationDomain
+                                                     code:TYiOSNoTwitterAccount
+                                                 userInfo:@{NSLocalizedDescriptionKey: @"Twitter account is not set in iOS"}];
+                 errorBlock(error);
+                 return;
+             }
+             _twitterAccounts = accountArray;
+             
+             //もし、すでにアカウントが設定されていたら
+             NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+             NSString *identifier = [ud objectForKey:@"TDSelectedAccountIdentifier"];
+             ACAccount *oldAccount = [accountStore accountWithIdentifier:identifier];
+             if (oldAccount){
+                 self.twitterAccount = oldAccount;
+                 successBlock();
+                 return;
+             }
+             if (accountArray.count == 1){
+                 self.twitterAccount = [accountArray objectAtIndex:0];
+                 successBlock();
+                 return;
+             }
+             self.twitterAccount = [accountArray objectAtIndex:0];
+             choicesblock(accountArray);
+         }];
+    } else {
+        //Twitterアクセスが拒否された場合
+        NSError *error =[NSError errorWithDomain:TYApplicationDomain
+                                            code:TYiOSTwitterAccessDenied
+                                        userInfo:@{NSLocalizedDescriptionKey: @"Twitter account access has denied"}];
+        errorBlock(error);
+    }
+}
+
+// OAuthTokenSecretを要求
+- (void)OAuthWithOAuthToken:(NSString *)token
+              OAuthVerifier:(NSString *)verifier
+{
+    
+    [twitterAPIClient postAccessTokenRequestWithPIN:verifier
+                                       successBlock:^(NSString *oauthToken, NSString *oauthTokenSecret, NSString *userID, NSString *screenName) {
+                                           
+                                           _userID = userID;
+                                           self.OAuthToken = twitterAPIClient.oauthAccessToken;
+                                           self.OAuthTokenSecret = twitterAPIClient.oauthAccessTokenSecret;
+                                           _username = screenName;
+                                           successBlockAfterAuthorized(screenName);
+                                           
+                                       } errorBlock:errorBlockAfterAuthorized];
+}
+
+
+//
+// キャッシュされたOAuthTokenでAPI
+//
+- (void)loginTwitterByCachedTokenWithSuccessBlock:(void(^)(NSString *username))successBlock
+                                       errorBlock:(void(^)(NSError *error))errorBlock{
+    NSAssert(self.OAuthToken, @"OAuth token should be cached!");
+    NSAssert(self.OAuthTokenSecret, @"OAuth token secret should be cached!");
+    
+    twitterAPIClient = [STTwitterAPI twitterAPIWithOAuthConsumerKey:TYConsumerKey
+                                                     consumerSecret:TYConsumerSecret
+                                                         oauthToken:self.OAuthToken
+                                                   oauthTokenSecret:self.OAuthTokenSecret];
+    
+    [twitterAPIClient verifyCredentialsWithSuccessBlock:successBlock
+                                             errorBlock:errorBlock];
+}
+
+//
+// Safari経由でAccessTokenを取得してAPI権限を得る
+//
+- (void)loginTwitterInSafariWithSuccessBlock:(void(^)(NSString *username))successBlock
+                                  errorBlock:(void(^)(NSError *error))errorBlock{
+    
+    twitterAPIClient = [STTwitterAPI twitterAPIWithOAuthConsumerKey:TYConsumerKey
+                                                     consumerSecret:TYConsumerSecret];
+    
+    [twitterAPIClient
+     postTokenRequest: ^(NSURL *url, NSString *oauthToken) {
+         //認証成功後の挙動をここで書く
+         successBlockAfterAuthorized = successBlock;
+         errorBlockAfterAuthorized = errorBlock;
+         
+         [[UIApplication sharedApplication] openURL:url];
+     }
+     forceLogin:@(YES)
+     screenName:nil
+     oauthCallback:[NSString stringWithFormat:@"%@://twitter_access_tokens/", TYApplicationScheme ]
+     errorBlock:errorBlock];
+}
+
+/*************************
+ ツイート取得
+ ************************/
+//タイムライン取得
+//参考: http://qiita.com/paming/items/9a6b51fa56915d1f1d64
+- (void)checkTimelineWithSuccessBlock:(void(^)(NSArray *statuses))successBlock
+                           errorBlock:(void(^)(NSError *error))errorBlock;
+{
+    switch (self.authorizeType){
+        case TYAuthorizediOS:
+            [self checkTimelineiOSWithSuccessBlock:successBlock
+                                        errorBlock:errorBlock];
+            break;
+        case TYAuthorizedSafari:
+            [self checkTimelineSafariWithSuccessBlock:successBlock errorBlock:errorBlock];
+            break;
+        default:
+            NSAssert(NO, @"Failed to get timeline");
+            break;
+    }
+}
+
+//タイムライン取得(iOS)
+- (void)checkTimelineiOSWithSuccessBlock:(void (^)(NSArray *))successBlock errorBlock:(void (^)(NSError *))errorBlock{
+    // make request
+    NSURL *url = [NSURL URLWithString:@"https://api.twitter.com/1.1/statuses/home_timeline.json"];
+    NSDictionary *params = @{@"exclude_replies" : @"1",
+                             @"trim_user" : @"0",
+                             @"include_entities" : @"0",
+                             @"contributor_details" : @"0",
+                             @"count" : @"20"};
+    SLRequest *request =
+    [SLRequest requestForServiceType:SLServiceTypeTwitter
+                       requestMethod:SLRequestMethodGET
+                                 URL:url
+                          parameters:params];
+    
+    //  Attach an account to the request
+    [request setAccount:self.twitterAccount];
+    
+    //  Execute the request
+    [request performRequestWithHandler:^(NSData *responseData,
+                                         NSHTTPURLResponse *urlResponse,
+                                         NSError *error) {
+        if (responseData) {
+            if (urlResponse.statusCode >= 200 && urlResponse.statusCode < 300) {
+                NSError *jsonError;
+                NSArray *timelineData =
+                [NSJSONSerialization
+                 JSONObjectWithData:responseData
+                 options:NSJSONReadingAllowFragments error:&jsonError];
+                if (timelineData) {
+                    successBlock(timelineData);
+                } else {
+                    // Our JSON deserialization went awry
+                    NSLog(@"JSON Error: %@", [jsonError localizedDescription]);
+                    errorBlock(jsonError);
+                }
+            } else {
+                // The server did not respond successfully... were we rate-limited?
+                NSLog(@"The response status code is %d", urlResponse.statusCode);
+                errorBlock(error);
+            }
+        }
+    }];
+}
+
+- (void)checkTimelineSafariWithSuccessBlock:successBlock errorBlock:errorBlock{
+    [twitterAPIClient getHomeTimelineSinceID:nil
+                                       count:20
+                                successBlock:successBlock
+                                  errorBlock:errorBlock];
+}
+
+
+/*************************
     ツイート投稿機能関係
+ **************************/
+
+//投稿ウィンドウを開く(iOS認証を行った場合のみ)
+//引数content: ヤギの発言
+// viewのほうに移すべきかも
+- (void)openTweetPostWindowFromViewController:(UIViewController *)viewConttoller
+                                      content:(NSString *)content{
+    NSAssert(self.authorizeType == TYAuthorizediOS, @"This method is only available for iOS Authorization");
+    twitterComposeViewController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
+    
+    [twitterComposeViewController setInitialText:@" #つぶやぎ"];
+    [twitterComposeViewController addURL:[NSURL URLWithString:[self makeTweetURLWithContent:content]]];
+    [twitterComposeViewController addImage:recentScreenShot];
+    
+    twitterComposeViewController.completionHandler = ^(SLComposeViewControllerResult result){
+        if(result == SLComposeViewControllerResultDone){
+            //
+        }else if(result == SLComposeViewControllerResultCancelled){
+            //
+        }
+        [viewConttoller dismissViewControllerAnimated:YES completion:nil];
+    };
+    [viewConttoller presentViewController:twitterComposeViewController animated:YES completion:nil];
+}
+
+
+//ツイート投稿（Safari認証では窓を開けないので直接）
+- (void)postDirectlyTweet:(NSString *)content
+             successBlock:(void(^)(NSDictionary *status))successBlock
+               errorBlock:(void(^)(NSError *error))errorBlock{
+    NSAssert(self.authorizeType == TYAuthorizedSafari, @"This method is only available for Safari Authorization");
+    
+    
+    NSString *tweetURL = [self makeTweetURLWithContent:content];
+    NSString *tweetContent = [NSString stringWithFormat:@"%@のつぶやき：%@… %@ #%@", TYMyYagiName(), [content substringToIndex:5], tweetURL, TYApplicationHashTag];
+    
+    UIImage *screenShot = recentScreenShot;
+    NSData *dataToSend = [[NSData alloc] initWithData:UIImagePNGRepresentation(screenShot)];
+    [twitterAPIClient postStatusUpdate:tweetContent
+                        mediaDataArray:@[dataToSend]
+                     possiblySensitive:nil
+                     inReplyToStatusID:nil
+                              latitude:nil
+                             longitude:nil
+                               placeID:nil
+                    displayCoordinates:nil
+                   uploadProgressBlock:
+     ^(NSInteger bytesWritten, NSInteger totalBytesWritten, NSInteger totalBytesExpectedToWrite) {
+         
+     }
+                          successBlock:successBlock
+                            errorBlock:errorBlock];
+    
+}
+
+/*************************
+ ツイート作成関連機能
  **************************/
 
 /* ハッシュ化
@@ -64,6 +316,46 @@ NSString *TYMakeHashFromTweet(NSString *tweet, NSString*twitterID){
     NSString *hash =[seed SHAStringForAuth];
     return hash;
 }
+
+// 　投稿ヴァリデーション用のURLを作成する
+- (NSString *)makeTweetURLWithContent:(NSString *)content{
+    NSString *hash = TYMakeHashFromTweet(content, self.userID);
+    NSString *yagiNameEncoded = TYEncodeString(TYMyYagiName());
+    NSString *contentEncoded = TYEncodeString(content);
+    
+    NSString *tweetURL = [NSString stringWithFormat:@"%@?auth=%@&yaginame=%@&content=%@",
+                          TYApplicationURI,
+                          hash,
+                          yagiNameEncoded,
+                          contentEncoded];
+    return tweetURL;
+}
+
+/*
+ 投稿用スクリーンショットを撮る
+ 参考 : http://www.yoheim.net/blog.php?q=20130706
+ */
+- (void)takeScreenShot{
+    // キャプチャ対象をWindowに
+    UIWindow *window = [[UIApplication sharedApplication] keyWindow];
+    
+    // キャプチャ画像を描画する対象を生成
+    UIGraphicsBeginImageContextWithOptions(window.bounds.size, NO, 0.0f);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    // Windowの現在の表示内容を１つずつ描画
+    for (UIWindow *aWindow in [[UIApplication sharedApplication] windows]) {
+        [aWindow.layer renderInContext:context];
+    }
+    
+    // 描画した内容をUIImageとして受け取る
+    UIImage *capturedImage = UIGraphicsGetImageFromCurrentImageContext();
+    
+    UIGraphicsEndImageContext();
+    
+    recentScreenShot = capturedImage;
+}
+
 
 /*
  URL形式へのエンコード・デコード
@@ -97,6 +389,11 @@ NSString *TYMyYagiName(void){
     NSCAssert(yagiName, @"yagi name がTDYaginameに設定されていない");
     return yagiName;
 }
+
+/**************************
+ ツイート正規チェック
+ *************************/
+
 
 /*
  そのツイートの|hash|が正規のものかをチェック
@@ -232,297 +529,6 @@ NSMutableArray *TYChooseAvailableTweets(NSArray *tweets){
     }
     return availableTweets;
 }
-
-
-/*************************
-     Twitter API 認証
- ************************/
-
-//iOSでログイン
-- (void)checkTwitterAccountsWithSuccessBlock:(void(^)(void))successBlock
-                                choicesBlock:(void(^)(NSArray *accounts))choicesblock
-                                  errorBlock:(void(^)(NSError *error))errorBlock{
-	ACAccountStore *accountStore = [[ACAccountStore alloc] init];
-    
-    if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter]) {
-        //Twitterアカウントにアクセスできた場合
-        ACAccountType *accountType;
-        accountType = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
-        //アカウント一覧を取得
-        [accountStore
-         requestAccessToAccountsWithType:accountType
-         options:nil
-         completion:^(BOOL granted, NSError *error) {
-             if (error){
-                 errorBlock(error);
-                 return;
-             }
-
-             NSArray *accountArray = [accountStore accountsWithAccountType:accountType];
-             if (!granted || accountArray.count == 0){
-                 //注意！simulatorでは常にgrantedがtrueになってしまう
-                 //Twitterアクセスが拒否された場合
-                 NSError *error =[NSError errorWithDomain:TYApplicationDomain
-                                                     code:TYiOSNoTwitterAccount
-                                                 userInfo:@{NSLocalizedDescriptionKey: @"Twitter account is not set in iOS"}];
-                 errorBlock(error);
-                 return;
-             }
-             _twitterAccounts = accountArray;
-
-             //もし、すでにアカウントが設定されていたら
-             NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-             NSString *identifier = [ud objectForKey:@"TDSelectedAccountIdentifier"];
-             ACAccount *oldAccount = [accountStore accountWithIdentifier:identifier];
-             if (oldAccount){
-                 self.twitterAccount = oldAccount;
-                 successBlock();
-                 return;
-             }
-             if (accountArray.count == 1){
-                 self.twitterAccount = [accountArray objectAtIndex:0];
-                 successBlock();
-                 return;
-             }
-             self.twitterAccount = [accountArray objectAtIndex:0];
-             choicesblock(accountArray);
-         }];
-    } else {
-        //Twitterアクセスが拒否された場合
-        NSError *error =[NSError errorWithDomain:TYApplicationDomain
-                                            code:TYiOSTwitterAccessDenied
-                                        userInfo:@{NSLocalizedDescriptionKey: @"Twitter account access has denied"}];
-        errorBlock(error);
-    }
-}
-
-
-/*************************
- Twitter機能利用
- ************************/
-//タイムライン取得
-//参考: http://qiita.com/paming/items/9a6b51fa56915d1f1d64
-- (void)checkTimelineWithSuccessBlock:(void(^)(NSArray *statuses))successBlock
-                           errorBlock:(void(^)(NSError *error))errorBlock;
-{
-    switch (self.authorizeType){
-        case TYAuthorizediOS:
-            [self checkTimelineiOSWithSuccessBlock:successBlock
-                                        errorBlock:errorBlock];
-            break;
-        case TYAuthorizedSafari:
-            [self checkTimelineSafariWithSuccessBlock:successBlock errorBlock:errorBlock];
-            break;
-        default:
-            NSAssert(NO, @"Failed to get timeline");
-            break;
-    }
-}
-
-//タイムライン取得(iOS)
-- (void)checkTimelineiOSWithSuccessBlock:(void (^)(NSArray *))successBlock errorBlock:(void (^)(NSError *))errorBlock{
-    // make request
-    NSURL *url = [NSURL URLWithString:@"https://api.twitter.com/1.1/statuses/home_timeline.json"];
-    NSDictionary *params = @{@"exclude_replies" : @"1",
-                             @"trim_user" : @"0",
-                             @"include_entities" : @"0",
-                             @"contributor_details" : @"0",
-                             @"count" : @"20"};
-    SLRequest *request =
-    [SLRequest requestForServiceType:SLServiceTypeTwitter
-                       requestMethod:SLRequestMethodGET
-                                 URL:url
-                          parameters:params];
-    
-    //  Attach an account to the request
-    [request setAccount:self.twitterAccount];
-    
-    //  Execute the request
-    [request performRequestWithHandler:^(NSData *responseData,
-                                         NSHTTPURLResponse *urlResponse,
-                                         NSError *error) {
-        if (responseData) {
-            if (urlResponse.statusCode >= 200 && urlResponse.statusCode < 300) {
-                NSError *jsonError;
-                NSArray *timelineData =
-                [NSJSONSerialization
-                 JSONObjectWithData:responseData
-                 options:NSJSONReadingAllowFragments error:&jsonError];
-                if (timelineData) {
-                    successBlock(timelineData);
-                } else {
-                    // Our JSON deserialization went awry
-                    NSLog(@"JSON Error: %@", [jsonError localizedDescription]);
-                    errorBlock(jsonError);
-                }
-            } else {
-                // The server did not respond successfully... were we rate-limited?
-                NSLog(@"The response status code is %d", urlResponse.statusCode);
-                errorBlock(error);
-            }
-        }
-    }];
-}
-
-- (void)checkTimelineSafariWithSuccessBlock:successBlock errorBlock:errorBlock{
-    [twitterAPIClient getHomeTimelineSinceID:nil
-                                       count:20
-                                successBlock:successBlock
-                                  errorBlock:errorBlock];
-}
-
-
-// 　投稿ヴァリデーション用のURLを作成する
-- (NSString *)makeTweetURLWithContent:(NSString *)content{
-    NSString *hash = TYMakeHashFromTweet(content, self.userID);
-    NSString *yagiNameEncoded = TYEncodeString(TYMyYagiName());
-    NSString *contentEncoded = TYEncodeString(content);
-    
-    NSString *tweetURL = [NSString stringWithFormat:@"%@?auth=%@&yaginame=%@&content=%@",
-                          TYApplicationURI,
-                          hash,
-                          yagiNameEncoded,
-                          contentEncoded];
-    return tweetURL;
-}
-
-/*
- 投稿用スクリーンショットを撮る
- 参考 : http://www.yoheim.net/blog.php?q=20130706
- */
-- (void)takeScreenShot{
-    // キャプチャ対象をWindowに
-    UIWindow *window = [[UIApplication sharedApplication] keyWindow];
-    
-    // キャプチャ画像を描画する対象を生成
-    UIGraphicsBeginImageContextWithOptions(window.bounds.size, NO, 0.0f);
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    
-    // Windowの現在の表示内容を１つずつ描画
-    for (UIWindow *aWindow in [[UIApplication sharedApplication] windows]) {
-        [aWindow.layer renderInContext:context];
-    }
-    
-    // 描画した内容をUIImageとして受け取る
-    UIImage *capturedImage = UIGraphicsGetImageFromCurrentImageContext();
-    
-    UIGraphicsEndImageContext();
-    
-    recentScreenShot = capturedImage;
-}
-
-
-//投稿ウィンドウを開く(iOS認証を行った場合のみ)
-//引数content: ヤギの発言
-// viewのほうに移すべきかも
-- (void)openTweetPostWindowFromViewController:(UIViewController *)viewConttoller
-                                      content:(NSString *)content{
-    NSAssert(self.authorizeType == TYAuthorizediOS, @"This method is only available for iOS Authorization");
-    twitterComposeViewController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
-    
-    [twitterComposeViewController setInitialText:@" #つぶやぎ"];
-    [twitterComposeViewController addURL:[NSURL URLWithString:[self makeTweetURLWithContent:content]]];
-    [twitterComposeViewController addImage:recentScreenShot];
-
-    twitterComposeViewController.completionHandler = ^(SLComposeViewControllerResult result){
-        if(result == SLComposeViewControllerResultDone){
-            //
-        }else if(result == SLComposeViewControllerResultCancelled){
-            //
-        }
-        [viewConttoller dismissViewControllerAnimated:YES completion:nil];
-    };
-    [viewConttoller presentViewController:twitterComposeViewController animated:YES completion:nil];
-}
-
-
-//ツイート投稿（Safari認証では窓を開けないので直接）
-- (void)postDirectlyTweet:(NSString *)content
-             successBlock:(void(^)(NSDictionary *status))successBlock
-               errorBlock:(void(^)(NSError *error))errorBlock{
-    NSAssert(self.authorizeType == TYAuthorizedSafari, @"This method is only available for Safari Authorization");
-
-    
-    NSString *tweetURL = [self makeTweetURLWithContent:content];
-    NSString *tweetContent = [NSString stringWithFormat:@"%@のつぶやき：%@… %@ #%@", TYMyYagiName(), [content substringToIndex:5], tweetURL, TYApplicationHashTag];
-    
-    UIImage *screenShot = recentScreenShot;
-    NSData *dataToSend = [[NSData alloc] initWithData:UIImagePNGRepresentation(screenShot)];
-    [twitterAPIClient postStatusUpdate:tweetContent
-                         mediaDataArray:@[dataToSend]
-                      possiblySensitive:nil
-                      inReplyToStatusID:nil
-                               latitude:nil
-                              longitude:nil
-                                placeID:nil
-                     displayCoordinates:nil
-                    uploadProgressBlock:
-     ^(NSInteger bytesWritten, NSInteger totalBytesWritten, NSInteger totalBytesExpectedToWrite) {
-         
-     }
-                           successBlock:successBlock
-                             errorBlock:errorBlock];
-    
-}
-
-// OAuthTokenSecretを要求
-- (void)OAuthWithOAuthToken:(NSString *)token
-              OAuthVerifier:(NSString *)verifier
-{
-
-    [twitterAPIClient postAccessTokenRequestWithPIN:verifier
-                                       successBlock:^(NSString *oauthToken, NSString *oauthTokenSecret, NSString *userID, NSString *screenName) {
-
-                                           _userID = userID;
-                                           self.OAuthToken = twitterAPIClient.oauthAccessToken;
-                                           self.OAuthTokenSecret = twitterAPIClient.oauthAccessTokenSecret;
-                                           _username = screenName;
-                                           successBlockAfterAuthorized(screenName);
-        
-    } errorBlock:errorBlockAfterAuthorized];
-}
-
-
-//
-// キャッシュされたOAuthTokenでAPI
-//
-- (void)loginTwitterByCachedTokenWithSuccessBlock:(void(^)(NSString *username))successBlock
-                                       errorBlock:(void(^)(NSError *error))errorBlock{
-    NSAssert(self.OAuthToken, @"OAuth token should be cached!");
-    NSAssert(self.OAuthTokenSecret, @"OAuth token secret should be cached!");
-    
-    twitterAPIClient = [STTwitterAPI twitterAPIWithOAuthConsumerKey:TYConsumerKey
-                                                     consumerSecret:TYConsumerSecret
-                                                         oauthToken:self.OAuthToken
-                                                   oauthTokenSecret:self.OAuthTokenSecret];
-    
-    [twitterAPIClient verifyCredentialsWithSuccessBlock:successBlock
-                                             errorBlock:errorBlock];
-}
-
-//
-// Safari経由でAccessTokenを取得してAPI権限を得る
-//
-- (void)loginTwitterInSafariWithSuccessBlock:(void(^)(NSString *username))successBlock
-                                  errorBlock:(void(^)(NSError *error))errorBlock{
-    
-    twitterAPIClient = [STTwitterAPI twitterAPIWithOAuthConsumerKey:TYConsumerKey
-                                                     consumerSecret:TYConsumerSecret];
-    
-    [twitterAPIClient
-     postTokenRequest: ^(NSURL *url, NSString *oauthToken) {
-         //認証成功後の挙動をここで書く
-         successBlockAfterAuthorized = successBlock;
-         errorBlockAfterAuthorized = errorBlock;
-         
-         [[UIApplication sharedApplication] openURL:url];
-     }
-                             forceLogin:@(YES)
-                             screenName:nil
-                         oauthCallback:[NSString stringWithFormat:@"%@://twitter_access_tokens/", TYApplicationScheme ]
-                             errorBlock:errorBlock];
-}
-
 
 /*
  getter, setter
