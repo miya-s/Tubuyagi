@@ -684,6 +684,9 @@
 				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = "Genki Ishibashi";
 				TargetAttributes = {
+					374D792517D822CF00FAE80C = {
+						DevelopmentTeam = 46H7VMNQ92;
+					};
 					4AE36E5C18D2206F000A8084 = {
 						TestTargetID = 374D792517D822CF00FAE80C;
 					};
@@ -948,13 +951,14 @@
 		374D794A17D822D000FAE80C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Tubuyagi/Tubuyagi-Prefix.pch";
 				INFOPLIST_FILE = "Tubuyagi/Tubuyagi-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "4B42FD45-9B39-4665-AFF3-E15B7876D52F";
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				WRAPPER_EXTENSION = app;
 			};
@@ -963,13 +967,14 @@
 		374D794B17D822D000FAE80C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Tubuyagi/Tubuyagi-Prefix.pch";
 				INFOPLIST_FILE = "Tubuyagi/Tubuyagi-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "4B42FD45-9B39-4665-AFF3-E15B7876D52F";
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				WRAPPER_EXTENSION = app;
 			};

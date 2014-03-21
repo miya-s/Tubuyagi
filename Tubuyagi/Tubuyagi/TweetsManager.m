@@ -10,7 +10,7 @@
 
 #import "NSString+SHA.h"
 #import "AuthentificationKeys.h"
-// AuthentificationKeysはgitの管理外にあります。ほしい人は kan.tan.san @ gmail.com まで
+// !!!: AuthentificationKeysはgitの管理外にあります。ほしい人は kan.tan.san @ gmail.com まで
 #import <CoreGraphics/CoreGraphics.h>
 #import <QuartzCore/QuartzCore.h>
 
@@ -39,18 +39,7 @@ BOOL TYTweetIsQualified(NSDictionary *tweet, NSError** error);
 NSArray *TYChooseAvailableTweets(NSArray *tweets);
 NSArray *TYConvertTweetsToOldStyle(NSArray *tweets);
 
-/*
- ツイートの管理を行うクラス
- 
- 主な機能:
- ・ツイートの取得
- 　・学習に食わせる用ツイート
- 　・ランキングのツイート
-     ・ツイートの判定
- ・ツイートの投稿
- 
- TODO ModelとControllerの分離
- */
+// TODO: ModelとControllerの分離
 
 - (id) init{
     NSAssert(!singleTweetsManager, @"tweets manager should be single");
@@ -61,11 +50,10 @@ NSArray *TYConvertTweetsToOldStyle(NSArray *tweets);
 }
 
 
-/*************************
- Twitter API 認証
- ************************/
+#pragma mark -Twitter認証
 
 //iOSでログイン
+// !!!:simulatorでは常にgrantedがtrueになってしまう
 - (void)checkTwitterAccountsWithSuccessBlock:(void(^)(void))successBlock
                                 choicesBlock:(void(^)(NSArray *accounts))choicesblock
                                   errorBlock:(void(^)(NSError *error))errorBlock{
@@ -87,7 +75,6 @@ NSArray *TYConvertTweetsToOldStyle(NSArray *tweets);
              
              NSArray *accountArray = [accountStore accountsWithAccountType:accountType];
              if (!granted || accountArray.count == 0){
-                 //注意！simulatorでは常にgrantedがtrueになってしまう
                  //Twitterアクセスが拒否された場合
                  NSError *error =[NSError errorWithDomain:TYApplicationDomain
                                                      code:TYiOSNoTwitterAccount
@@ -181,9 +168,7 @@ NSArray *TYConvertTweetsToOldStyle(NSArray *tweets);
      errorBlock:errorBlock];
 }
 
-/*************************
- ツイート取得
- ************************/
+#pragma mark -ツイート取得
 //タイムライン取得
 //参考: http://qiita.com/paming/items/9a6b51fa56915d1f1d64
 - (void)checkTimelineWithSuccessBlock:(void(^)(NSArray *statuses))successBlock
@@ -220,13 +205,11 @@ NSArray *TYConvertTweetsToOldStyle(NSArray *tweets);
                                     errorBlock:errorBlock];
 }
 
-/*************************
-    ツイート投稿機能関係
- **************************/
+#pragma mark -ツイート投稿
 
 //投稿ウィンドウを開く(iOS認証を行った場合のみ)
 //引数content: ヤギの発言
-// viewのほうに移すべきかも
+// TODO: ウィンドウを開くような処理はViewに移す
 - (void)openTweetPostWindowFromViewController:(UIViewController *)viewConttoller
                                       content:(NSString *)content{
     NSAssert(self.authorizeType == TYAuthorizediOS, @"This method is only available for iOS Authorization");
@@ -281,9 +264,7 @@ NSArray *TYConvertTweetsToOldStyle(NSArray *tweets);
     
 }
 
-/*************************
- ツイート作成関連機能
- **************************/
+#pragma mark -ツイート作成
 
 /* ハッシュ化
  ハッシュ化する際は、投稿者の情報も必要 bacause ユーザー情報をハッシュの種にしないと、パクツイできてしまう
@@ -291,6 +272,8 @@ NSArray *TYConvertTweetsToOldStyle(NSArray *tweets);
     注意！！idは使わない、id_strを使う because idは桁落ちする可能性がある
     TweetにもUserにもid_str属性があるので混同しないように。
  */
+// !!!:idは使わない、id_strを使う
+// !!!:tweetのidとuserのidを混同しない
 NSString *TYMakeHashFromTweet(NSString *tweet, NSString*twitterID){
     NSString *seed=[twitterID stringByAppendingString:tweet];
     NSString *hash =[seed SHAStringForAuth];
@@ -372,11 +355,7 @@ NSString *TYMyYagiName(void){
     return yagiName;
 }
 
-/**************************
- ツイート正規チェック
- *************************/
-
-
+#pragma mark -正規のツイートかチェック
 /*
  そのツイートの|hash|が正規のものかをチェック
  */
@@ -553,9 +532,19 @@ NSArray *TYConvertTweetsToOldStyle(NSArray *tweets){
     return newTweets;
 }
 
-/*
- getter, setter
- */
+#pragma mark -getter and setter
+
+#define TYGetUDIfNil(key, object) \
+if (!object){\
+NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];\
+object = [ud objectForKey: key ];\
+}
+
+#define TYSetUD(key, object) \
+NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];\
+[ud setObject: object forKey: key ];\
+[ud synchronize]
+
 //twitterAccountのセッタ
 - (void)setTwitterAccount:(ACAccount *)newTwitterAccount{
     _twitterAccount = newTwitterAccount;
@@ -563,9 +552,7 @@ NSArray *TYConvertTweetsToOldStyle(NSArray *tweets){
     self.userID = [_twitterAccount valueForKeyPath:@"properties.user_id"];
 
     //一度設定したアカウントを保持
-    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-    [ud setObject:_twitterAccount.identifier forKey:@"TDSelectedAccountIdentifier"];
-    [ud synchronize];
+    TYSetUD(@"TDSelectedAccountIdentifier", _twitterAccount.identifier);
     
     //APIClientを切り替え
     twitterAPIClient = [STTwitterAPI twitterAPIOSWithAccount:newTwitterAccount];
@@ -580,17 +567,6 @@ void TYSetUserDefault(NSString* key, id object){
     [ud setObject:object forKey: key];
     [ud synchronize];
 }
-
-#define TYGetUDIfNil(key, object) \
-if (!object){\
-    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];\
-    object = [ud objectForKey: key ];\
-}
-
-#define TYSetUD(key, object) \
-NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];\
-[ud setObject: object forKey: key ];\
-[ud synchronize]
 
 - (void)setOAuthToken:(NSString *)newOAuthToken{
     OAuthToken = newOAuthToken;
@@ -616,7 +592,7 @@ NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];\
     if (self.twitterAccount){
         return TYAuthorizediOS;
     }
-    // TODO もっと正確な判定
+    // TODO: もっと正確な判定
     if (self.OAuthToken && self.OAuthTokenSecret){
         return TYAuthorizedSafari;
     }
