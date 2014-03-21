@@ -8,6 +8,7 @@
 
 #import "FavoriteCustomVIewCell.h"
 #import "BasicRequest.h"
+#import "TweetsManager.h"
 
 @implementation FavoriteCustomVIewCell
 
@@ -109,24 +110,20 @@
 
 - (void)pushButton:(UIButton *)btn
 {
-    NSLog(@"wara");
-
-    long long userId = [self.userID longLongValue];
-    bool result = addWaraToOthersTubuyaki(userId, self.lblTweet.text, [NSDate date]);
-    NSLog(@"userID = %lld, text = %@, date = %@", userId, self.lblTweet.text, [NSDate date]);
-    
-    //お気に入りの数字を増やす
-    if (result){
-    }
-    int i = [_lblFavNumber.text intValue];
-    i++;
-    _lblFavNumber.text = [NSString stringWithFormat:@"%d", i];
-    
-    [self disabledButton:btn];
-    
-//    btn setTitle:<#(NSString *)#> forState:<#(UIControlState)#>
-    
-    
+    [singleTweetsManager addFavoriteToStatusID:self.userID
+                                  successBlock:^(NSDictionary *status) {
+                                      //お気に入りの数字を増やす
+                                      dispatch_async(dispatch_get_main_queue(), ^{
+                                          int i = [_lblFavNumber.text intValue];
+                                          i++;
+                                          _lblFavNumber.text = [NSString stringWithFormat:@"%d", i];
+                                          [self disabledButton:btn];
+                                      });
+                                      
+                                  } errorBlock:^(NSError *error) {
+                                    //すでにお気に入りしていた場合
+                                      NSAssert(error, [error localizedDescription]);
+                                  }];
 }
 
 - (void)disabledButton:(UIButton *)btn

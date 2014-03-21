@@ -48,7 +48,7 @@ __weak TweetsManager *singleTweetsManager;
  アカウントページ: https://apps.twitter.com/app/5905926
  */
 
-/* 認証エントリ */
+#pragma mark 認証エントリ
 - (void)checkTwitterAccountsWithSuccessBlock:(void(^)(void))successBlock
                                 choicesBlock:(void(^)(NSArray *accounts))choicesBlock
                                   errorBlock:(void(^)(NSError *error))errorBlock;
@@ -62,16 +62,21 @@ __weak TweetsManager *singleTweetsManager;
 - (void)OAuthWithOAuthToken:(NSString *)token
               OAuthVerifier:(NSString *)verifier;
 
-/* タイムライン取得 */
+#pragma mark タイムライン取得
 - (void)checkTimelineWithSuccessBlock:(void(^)(NSArray *statuses))successBlock
                            errorBlock:(void(^)(NSError *error))errorBlock;
 
-//検索結果取得
+#pragma mark 検索結果取得
 - (void)checkSearchResultForRecent:(BOOL)isRecent
                       SuccessBlock:(void(^)(NSArray *statuses))successBlock
                         errorBlock:(void(^)(NSError *error))errorBlock;
 
-/* 投稿 */
+#pragma mark お気に入り追加
+- (void)addFavoriteToStatusID:(NSString *)statusID
+                 successBlock:(void(^)(NSDictionary *status))successBlock
+                   errorBlock:(void(^)(NSError *error))errorBlock;
+
+#pragma mark 投稿
 - (void)openTweetPostWindowFromViewController:(UIViewController *)viewConttoller
                                       content:(NSString *)content;
 
@@ -80,4 +85,8 @@ __weak TweetsManager *singleTweetsManager;
                errorBlock:(void(^)(NSError *error))errorBlock;
 
 - (void)takeScreenShot;
+
+
+                    
+
 @end

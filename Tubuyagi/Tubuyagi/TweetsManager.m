@@ -57,6 +57,7 @@ NSArray *TYChooseAvailableTweets(NSArray *tweets);
 NSArray *TYConvertTweetsToOldStyle(NSArray *tweets);
 
 // TODO: ModelとControllerの分離
+// TODO: 取ってきたstatusはこっちで管理したい。変更されたらreloadを呼ぶ的な
 
 - (id) init{
     NSAssert(!singleTweetsManager, @"tweets manager should be single");
@@ -279,6 +280,20 @@ NSArray *TYConvertTweetsToOldStyle(NSArray *tweets);
                           successBlock:successBlock
                             errorBlock:errorBlock];
     
+}
+
+#pragma mark -お気に入り追加
+// !!!:ErrorBlockはすでにお気に入りしていた場合も？
+
+- (void)addFavoriteToStatusID:(NSString *)statusID
+                 successBlock:(void(^)(NSDictionary *status))successBlock
+                   errorBlock:(void(^)(NSError *error))errorBlock{
+
+    [_twitterAPIClient postFavoriteState:YES
+                             forStatusID:statusID
+                            successBlock:successBlock
+                              errorBlock:errorBlock];
+
 }
 
 #pragma mark -ツイート作成
