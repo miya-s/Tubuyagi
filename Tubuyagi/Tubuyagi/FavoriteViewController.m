@@ -9,6 +9,7 @@
 #import "FavoriteViewController.h"
 #import "BasicRequest.h"
 #import "MarkovTextGenerator.h"
+#import "TweetsManager.h"
 
 @interface FavoriteViewController ()
 
@@ -234,15 +235,31 @@
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
     
     if ([self.tabBarItem.title isEqualToString:@"新着"]) {
-        getJSONRecents(0,20,^(NSArray*result){
-            self.favTweet = result;
-            [self taskFinished];
-        });
+        __block __weak FavoriteViewController *weakself = self;
+        [singleTweetsManager checkSearchResultForRecent:YES
+                                          SuccessBlock:^(NSArray *statuses) {
+                                              weakself.favTweet = statuses;
+                                              NSLog(@"status got:%@", statuses);
+                                              [weakself taskFinished];
+                                              [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+                                          }
+                                            errorBlock:^(NSError *error) {
+                                                NSAssert(!error, [error localizedDescription]);
+                                                [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+                                            }];
     }else if ([self.tabBarItem.title isEqualToString:@"人気"]){
-        getJSONTops(0, 20, ^(NSArray *result){
-            self.favTweet = result;
-            [self taskFinished];
-        });
+        __block __weak FavoriteViewController *weakself = self;
+        [singleTweetsManager checkSearchResultForRecent:NO
+                                           SuccessBlock:^(NSArray *statuses) {
+                                               weakself.favTweet = statuses;
+                                               NSLog(@"status got:%@", statuses);
+                                               [weakself taskFinished];
+                                               [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+                                           }
+                                             errorBlock:^(NSError *error) {
+                                                 NSAssert(!error, [error localizedDescription]);
+                                                 [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+                                             }];
     }
     
     

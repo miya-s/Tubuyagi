@@ -263,17 +263,18 @@ NS_ENUM(NSInteger, TYActionSheets){
                                                 NSAssert(!error, [error localizedDescription]);
                                                 [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
                                             }];
-        /*getJSONRecents(0, 20, ^(NSArray *result){
-            fvvc1.favTweet = result;
-            [fvvc1.tableView reloadData];
-            [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-        });*/
     }else if (vc == fvvc2){
-        getJSONTops(0, 20, ^(NSArray *result){
-            fvvc2.favTweet = result;
-            [fvvc2.tableView reloadData];
-            [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-        });
+        [self.tweetsManager checkSearchResultForRecent:NO
+                                          SuccessBlock:^(NSArray *statuses) {
+                                              fvvc2.favTweet = statuses;
+                                              NSLog(@"status got:%@", statuses);
+                                              [fvvc2.tableView reloadData];
+                                              [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+                                          }
+                                            errorBlock:^(NSError *error) {
+                                                NSAssert(!error, [error localizedDescription]);
+                                                [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+                                            }];
     }
 }
 

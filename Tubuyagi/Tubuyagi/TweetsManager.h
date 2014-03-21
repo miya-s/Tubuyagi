@@ -29,6 +29,8 @@ NS_ENUM(NSInteger, TYTweetQualificationError){
     TYiOSNoTwitterAccount
 };
 
+@class TweetsManager;
+__weak TweetsManager *singleTweetsManager;
 
 @interface TweetsManager : NSObject
 {

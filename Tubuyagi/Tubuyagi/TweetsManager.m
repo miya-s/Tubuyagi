@@ -52,6 +52,15 @@ NSArray *TYConvertTweetsToOldStyle(NSArray *tweets);
  TODO ModelとControllerの分離
  */
 
+- (id) init{
+    NSAssert(!singleTweetsManager, @"tweets manager should be single");
+    if (self = [super init]) {
+        singleTweetsManager = self;
+    }
+    return self;
+}
+
+
 /*************************
  Twitter API 認証
  ************************/
