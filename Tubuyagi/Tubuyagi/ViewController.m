@@ -252,11 +252,21 @@ NS_ENUM(NSInteger, TYActionSheets){
 
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
     if (vc == fvvc1) {
-        getJSONRecents(0, 20, ^(NSArray *result){
+        [self.tweetsManager checkSearchResultForRecent:YES
+                                          SuccessBlock:^(NSArray *statuses) {
+                                              fvvc1.favTweet = statuses;
+                                              [fvvc1.tableView reloadData];
+                                              [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+                                          }
+                                            errorBlock:^(NSError *error) {
+                                                NSAssert(!error, [error localizedDescription]);
+                                                [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+                                            }];
+        /*getJSONRecents(0, 20, ^(NSArray *result){
             fvvc1.favTweet = result;
             [fvvc1.tableView reloadData];
             [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-        });
+        });*/
     }else if (vc == fvvc2){
         getJSONTops(0, 20, ^(NSArray *result){
             fvvc2.favTweet = result;
@@ -454,7 +464,6 @@ NS_ENUM(NSInteger, TYActionSheets){
          if (weakSelf.tweetsManager.cachedOAuth){
              [weakSelf.tweetsManager loginTwitterByCachedTokenWithSuccessBlock:
               ^(NSString *username) {
-                  self.tweetsManager.username = username;
                   [weakSelf performSelectorOnMainThread:@selector(loadTwitterUserInfo)
                                              withObject:nil
                                           waitUntilDone:YES];

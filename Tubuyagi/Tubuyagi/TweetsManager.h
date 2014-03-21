@@ -48,7 +48,7 @@ NS_ENUM(NSInteger, TYTweetQualificationError){
 @property(readwrite) ACAccount* twitterAccount;
 @property(readonly) NSArray *twitterAccounts;
 @property(readonly) NSInteger authorizeType;
-@property(readwrite) NSString *username;
+@property(readonly) NSString *username;
 @property(readonly) NSString *userID;
 @property(readonly) BOOL cachedOAuth;
 /*
@@ -74,6 +74,11 @@ NS_ENUM(NSInteger, TYTweetQualificationError){
 /* タイムライン取得 */
 - (void)checkTimelineWithSuccessBlock:(void(^)(NSArray *statuses))successBlock
                            errorBlock:(void(^)(NSError *error))errorBlock;
+
+//検索結果取得
+- (void)checkSearchResultForRecent:(BOOL)isRecent
+                      SuccessBlock:(void(^)(NSArray *statuses))successBlock
+                        errorBlock:(void(^)(NSError *error))errorBlock;
 
 /* 投稿 */
 - (void)openTweetPostWindowFromViewController:(UIViewController *)viewConttoller

@@ -25,6 +25,8 @@ NSString * const TYApplicationScheme = @"tubuyagi";
 NSString * const TYApplicationDomain = @"I.GA.Tubuyagi";
 NSString * const TYApplicationURI = @"https://github.com/miya-s/Tubuyagi";
 NSString * const TYApplicationHashTag = @"つぶやぎ";
+NSInteger const TYContentMaxLength = 5;
+
 
 NSString *TYEncodeString(NSString *plainString);
 NSString *TYMakeHashFromTweet(NSString *tweet, NSString*twitterID);
@@ -119,7 +121,7 @@ NSMutableArray *TYChooseAvailableTweets(NSArray *tweets);
     [twitterAPIClient postAccessTokenRequestWithPIN:verifier
                                        successBlock:^(NSString *oauthToken, NSString *oauthTokenSecret, NSString *userID, NSString *screenName) {
                                            
-                                           _userID = userID;
+                                           self.userID = userID;
                                            self.OAuthToken = twitterAPIClient.oauthAccessToken;
                                            self.OAuthTokenSecret = twitterAPIClient.oauthAccessTokenSecret;
                                            _username = screenName;
@@ -184,29 +186,26 @@ NSMutableArray *TYChooseAvailableTweets(NSArray *tweets);
 }
 
 //検索結果取得
-- (void)checkSearchResultWithSuccessBlock:(void(^)(NSArray *statuses))successBlock
-                               errorBlock:(void(^)(NSError *error))errorBlock;
+- (void)checkSearchResultForRecent:(BOOL)isRecent
+                      SuccessBlock:(void(^)(NSArray *statuses))successBlock
+                        errorBlock:(void(^)(NSError *error))errorBlock;
 {
-    switch (self.authorizeType){
-        case TYAuthorizediOS:
-
-            break;
-        case TYAuthorizedSafari:
-            /*
-            [twitterAPIClient getSearchTweetsWithQuery:@"#つぶやぎ" geocode:nil lang:@"ja" locale:@"ja" resultType:@"recent" count:@"20" until:nil sinceID:nil maxID:nil includeEntities:[[NSNumber alloc] initWithInt:1] callback:nil
-                                 successBlock:^(NSDictionary *searchMetadata, NSArray *  statuses){
-                                     NSLog(@"AvailTweets: %@", [TweetsManager getAvailableTweets:statuses]);
-                                 }
-             
-                                   errorBlock:^(NSError *error){
-                                       NSLog(@"HashTag: Failed");
-                                   }];
-             */
-            break;
-        default:
-            NSAssert(NO, @"Failed to get search result");
-            break;
-    }
+    [twitterAPIClient getSearchTweetsWithQuery:@"#つぶやぎ"
+                                       geocode:nil
+                                          lang:@"ja"
+                                        locale:@"ja"
+                                    resultType:isRecent ? @"recent" : @"popular"
+                                         count:@"20"
+                                         until:nil
+                                       sinceID:nil
+                                         maxID:nil
+                               includeEntities:[[NSNumber alloc] initWithInt:1] callback:nil
+                                  successBlock:^(NSDictionary *searchMetadata, NSArray *  statuses){
+                                      NSArray *tubuyaki = TYChooseAvailableTweets(statuses);
+                                      successBlock(tubuyaki);
+                                  }
+     
+                                    errorBlock:errorBlock];
 }
 
 /*************************
@@ -245,7 +244,11 @@ NSMutableArray *TYChooseAvailableTweets(NSArray *tweets);
     
     
     NSString *tweetURL = [self makeTweetURLWithContent:content];
-    NSString *tweetContent = [NSString stringWithFormat:@"%@のつぶやき：%@… %@ #%@", TYMyYagiName(), [content substringToIndex:5], tweetURL, TYApplicationHashTag];
+    NSString *shortenContent = content;
+    if (content.length > TYContentMaxLength){
+        content = [NSString stringWithFormat:@"%@…" , [content substringFromIndex:TYContentMaxLength]];
+    }
+    NSString *tweetContent = [NSString stringWithFormat:@"%@：%@ %@ #%@", TYMyYagiName(), shortenContent, tweetURL, TYApplicationHashTag];
     
     UIImage *screenShot = recentScreenShot;
     NSData *dataToSend = [[NSData alloc] initWithData:UIImagePNGRepresentation(screenShot)];
@@ -282,12 +285,14 @@ NSString *TYMakeHashFromTweet(NSString *tweet, NSString*twitterID){
     return hash;
 }
 
-// 　投稿ヴァリデーション用のURLを作成する
+// 　投稿用のURLを作成する
 - (NSString *)makeTweetURLWithContent:(NSString *)content{
     NSString *hash = TYMakeHashFromTweet(content, self.userID);
     NSString *yagiNameEncoded = TYEncodeString(TYMyYagiName());
     NSString *contentEncoded = TYEncodeString(content);
-    
+    NSAssert(hash, @"null hash");
+    NSAssert(yagiNameEncoded, @"null yaginame");
+    NSAssert(contentEncoded, @"null content");
     NSString *tweetURL = [NSString stringWithFormat:@"%@?auth=%@&yaginame=%@&content=%@",
                           TYApplicationURI,
                           hash,
@@ -455,7 +460,7 @@ BOOL TYTweetIsQualified(NSDictionary *tweet, NSError** error){
         }
         return NO;
     }
-    NSString* userID = (NSString *)[[tweet objectForKey:@"user"] objectForKey:@"id_str"];
+    NSString* userIDForTweet = (NSString *)[[tweet objectForKey:@"user"] objectForKey:@"id_str"];
     
     /* url内にヴァリデーション用の情報が含まれているか */
     NSError *errorForExtraction = nil;
@@ -468,7 +473,7 @@ BOOL TYTweetIsQualified(NSDictionary *tweet, NSError** error){
     /* Hashの整合性チェック */
     BOOL qualifyTweet = TYCheckHash([elementsInURL objectForKey:@"auth"],
                                     [elementsInURL objectForKey:@"content"],
-                                    userID);
+                                    userIDForTweet);
     if (!qualifyTweet){
         if (error){
             *error = [NSError errorWithDomain:TYApplicationDomain
@@ -490,7 +495,8 @@ NSMutableArray *TYChooseAvailableTweets(NSArray *tweets){
         if(TYTweetIsQualified(tweet, &error)) {
             [availableTweets addObject:tweet];
         }
-        NSCAssert(!error, [error localizedDescription]);
+        NSLog(@"erorr in TYChooseAvailableTweets: %@ ", [error localizedDescription]);
+        //NSCAssert(!error, [error localizedDescription]);
     }
     return availableTweets;
 }
@@ -501,8 +507,8 @@ NSMutableArray *TYChooseAvailableTweets(NSArray *tweets){
 //twitterAccountのセッタ
 - (void)setTwitterAccount:(ACAccount *)newTwitterAccount{
     _twitterAccount = newTwitterAccount;
-    _username = newTwitterAccount.username;
-    _userID = [_twitterAccount valueForKeyPath:@"properties.user_id"];
+    self.username = newTwitterAccount.username;
+    self.userID = [_twitterAccount valueForKeyPath:@"properties.user_id"];
 
     //一度設定したアカウントを保持
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
@@ -517,34 +523,40 @@ NSMutableArray *TYChooseAvailableTweets(NSArray *tweets){
     return _twitterAccount;
 }
 
-- (void)setOAuthToken:(NSString *)newOAuthToken{
-    OAuthToken = newOAuthToken;
+void TYSetUserDefault(NSString* key, id object){
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-    [ud setObject:newOAuthToken forKey: @"TDOAuthToken"];
+    [ud setObject:object forKey: key];
     [ud synchronize];
 }
 
+#define TYGetUDIfNil(key, object) \
+if (!object){\
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];\
+    object = [ud objectForKey: key ];\
+}
+
+#define TYSetUD(key, object) \
+NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];\
+[ud setObject: object forKey: key ];\
+[ud synchronize]
+
+- (void)setOAuthToken:(NSString *)newOAuthToken{
+    OAuthToken = newOAuthToken;
+    TYSetUD(@"TDOAuthToken", OAuthToken);
+}
+
 - (NSString *)OAuthToken{
-    if (!OAuthToken){
-        NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-        OAuthToken = [ud objectForKey: @"TDOAuthToken"];
-    }
+    TYGetUDIfNil(@"TDOAuthToken", OAuthToken);
     return OAuthToken;
 }
 
 - (void)setOAuthTokenSecret:(NSString *)newOAuthTokenSecret{
     OAuthTokenSecret = newOAuthTokenSecret;
-    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-    [ud setObject:newOAuthTokenSecret forKey: @"TDOAuthTokenSecret"];
-    [ud synchronize];
+    TYSetUD(@"TDOAuthTokenSecret", OAuthTokenSecret);
 }
 
 - (NSString *)OAuthTokenSecret{
-    if (!OAuthTokenSecret){
-        NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-        OAuthTokenSecret = [ud objectForKey: @"TDOAuthTokenSecret"];
-    }
-    
+    TYGetUDIfNil(@"TDOAuthTokenSecret", OAuthTokenSecret);
     return OAuthTokenSecret;
 }
 
@@ -560,18 +572,27 @@ NSMutableArray *TYChooseAvailableTweets(NSArray *tweets){
 }
 
 - (NSString *)username{
+    TYGetUDIfNil(@"TDUserName", _username);
     NSAssert(_username, @"nil usename");
     return _username;
 }
 
 - (void)setUsername:(NSString *)newUsername{
     _username = newUsername;
+    TYSetUD(@"TDUserName", _username);
 }
 
 - (NSString *)userID{
-    NSAssert(_username, @"nil userID");
+    TYGetUDIfNil(@"TDUserID", _userID);
+    NSAssert(_userID, @"nil userID");
     return _userID;
 }
+
+- (void)setUserID:(NSString *)newUserID{
+    _userID = newUserID;
+    TYSetUD(@"TDUserID", _userID);
+}
+
 
 - (BOOL)cachedOAuth{
     BOOL cached = self.OAuthToken && self.OAuthTokenSecret;
