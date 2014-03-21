@@ -177,72 +177,37 @@ NSMutableArray *TYChooseAvailableTweets(NSArray *tweets);
 - (void)checkTimelineWithSuccessBlock:(void(^)(NSArray *statuses))successBlock
                            errorBlock:(void(^)(NSError *error))errorBlock;
 {
-    switch (self.authorizeType){
-        case TYAuthorizediOS:
-            [self checkTimelineiOSWithSuccessBlock:successBlock
-                                        errorBlock:errorBlock];
-            break;
-        case TYAuthorizedSafari:
-            [self checkTimelineSafariWithSuccessBlock:successBlock errorBlock:errorBlock];
-            break;
-        default:
-            NSAssert(NO, @"Failed to get timeline");
-            break;
-    }
-}
-
-//タイムライン取得(iOS)
-- (void)checkTimelineiOSWithSuccessBlock:(void (^)(NSArray *))successBlock errorBlock:(void (^)(NSError *))errorBlock{
-    // make request
-    NSURL *url = [NSURL URLWithString:@"https://api.twitter.com/1.1/statuses/home_timeline.json"];
-    NSDictionary *params = @{@"exclude_replies" : @"1",
-                             @"trim_user" : @"0",
-                             @"include_entities" : @"0",
-                             @"contributor_details" : @"0",
-                             @"count" : @"20"};
-    SLRequest *request =
-    [SLRequest requestForServiceType:SLServiceTypeTwitter
-                       requestMethod:SLRequestMethodGET
-                                 URL:url
-                          parameters:params];
-    
-    //  Attach an account to the request
-    [request setAccount:self.twitterAccount];
-    
-    //  Execute the request
-    [request performRequestWithHandler:^(NSData *responseData,
-                                         NSHTTPURLResponse *urlResponse,
-                                         NSError *error) {
-        if (responseData) {
-            if (urlResponse.statusCode >= 200 && urlResponse.statusCode < 300) {
-                NSError *jsonError;
-                NSArray *timelineData =
-                [NSJSONSerialization
-                 JSONObjectWithData:responseData
-                 options:NSJSONReadingAllowFragments error:&jsonError];
-                if (timelineData) {
-                    successBlock(timelineData);
-                } else {
-                    // Our JSON deserialization went awry
-                    NSLog(@"JSON Error: %@", [jsonError localizedDescription]);
-                    errorBlock(jsonError);
-                }
-            } else {
-                // The server did not respond successfully... were we rate-limited?
-                NSLog(@"The response status code is %d", urlResponse.statusCode);
-                errorBlock(error);
-            }
-        }
-    }];
-}
-
-- (void)checkTimelineSafariWithSuccessBlock:successBlock errorBlock:errorBlock{
-    [twitterAPIClient getHomeTimelineSinceID:nil
+    [twitterAPIClient getHomeTimelineSinceID:NULL
                                        count:20
                                 successBlock:successBlock
                                   errorBlock:errorBlock];
 }
 
+//検索結果取得
+- (void)checkSearchResultWithSuccessBlock:(void(^)(NSArray *statuses))successBlock
+                               errorBlock:(void(^)(NSError *error))errorBlock;
+{
+    switch (self.authorizeType){
+        case TYAuthorizediOS:
+
+            break;
+        case TYAuthorizedSafari:
+            /*
+            [twitterAPIClient getSearchTweetsWithQuery:@"#つぶやぎ" geocode:nil lang:@"ja" locale:@"ja" resultType:@"recent" count:@"20" until:nil sinceID:nil maxID:nil includeEntities:[[NSNumber alloc] initWithInt:1] callback:nil
+                                 successBlock:^(NSDictionary *searchMetadata, NSArray *  statuses){
+                                     NSLog(@"AvailTweets: %@", [TweetsManager getAvailableTweets:statuses]);
+                                 }
+             
+                                   errorBlock:^(NSError *error){
+                                       NSLog(@"HashTag: Failed");
+                                   }];
+             */
+            break;
+        default:
+            NSAssert(NO, @"Failed to get search result");
+            break;
+    }
+}
 
 /*************************
     ツイート投稿機能関係
@@ -533,14 +498,19 @@ NSMutableArray *TYChooseAvailableTweets(NSArray *tweets){
 /*
  getter, setter
  */
-//twitterAccountのセッタ。一度設定したアカウントを保持
+//twitterAccountのセッタ
 - (void)setTwitterAccount:(ACAccount *)newTwitterAccount{
     _twitterAccount = newTwitterAccount;
     _username = newTwitterAccount.username;
     _userID = [_twitterAccount valueForKeyPath:@"properties.user_id"];
+
+    //一度設定したアカウントを保持
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
     [ud setObject:_twitterAccount.identifier forKey:@"TDSelectedAccountIdentifier"];
     [ud synchronize];
+    
+    //APIClientを切り替え
+    twitterAPIClient = [STTwitterAPI twitterAPIOSWithAccount:newTwitterAccount];
 }
 
 - (ACAccount *)twitterAccount{
