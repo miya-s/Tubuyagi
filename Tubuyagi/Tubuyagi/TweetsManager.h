@@ -7,9 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "STTwitter.h"
-#import <Social/Social.h>
-#import <Accounts/Accounts.h>
+
 
 extern NSString * const TYApplicationScheme;
 
@@ -30,6 +28,10 @@ NS_ENUM(NSInteger, TYTweetQualificationError){
 };
 
 @class TweetsManager;
+@class SLComposeViewController;
+@class STTwitterAPI;
+@class ACAccount;
+
 __weak TweetsManager *singleTweetsManager;
 
 @interface TweetsManager : NSObject

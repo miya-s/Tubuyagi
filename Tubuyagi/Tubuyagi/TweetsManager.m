@@ -8,6 +8,9 @@
 
 #import "TweetsManager.h"
 
+#import "STTwitter.h"
+#import <Social/Social.h>
+#import <Accounts/Accounts.h>
 #import "NSString+SHA.h"
 #import "AuthentificationKeys.h"
 // !!!: AuthentificationKeysはgitの管理外にあります。ほしい人は kan.tan.san @ gmail.com まで
