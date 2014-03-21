@@ -19,6 +19,20 @@
 
 
 @implementation TweetsManager
+{
+@private
+    //safariから戻ってきたあとに実行するblock
+    void(^_successBlockAfterAuthorized)(NSString *username);
+    void(^_errorBlockAfterAuthorized)(NSError *error);
+    
+    SLComposeViewController *_twitterComposeViewController;
+    STTwitterAPI *_twitterAPIClient;
+    
+    NSString *_OAuthToken;
+    NSString *_OAuthTokenSecret;
+    
+    UIImage *_recentScreenShot;
+}
 
 @synthesize username = _username;
 @synthesize userID = _userID;
@@ -118,16 +132,16 @@ NSArray *TYConvertTweetsToOldStyle(NSArray *tweets);
               OAuthVerifier:(NSString *)verifier
 {
     
-    [twitterAPIClient postAccessTokenRequestWithPIN:verifier
+    [_twitterAPIClient postAccessTokenRequestWithPIN:verifier
                                        successBlock:^(NSString *oauthToken, NSString *oauthTokenSecret, NSString *userID, NSString *screenName) {
                                            
                                            self.userID = userID;
-                                           self.OAuthToken = twitterAPIClient.oauthAccessToken;
-                                           self.OAuthTokenSecret = twitterAPIClient.oauthAccessTokenSecret;
+                                           self.OAuthToken = _twitterAPIClient.oauthAccessToken;
+                                           self.OAuthTokenSecret = _twitterAPIClient.oauthAccessTokenSecret;
                                            _username = screenName;
-                                           successBlockAfterAuthorized(screenName);
+                                           _successBlockAfterAuthorized(screenName);
                                            
-                                       } errorBlock:errorBlockAfterAuthorized];
+                                       } errorBlock:_errorBlockAfterAuthorized];
 }
 
 
@@ -139,12 +153,12 @@ NSArray *TYConvertTweetsToOldStyle(NSArray *tweets);
     NSAssert(self.OAuthToken, @"OAuth token should be cached!");
     NSAssert(self.OAuthTokenSecret, @"OAuth token secret should be cached!");
     
-    twitterAPIClient = [STTwitterAPI twitterAPIWithOAuthConsumerKey:TYConsumerKey
+    _twitterAPIClient = [STTwitterAPI twitterAPIWithOAuthConsumerKey:TYConsumerKey
                                                      consumerSecret:TYConsumerSecret
                                                          oauthToken:self.OAuthToken
                                                    oauthTokenSecret:self.OAuthTokenSecret];
     
-    [twitterAPIClient verifyCredentialsWithSuccessBlock:successBlock
+    [_twitterAPIClient verifyCredentialsWithSuccessBlock:successBlock
                                              errorBlock:errorBlock];
 }
 
@@ -154,14 +168,14 @@ NSArray *TYConvertTweetsToOldStyle(NSArray *tweets);
 - (void)loginTwitterInSafariWithSuccessBlock:(void(^)(NSString *username))successBlock
                                   errorBlock:(void(^)(NSError *error))errorBlock{
     
-    twitterAPIClient = [STTwitterAPI twitterAPIWithOAuthConsumerKey:TYConsumerKey
+    _twitterAPIClient = [STTwitterAPI twitterAPIWithOAuthConsumerKey:TYConsumerKey
                                                      consumerSecret:TYConsumerSecret];
     
-    [twitterAPIClient
+    [_twitterAPIClient
      postTokenRequest: ^(NSURL *url, NSString *oauthToken) {
          //認証成功後の挙動をここで書く
-         successBlockAfterAuthorized = successBlock;
-         errorBlockAfterAuthorized = errorBlock;
+         _successBlockAfterAuthorized = successBlock;
+         _errorBlockAfterAuthorized = errorBlock;
          
          [[UIApplication sharedApplication] openURL:url];
      }
@@ -177,7 +191,7 @@ NSArray *TYConvertTweetsToOldStyle(NSArray *tweets);
 - (void)checkTimelineWithSuccessBlock:(void(^)(NSArray *statuses))successBlock
                            errorBlock:(void(^)(NSError *error))errorBlock;
 {
-    [twitterAPIClient getHomeTimelineSinceID:NULL
+    [_twitterAPIClient getHomeTimelineSinceID:NULL
                                        count:20
                                 successBlock:successBlock
                                   errorBlock:errorBlock];
@@ -188,7 +202,7 @@ NSArray *TYConvertTweetsToOldStyle(NSArray *tweets);
                       SuccessBlock:(void(^)(NSArray *statuses))successBlock
                         errorBlock:(void(^)(NSError *error))errorBlock;
 {
-    [twitterAPIClient getSearchTweetsWithQuery:@"#つぶやぎ"
+    [_twitterAPIClient getSearchTweetsWithQuery:@"#つぶやぎ"
                                        geocode:nil
                                           lang:@"ja"
                                         locale:@"ja"
@@ -216,13 +230,13 @@ NSArray *TYConvertTweetsToOldStyle(NSArray *tweets);
 - (void)openTweetPostWindowFromViewController:(UIViewController *)viewConttoller
                                       content:(NSString *)content{
     NSAssert(self.authorizeType == TYAuthorizediOS, @"This method is only available for iOS Authorization");
-    twitterComposeViewController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
+    _twitterComposeViewController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
     
-    [twitterComposeViewController setInitialText:@" #つぶやぎ"];
-    [twitterComposeViewController addURL:[NSURL URLWithString:[self makeTweetURLWithContent:content]]];
-    [twitterComposeViewController addImage:recentScreenShot];
+    [_twitterComposeViewController setInitialText:@" #つぶやぎ"];
+    [_twitterComposeViewController addURL:[NSURL URLWithString:[self makeTweetURLWithContent:content]]];
+    [_twitterComposeViewController addImage:_recentScreenShot];
     
-    twitterComposeViewController.completionHandler = ^(SLComposeViewControllerResult result){
+    _twitterComposeViewController.completionHandler = ^(SLComposeViewControllerResult result){
         if(result == SLComposeViewControllerResultDone){
             //
         }else if(result == SLComposeViewControllerResultCancelled){
@@ -230,7 +244,7 @@ NSArray *TYConvertTweetsToOldStyle(NSArray *tweets);
         }
         [viewConttoller dismissViewControllerAnimated:YES completion:nil];
     };
-    [viewConttoller presentViewController:twitterComposeViewController animated:YES completion:nil];
+    [viewConttoller presentViewController:_twitterComposeViewController animated:YES completion:nil];
 }
 
 
@@ -248,9 +262,9 @@ NSArray *TYConvertTweetsToOldStyle(NSArray *tweets);
     }
     NSString *tweetContent = [NSString stringWithFormat:@"%@：%@ %@ #%@", TYMyYagiName(), shortenContent, tweetURL, TYApplicationHashTag];
     
-    UIImage *screenShot = recentScreenShot;
+    UIImage *screenShot = _recentScreenShot;
     NSData *dataToSend = [[NSData alloc] initWithData:UIImagePNGRepresentation(screenShot)];
-    [twitterAPIClient postStatusUpdate:tweetContent
+    [_twitterAPIClient postStatusUpdate:tweetContent
                         mediaDataArray:@[dataToSend]
                      possiblySensitive:nil
                      inReplyToStatusID:nil
@@ -321,7 +335,7 @@ NSString *TYMakeHashFromTweet(NSString *tweet, NSString*twitterID){
     
     UIGraphicsEndImageContext();
     
-    recentScreenShot = capturedImage;
+    _recentScreenShot = capturedImage;
 }
 
 
@@ -558,7 +572,7 @@ NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];\
     TYSetUD(@"TDSelectedAccountIdentifier", _twitterAccount.identifier);
     
     //APIClientを切り替え
-    twitterAPIClient = [STTwitterAPI twitterAPIOSWithAccount:newTwitterAccount];
+    _twitterAPIClient = [STTwitterAPI twitterAPIOSWithAccount:newTwitterAccount];
 }
 
 - (ACAccount *)twitterAccount{
@@ -572,23 +586,23 @@ void TYSetUserDefault(NSString* key, id object){
 }
 
 - (void)setOAuthToken:(NSString *)newOAuthToken{
-    OAuthToken = newOAuthToken;
-    TYSetUD(@"TDOAuthToken", OAuthToken);
+    _OAuthToken = newOAuthToken;
+    TYSetUD(@"TDOAuthToken", _OAuthToken);
 }
 
 - (NSString *)OAuthToken{
-    TYGetUDIfNil(@"TDOAuthToken", OAuthToken);
-    return OAuthToken;
+    TYGetUDIfNil(@"TDOAuthToken", _OAuthToken);
+    return _OAuthToken;
 }
 
 - (void)setOAuthTokenSecret:(NSString *)newOAuthTokenSecret{
-    OAuthTokenSecret = newOAuthTokenSecret;
-    TYSetUD(@"TDOAuthTokenSecret", OAuthTokenSecret);
+    _OAuthTokenSecret = newOAuthTokenSecret;
+    TYSetUD(@"TDOAuthTokenSecret", _OAuthTokenSecret);
 }
 
 - (NSString *)OAuthTokenSecret{
-    TYGetUDIfNil(@"TDOAuthTokenSecret", OAuthTokenSecret);
-    return OAuthTokenSecret;
+    TYGetUDIfNil(@"TDOAuthTokenSecret", _OAuthTokenSecret);
+    return _OAuthTokenSecret;
 }
 
 - (NSInteger)authorizeType{

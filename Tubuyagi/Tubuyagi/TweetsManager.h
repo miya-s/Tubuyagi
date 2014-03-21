@@ -35,20 +35,7 @@ NS_ENUM(NSInteger, TYTweetQualificationError){
 __weak TweetsManager *singleTweetsManager;
 
 @interface TweetsManager : NSObject
-{
-    @private
-    //safariから戻ってきたあとに実行するblock
-    void(^successBlockAfterAuthorized)(NSString *username);
-    void(^errorBlockAfterAuthorized)(NSError *error);
-    
-    SLComposeViewController *twitterComposeViewController;
-    STTwitterAPI *twitterAPIClient;
-    
-    NSString *OAuthToken;
-    NSString *OAuthTokenSecret;
-    
-    UIImage *recentScreenShot;
-}
+
 @property(readwrite) ACAccount* twitterAccount;
 @property(readonly) NSArray *twitterAccounts;
 @property(readonly) NSInteger authorizeType;
