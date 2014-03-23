@@ -7,9 +7,9 @@
 //
 
 #import "FavoriteViewController.h"
-#import "BasicRequest.h"
 #import "MarkovTextGenerator.h"
 #import "TweetsManager.h"
+#import "FMDatabase+Tubuyagi.h"
 
 @interface FavoriteViewController ()
 
@@ -141,11 +141,15 @@
         cell.lblTweet.text = tweet;
         cell.lblYagiName.text = strYagiName;
         cell.lblFavNumber.text = [NSString stringWithFormat:@"%d",i] ;
-        if (isThereWara([cell.userID longLongValue])) {
+        
+        // 不正確な値になるので、statusのfavoritedは使用しない
+        // 既にふぁぼったものはボタンを無効化
+        NSString *tweetID = [[self.favTweet objectAtIndex:indexPath.row] objectForKey:@"id_str"];
+        FMDatabase *database = [FMDatabase databaseFactory];
+        BOOL faved = [database findFavoriteByID:tweetID];
+        if (faved){
             [cell disabledButton:cell.btnFavorite];
         }
-        
-
     }
     
 
@@ -233,37 +237,34 @@
 - (void)getFavoriteJsondata
 {
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+    __block __weak FavoriteViewController *weakself = self;
+    TweetsManager *tweetsManager = [TweetsManager tweetsManagerFactory];
     
     if ([self.tabBarItem.title isEqualToString:@"新着"]) {
-        __block __weak FavoriteViewController *weakself = self;
-        [singleTweetsManager checkSearchResultForRecent:YES
-                                          SuccessBlock:^(NSArray *statuses) {
-                                              weakself.favTweet = statuses;
-                                              NSLog(@"status got:%@", statuses);
-                                              [weakself taskFinished];
-                                              [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-                                          }
-                                            errorBlock:^(NSError *error) {
-                                                NSAssert(!error, [error localizedDescription]);
-                                                [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-                                            }];
+        [tweetsManager checkSearchResultForRecent:YES
+                                     SuccessBlock:^(NSArray *statuses) {
+                                         weakself.favTweet = statuses;
+                                         NSLog(@"status got:%@", statuses);
+                                         [weakself taskFinished];
+                                         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+                                     }
+                                       errorBlock:^(NSError *error) {
+                                           NSAssert(!error, [error localizedDescription]);
+                                           [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+                                       }];
     }else if ([self.tabBarItem.title isEqualToString:@"人気"]){
-        __block __weak FavoriteViewController *weakself = self;
-        [singleTweetsManager checkSearchResultForRecent:NO
-                                           SuccessBlock:^(NSArray *statuses) {
-                                               weakself.favTweet = statuses;
-                                               NSLog(@"status got:%@", statuses);
-                                               [weakself taskFinished];
-                                               [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-                                           }
-                                             errorBlock:^(NSError *error) {
-                                                 NSAssert(!error, [error localizedDescription]);
-                                                 [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-                                             }];
+        [tweetsManager checkSearchResultForRecent:NO
+                                     SuccessBlock:^(NSArray *statuses) {
+                                         weakself.favTweet = statuses;
+                                         NSLog(@"status got:%@", statuses);
+                                         [weakself taskFinished];
+                                         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+                                     }
+                                       errorBlock:^(NSError *error) {
+                                           NSAssert(!error, [error localizedDescription]);
+                                           [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+                                       }];
     }
-    
-    
-    
 }
 
 - (void)taskFinished

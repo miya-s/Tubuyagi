@@ -8,19 +8,20 @@
 
 #import "TweetsManager.h"
 
-#import "STTwitter.h"
 #import <Social/Social.h>
 #import <Accounts/Accounts.h>
-#import "NSString+SHA.h"
-#import "AuthentificationKeys.h"
-// !!!: AuthentificationKeysはgitの管理外にあります。ほしい人は kan.tan.san @ gmail.com まで
 #import <CoreGraphics/CoreGraphics.h>
 #import <QuartzCore/QuartzCore.h>
 
+#import "STTwitter.h"
+#import "NSString+SHA.h"
+#import "FMDatabase+Tubuyagi.h"
+
+#import "AuthentificationKeys.h"
+// !!!: AuthentificationKeysはgitの管理外にあります。ほしい人は kan.tan.san @ gmail.com まで
 
 @implementation TweetsManager
 {
-@private
     //safariから戻ってきたあとに実行するblock
     void(^_successBlockAfterAuthorized)(NSString *username);
     void(^_errorBlockAfterAuthorized)(NSError *error);
@@ -32,7 +33,11 @@
     NSString *_OAuthTokenSecret;
     
     UIImage *_recentScreenShot;
+    
+    FMDatabase *_database;
 }
+
+TweetsManager *_singleTweetsManager = nil;
 
 @synthesize username = _username;
 @synthesize userID = _userID;
@@ -56,13 +61,20 @@ BOOL TYTweetIsQualified(NSDictionary *tweet, NSError** error);
 NSArray *TYChooseAvailableTweets(NSArray *tweets);
 NSArray *TYConvertTweetsToOldStyle(NSArray *tweets);
 
-// TODO: ModelとControllerの分離
+
 // TODO: 取ってきたstatusはこっちで管理したい。変更されたらreloadを呼ぶ的な
 
++ (TweetsManager *)tweetsManagerFactory{
+    if (_singleTweetsManager){
+        return _singleTweetsManager;
+    }
+    _singleTweetsManager = [[TweetsManager alloc] init];
+    return _singleTweetsManager;
+}
+
 - (id) init{
-    NSAssert(!singleTweetsManager, @"tweets manager should be single");
     if (self = [super init]) {
-        singleTweetsManager = self;
+        _database = [FMDatabase databaseFactory];
     }
     return self;
 }
@@ -239,7 +251,7 @@ NSArray *TYConvertTweetsToOldStyle(NSArray *tweets);
     
     _twitterComposeViewController.completionHandler = ^(SLComposeViewControllerResult result){
         if(result == SLComposeViewControllerResultDone){
-            //
+
         }else if(result == SLComposeViewControllerResultCancelled){
             //
         }
@@ -284,16 +296,24 @@ NSArray *TYConvertTweetsToOldStyle(NSArray *tweets);
 
 #pragma mark -お気に入り追加
 // !!!:ErrorBlockはすでにお気に入りしていた場合も？
-
 - (void)addFavoriteToStatusID:(NSString *)statusID
                  successBlock:(void(^)(NSDictionary *status))successBlock
                    errorBlock:(void(^)(NSError *error))errorBlock{
 
     [_twitterAPIClient postFavoriteState:YES
                              forStatusID:statusID
-                            successBlock:successBlock
+                            successBlock:^(NSDictionary *status){
+                                // FMDBにお気にいりを記録
+                                [_database logFavoriteTweet:statusID];
+                                successBlock(status);
+                            }
                               errorBlock:errorBlock];
+}
 
+// APIの返してくる既ふぁぼ判定がガバガバなので、iPhone側で既にふぁぼったものは保存しておく
+// return そのツイートは既にふぁぼらているか
+- (BOOL)favoritedStatusID:(NSString *)statusID{
+    return NO;
 }
 
 #pragma mark -ツイート作成
@@ -528,6 +548,9 @@ NSArray *TYChooseAvailableTweets(NSArray *tweets){
 
 /*
  モックプランで作成したサーバーのレスポンスと同じ形式に変換する（to be depricated）
+ favorited - favoritedは正確な値が得られない場合があるので、あてにしない
+ date - なんかめっちゃ汚い
+ // TODO: created_atをもっとわかりやすい形式に　現状ではどこにも使ってないしソートにも使う必要がないけど
  */
 NSDictionary *TYConvertTweetToOldStyle(NSDictionary *oldTweet){
     NSError *error;
@@ -536,8 +559,8 @@ NSDictionary *TYConvertTweetToOldStyle(NSDictionary *oldTweet){
     NSString * yagi_name = [elementsInTweet objectForKey:@"yaginame"];
     NSString * content =  [elementsInTweet objectForKey:@"content"];
     NSString * wara = [oldTweet objectForKey:@"favorite_count"];
+    BOOL favorited = [[oldTweet objectForKey:@"favorited"] boolValue];
     NSString * date = [oldTweet objectForKey:@"created_at"];
-#warning created_atをもっとわかりやすいけいしきに, 少なくともソートで使えるように
     NSString * user_name = [[oldTweet objectForKey:@"user"] objectForKey:@"screen_name"];
     NSString * id_str = [oldTweet objectForKey:@"id_str"];
     NSCAssert(yagi_name, @"convert error");
@@ -551,7 +574,8 @@ NSDictionary *TYConvertTweetToOldStyle(NSDictionary *oldTweet){
                                @"wara" : wara,
                                @"date" : date,
                                @"user_name" : user_name,
-                               @"id" : id_str};
+                               @"id" : id_str,
+                               @"favorited" : [NSNumber numberWithBool:favorited]};
     return newTweet;
 }
 

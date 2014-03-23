@@ -81,7 +81,6 @@
 		4A63EAAF17D96F7000C93F86 /* FMDatabaseQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A63EAA917D96F7000C93F86 /* FMDatabaseQueue.m */; };
 		4A63EAB017D96F7000C93F86 /* FMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A63EAAB17D96F7000C93F86 /* FMResultSet.m */; };
 		4A63EB9D17D9BD5300C93F86 /* MarkovTextGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A63EB9C17D9BD5300C93F86 /* MarkovTextGenerator.m */; };
-		4A6FF2E117DDA71500410BF5 /* BasicRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A6FF2E017DDA71500410BF5 /* BasicRequest.m */; };
 		4A8B068317E0481D00B408BB /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A8B068217E0481D00B408BB /* icon.png */; };
 		4A8B068517E0484300B408BB /* icon-mini.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A8B068417E0484300B408BB /* icon-mini.png */; };
 		4A9CBCF518D70F6300E32BD9 /* STTwitterOSRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A9CBCF418D70F6300E32BD9 /* STTwitterOSRequest.m */; };
@@ -108,6 +107,7 @@
 		4AA7A6FA180EAAAD00F0B13B /* normal_ushiroashi.png in Resources */ = {isa = PBXBuildFile; fileRef = 4AA7A6EF180EAAAD00F0B13B /* normal_ushiroashi.png */; };
 		4AA7A6FB180EAAAD00F0B13B /* normal_ushiroashi2.png in Resources */ = {isa = PBXBuildFile; fileRef = 4AA7A6F0180EAAAD00F0B13B /* normal_ushiroashi2.png */; };
 		4AA7A6FC180EAAAD00F0B13B /* normal_yoko.png in Resources */ = {isa = PBXBuildFile; fileRef = 4AA7A6F1180EAAAD00F0B13B /* normal_yoko.png */; };
+		4AB139D818DDDEA400921337 /* FMDatabase+Tubuyagi.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AB139D718DDDEA400921337 /* FMDatabase+Tubuyagi.m */; };
 		4ABA5EC517E27DED0041FB3C /* tutorial.png in Resources */ = {isa = PBXBuildFile; fileRef = 4ABA5EC417E27DED0041FB3C /* tutorial.png */; };
 		4ABA5EC717E27E740041FB3C /* tutorial_new3.png in Resources */ = {isa = PBXBuildFile; fileRef = 4ABA5EC617E27E740041FB3C /* tutorial_new3.png */; };
 		4AE36E5F18D2206F000A8084 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4AE36E5E18D2206F000A8084 /* XCTest.framework */; };
@@ -232,8 +232,6 @@
 		4A63EAAB17D96F7000C93F86 /* FMResultSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FMResultSet.m; path = lib/FMResultSet.m; sourceTree = "<group>"; };
 		4A63EB9B17D9BD5300C93F86 /* MarkovTextGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MarkovTextGenerator.h; path = lib/MarkovTextGenerator.h; sourceTree = "<group>"; };
 		4A63EB9C17D9BD5300C93F86 /* MarkovTextGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = MarkovTextGenerator.m; path = lib/MarkovTextGenerator.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		4A6FF2DF17DDA71500410BF5 /* BasicRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BasicRequest.h; path = lib/BasicRequest.h; sourceTree = "<group>"; };
-		4A6FF2E017DDA71500410BF5 /* BasicRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BasicRequest.m; path = lib/BasicRequest.m; sourceTree = "<group>"; };
 		4A8B067E17E042EF00B408BB /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		4A8B068017E0438E00B408BB /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		4A8B068217E0481D00B408BB /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
@@ -265,6 +263,8 @@
 		4AA7A6EF180EAAAD00F0B13B /* normal_ushiroashi.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = normal_ushiroashi.png; sourceTree = "<group>"; };
 		4AA7A6F0180EAAAD00F0B13B /* normal_ushiroashi2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = normal_ushiroashi2.png; sourceTree = "<group>"; };
 		4AA7A6F1180EAAAD00F0B13B /* normal_yoko.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = normal_yoko.png; sourceTree = "<group>"; };
+		4AB139D618DDDEA400921337 /* FMDatabase+Tubuyagi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "FMDatabase+Tubuyagi.h"; sourceTree = "<group>"; };
+		4AB139D718DDDEA400921337 /* FMDatabase+Tubuyagi.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "FMDatabase+Tubuyagi.m"; sourceTree = "<group>"; };
 		4ABA5EC417E27DED0041FB3C /* tutorial.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial.png; sourceTree = "<group>"; };
 		4ABA5EC617E27E740041FB3C /* tutorial_new3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial_new3.png; sourceTree = "<group>"; };
 		4AE36E5D18D2206F000A8084 /* Tubuyagi Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tubuyagi Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -582,12 +582,14 @@
 			children = (
 				4A2F2F6F17F1D8C50017E97A /* TweetsManager.h */,
 				4A2F2F7017F1D8C50017E97A /* TweetsManager.m */,
-				4A6FF2DF17DDA71500410BF5 /* BasicRequest.h */,
-				4A6FF2E017DDA71500410BF5 /* BasicRequest.m */,
 				4A2F2F6C17F1D28C0017E97A /* NSString+SHA.h */,
 				4A2F2F6D17F1D28C0017E97A /* NSString+SHA.m */,
+				4AB139D618DDDEA400921337 /* FMDatabase+Tubuyagi.h */,
+				4AB139D718DDDEA400921337 /* FMDatabase+Tubuyagi.m */,
 				4A9CBCF618D854F900E32BD9 /* AuthentificationKeys.m */,
 				4A9CBCF018D701FD00E32BD9 /* AuthentificationKeys.h */,
+				4A63EB9B17D9BD5300C93F86 /* MarkovTextGenerator.h */,
+				4A63EB9C17D9BD5300C93F86 /* MarkovTextGenerator.m */,
 			);
 			name = Helper;
 			sourceTree = "<group>";
@@ -595,8 +597,6 @@
 		4AE36E5518D1D466000A8084 /* YagiBehavior */ = {
 			isa = PBXGroup;
 			children = (
-				4A63EB9B17D9BD5300C93F86 /* MarkovTextGenerator.h */,
-				4A63EB9C17D9BD5300C93F86 /* MarkovTextGenerator.m */,
 				37D0612317DB422300F94E30 /* YagiView.h */,
 				37D0612417DB422300F94E30 /* YagiView.m */,
 			);
@@ -813,6 +813,7 @@
 				4AEE6B1C180E802E000C945A /* BAVPlistNode.m in Sources */,
 				374D797D17D8552B00FAE80C /* bubbleView.m in Sources */,
 				4A63EAAC17D96F7000C93F86 /* FMDatabase.m in Sources */,
+				4AB139D818DDDEA400921337 /* FMDatabase+Tubuyagi.m in Sources */,
 				4AEE6B12180E800D000C945A /* STTwitterHTML.m in Sources */,
 				4A63EAAD17D96F7000C93F86 /* FMDatabaseAdditions.m in Sources */,
 				4A63EAAE17D96F7000C93F86 /* FMDatabasePool.m in Sources */,
@@ -830,7 +831,6 @@
 				4AEE6B10180E800D000C945A /* STTwitterAPI.m in Sources */,
 				4AEE6B0E180E800D000C945A /* NSString+STTwitter.m in Sources */,
 				37CAC1FA17DDA6BB00854D4D /* DeleteWordTableViewController.m in Sources */,
-				4A6FF2E117DDA71500410BF5 /* BasicRequest.m in Sources */,
 				37CAC20017DDB7F000854D4D /* HeaderView.m in Sources */,
 				37CAC23B17DED99900854D4D /* FavoriteViewController.m in Sources */,
 				37CAC23F17DEDB8F00854D4D /* FavoriteCustomVIewCell.m in Sources */,

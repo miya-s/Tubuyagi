@@ -32,8 +32,6 @@ NS_ENUM(NSInteger, TYTweetQualificationError){
 @class STTwitterAPI;
 @class ACAccount;
 
-__weak TweetsManager *singleTweetsManager;
-
 @interface TweetsManager : NSObject
 
 @property(readwrite) ACAccount* twitterAccount;
@@ -42,11 +40,14 @@ __weak TweetsManager *singleTweetsManager;
 @property(readonly) NSString *username;
 @property(readonly) NSString *userID;
 @property(readonly) BOOL cachedOAuth;
+
 /*
  Twitter認証の管理を行うクラス
  参考: http://blog.himajinworks.net/archives/150
  アカウントページ: https://apps.twitter.com/app/5905926
  */
+
++ (TweetsManager *)tweetsManagerFactory;
 
 #pragma mark 認証エントリ
 - (void)checkTwitterAccountsWithSuccessBlock:(void(^)(void))successBlock

@@ -101,8 +101,9 @@
     CGRect textRect = CGRectMake(self.bounds.origin.x + textMarginX, self.bounds.origin.y + textMarginY, bubbleRect.size.width , bubbleRect.size.height);//75, 45, 150, 60);
 //    NSString *text = self.strTweet.text;//@"こんにちは。\n吹き出し描いたよ。\nくちばし部分の構造は下の絵を見てね。";
 //    learnFromText(text);
-    NSLog(@"%@",generateSentence());
-    NSString *text = generateSentence();
+    
+    MarkovTextGenerator *textGenerator = [MarkovTextGenerator markovTextGeneratorFactory];
+    NSString *text = [textGenerator generateSentence];
     
     [[UIColor colorWithWhite:0.1 alpha:1] set];
     [text drawInRect:textRect withFont:[UIFont systemFontOfSize:12]];

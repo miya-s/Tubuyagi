@@ -7,6 +7,7 @@
 //
 
 #import "DeleteWordTableViewController.h"
+#import "FMDatabase+Tubuyagi.h"
 #import "MarkovTextGenerator.h"
 
 @interface DeleteWordTableViewController ()
@@ -32,7 +33,8 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
-        NSSet *aSet = [NSSet setWithArray:showLearnLog()];
+        FMDatabase *database = [FMDatabase databaseFactory];
+        NSSet *aSet = [NSSet setWithArray:[database contentsInLearnLog]];
         arrDeleteWord = [aSet allObjects];
     }
     return self;
@@ -42,7 +44,8 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    NSSet *aSet = [NSSet setWithArray:showLearnLog()];
+    FMDatabase *database = [FMDatabase databaseFactory];
+    NSSet *aSet = [NSSet setWithArray:[database contentsInLearnLog]];
     arrDeleteWord = [aSet allObjects];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
@@ -122,10 +125,11 @@
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
+    MarkovTextGenerator *generator;
     switch (buttonIndex) {
         case 0:
-
-            forgetFromText(selectedCell.textLabel.text);
+            generator = [MarkovTextGenerator markovTextGeneratorFactory];
+            [generator forgetText:selectedCell.textLabel.text];
             [self dismissViewControllerAnimated:YES completion:^(void){}];
             [self.delegate wordDelete];
             break;

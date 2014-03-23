@@ -10,8 +10,8 @@
 #import "FoodUIViewController.h"
 #import "MarkovTextGenerator.h"
 #import "STTwitter.h"
-#import "BasicRequest.h"
 #import "NSString+SHA.h"
+#import "FMDatabase+Tubuyagi.h"
 
 NS_ENUM(NSInteger, TYAlertTags){
     alertStrTweet = 10,
@@ -24,9 +24,7 @@ NS_ENUM(NSInteger, TYActionSheets){
     TYTwitterActionSheet = 20,
     TYForgetActionSheet = 21,
 };
-#define alertStrTweet 10
-#define alertDeleteAllBigramData 11
-#define alertDelegateTextField 12
+
 @interface ViewController ()
 @end
 
@@ -107,20 +105,11 @@ NS_ENUM(NSInteger, TYActionSheets){
     
 
     //自分のお気に入り数を生成
-    [self performSelector:@selector(getWaraCount) withObject:nil afterDelay:3];
+    //[self performSelector:@selector(getWaraCount) withObject:nil afterDelay:3];
 
     //設定画面の初期設定
     self.txfYagiName.delegate = self;
     self.txfYagiName.returnKeyType = UIReturnKeyDone;
-}
-
-- (void)getWaraCount
-{
-    getJSONWara(^(NSArray *result){
-        
-        int wara =  [[[result objectAtIndex: 0] objectForKey:@"wara"] intValue];
-        self.strWara.text = [NSString stringWithFormat:@"%d", wara];
-    });
 }
 
 - (void)setYagiName
@@ -340,7 +329,8 @@ NS_ENUM(NSInteger, TYActionSheets){
     [self dismissAllPopTipViews];
 
     //吹き出し
-    strCurrTweet = [NSString stringWithFormat:@"%@", generateSentence()];
+    MarkovTextGenerator *generator = [MarkovTextGenerator markovTextGeneratorFactory];
+    strCurrTweet = [NSString stringWithFormat:@"%@", [generator generateSentence]];
     CMPopTipView *popTipView = [[CMPopTipView alloc] initWithMessage:strCurrTweet];
     popTipView.delegate = self;
     popTipView.animation = 0;
@@ -583,19 +573,17 @@ NS_ENUM(NSInteger, TYActionSheets){
 #pragma mark - UIAlertViewDelegate
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
     NSURL *twSettingURL;
+    FMDatabase *database;
+    
     switch (alertView.tag) {
         case alertStrTweet:
             switch (buttonIndex) {
                 case 0:
-                    if (![ud objectForKey:@"TDSentPassword"]) {
-                        addUser();
-                    }
                     if (!strCurrTweet) {
                         break;
                     }
-                    addWaraToMyTubuyaki(strCurrTweet);
+                    
                     [self.tweetsManager postDirectlyTweet:strCurrTweet
                                              successBlock:^(NSDictionary *status) {
                                                  // TODO  投稿しました
@@ -612,7 +600,8 @@ NS_ENUM(NSInteger, TYActionSheets){
         case alertDeleteAllBigramData:
             switch (buttonIndex) {
                 case 0:
-                    deleteAllBigramData();
+                    database = [FMDatabase databaseFactory];
+                    [database deleteAllLearnedData];
                     [_yagiView allFoget];
                     NSLog(@"全消去");
                     break;
@@ -748,11 +737,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 #pragma mark - FavoriteVieDelegate
 - (void)reloadFavCount{
     
-    [self getWaraCount];
-//    getJSONWara(^(NSArray *result){
-//        
-//        int wara =  [[[result objectAtIndex: 0] objectForKey:@"wara"] intValue];
-//        self.strWara.text = [NSString stringWithFormat:@"%d", wara];
-//    });
+//    [self getWaraCount];
+    //消した
+#warning ここでやってた処理がよくわからない。自分のふぁぼられ数をカウントしていた？
 }
 @end

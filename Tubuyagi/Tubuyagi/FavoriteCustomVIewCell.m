@@ -7,7 +7,6 @@
 //
 
 #import "FavoriteCustomVIewCell.h"
-#import "BasicRequest.h"
 #import "TweetsManager.h"
 
 @implementation FavoriteCustomVIewCell
@@ -110,8 +109,10 @@
 
 - (void)pushButton:(UIButton *)btn
 {
-    [singleTweetsManager addFavoriteToStatusID:self.userID
+    TweetsManager *tweetsManager = [TweetsManager tweetsManagerFactory];
+    [tweetsManager addFavoriteToStatusID:self.userID
                                   successBlock:^(NSDictionary *status) {
+
                                       //お気に入りの数字を増やす
                                       dispatch_async(dispatch_get_main_queue(), ^{
                                           int i = [_lblFavNumber.text intValue];
@@ -119,7 +120,8 @@
                                           _lblFavNumber.text = [NSString stringWithFormat:@"%d", i];
                                           [self disabledButton:btn];
                                       });
-                                      
+
+                                      NSLog(@"%@", [status description]);
                                   } errorBlock:^(NSError *error) {
                                     //すでにお気に入りしていた場合
                                       NSAssert(error, [error localizedDescription]);

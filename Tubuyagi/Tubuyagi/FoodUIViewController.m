@@ -197,8 +197,8 @@
     UITableViewCell *selectedCell = [self.foodTableView cellForRowAtIndexPath:indexPath];
     [self.delegate setTweetString:selectedCell.textLabel.text];
     
-    learnFromText(selectedCell.textLabel.text);
-    
+    MarkovTextGenerator *generator = [MarkovTextGenerator markovTextGeneratorFactory];
+    [generator learnText:selectedCell.textLabel.text];
 
     [self dismissViewControllerAnimated:YES completion:^(void){
         [self.foodTableView deselectRowAtIndexPath:indexPath animated:NO];

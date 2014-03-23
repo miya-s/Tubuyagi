@@ -7,46 +7,34 @@
 //
 
 #import "MarkovTextGenerator.h"
+#import "FMDatabase+Tubuyagi.h"
 
 @implementation MarkovTextGenerator
-
-/*SQLクエリ*/
-static NSString* queryToAddBigram = @"INSERT INTO bigram VALUES (%@, %@, %d)";
-static NSString* queryToSelectBigram = @"SELECT * FROM bigram WHERE pre = %@ AND post = %@;";
-static NSString* queryToDeleteBigram = @"DELETE FROM bigram WHERE pre = %@ AND post = %@;";
-static NSString* queryToSelectBigramSet = @"SELECT * FROM bigram WHERE pre = %@";
-static NSString* queryToUpdateBigram = @"UPDATE bigram SET count = %d WHERE pre = %@ AND post = %@;";
-
-/*DBのファイル名*/
-static NSString* bigramDatabaseName = @"bi-gram.db";
-static NSString* learnLogDatabaseName = @"tweet-log.db";
-static NSString* waraLogDatabaseName = @"wara-logv2.db";
-
-
-/*DBのインスタンス取得*/
-FMDatabase* getDB(NSString * dbname){
-    NSArray*    paths = NSSearchPathForDirectoriesInDomains( NSDocumentDirectory, NSUserDomainMask, YES );
-    NSString*   dir   = [paths objectAtIndex:0];
-    FMDatabase* db    = [FMDatabase databaseWithPath:[dir stringByAppendingPathComponent:dbname]];
-    return db;
+{
 }
 
-FMDatabase* getBigramDB(void){
-    return getDB(bigramDatabaseName);
+static MarkovTextGenerator *singleMarkovTextGenerator = nil;
+
++ (MarkovTextGenerator *)markovTextGeneratorFactory{
+    if (singleMarkovTextGenerator){
+        return singleMarkovTextGenerator;
+    }
+
+    singleMarkovTextGenerator = [[MarkovTextGenerator alloc] init];
+
+    return singleMarkovTextGenerator;
 }
 
-FMDatabase* getLearnLogDB(void){
-    return getDB(learnLogDatabaseName);
+- (id) init{
+    if (self = [super init]) {
+        _database = [FMDatabase databaseFactory];
+    }
+    return self;
 }
 
-FMDatabase* getWaraLogDB(void){
-    return getDB(waraLogDatabaseName);
-}
-
-
-/*
- Tweetにはハッシュタグなどが含まれるので、それを取り除く
- */
+//
+// Tweetにはハッシュタグなどが含まれるので、それを取り除く
+//
 NSString* deleteNoises(NSString *str){
     NSString *result = [str stringByReplacingOccurrencesOfString:@"\n" withString:@" "];
     NSRegularExpression *regexp;
@@ -62,265 +50,118 @@ NSString* deleteNoises(NSString *str){
     return result;
 }
 
-/*
- DBをクリアする
- */
-void deleteAllBigramData(void){
-    FMDatabase* db    = getBigramDB();
-    [db open];
-    [db executeUpdateWithFormat:@"DROP TABLE bigram;"];
-    [db close];
-    deleteAllLearnLog();
-}
 
-void deleteAllLearnLog(void){
-    FMDatabase* db    = getLearnLogDB();
-    [db open];
-    [db executeUpdateWithFormat:@"DROP TABLE learn_log;"];
-    [db close];
-}
+- (NSString*) generateNextWordForPrevious:(NSString *)previous{
+    int sum = [self.database sumScoreForPreivousWord: previous];
+    NSArray * bigrams = [self.database bigramsForPreviousWord:previous];
 
-/*
-    DBに保存されている内容を出力
- */
-NSMutableArray* showDBContents(FMDatabase* db, NSString *db_name){
-    NSMutableArray *result = [NSMutableArray array];
-    [db open];
-    FMResultSet* sqlResults = [db executeQuery:[NSString stringWithFormat: @"SELECT * FROM %@;", db_name]];
-    while ([sqlResults next]){
-        NSString *log = [sqlResults stringForColumn:@"content"];
-        [result addObject:log];
-    }
-    [db close];
-    
-    return result;
-}
-
-NSMutableArray* showLearnLog(void){
-    FMDatabase *db = getLearnLogDB();
-    return showDBContents(db, @"learn_log");
-}
-
-NSMutableArray* showWaraLog(void){
-    FMDatabase *db = getWaraLogDB();
-    return showDBContents(db, @"wara_log");
-}
-
-bool isThereWara(long long post_id){
-    FMDatabase* db    = getWaraLogDB();
-    [db open];
-    FMResultSet* sqlResults = [db executeQuery:@"SELECT * FROM wara_log WHERE post_id = ?",[NSNumber numberWithLongLong:post_id]];
-    bool res = [sqlResults next];
-    [db close];
-    return res;
-}
-
-/*発言内容からすでにふぁぼったものか判断*/
-bool isThereWaraByContent(NSString *str){
-    FMDatabase* db    = getWaraLogDB();
-    [db open];
-    FMResultSet* sqlResults = [db executeQuery:@"SELECT * FROM wara_log WHERE content = ?", str];
-    bool res = [sqlResults next];
-    [db close];
-    return res;
-}
-
-void updateBigramValue(FMDatabase *db, NSString* previous, NSString* current){
-    FMResultSet* sqlResult = [db executeQueryWithFormat:queryToSelectBigram, previous, current];
-    BOOL isThereTargetBigram = [sqlResult next];
-    int value;
-    
-    if ([current isEqualToString:@"EOS"]){
-        value = 10;
-    } else {
-        value = 1;
-    }
-    if (isThereTargetBigram){
-        int count = [sqlResult intForColumn:@"count"];
-        [db executeUpdateWithFormat:queryToUpdateBigram, count + value, previous, current];
-    } else {
-        [db executeUpdateWithFormat:queryToAddBigram, previous, current, value];
-    }
-}
-
-void reduceBigramValue(FMDatabase *db, NSString* previous, NSString* current){
-    FMResultSet* sqlResult = [db executeQueryWithFormat:queryToSelectBigram, previous, current];
-    BOOL isThereTargetBigram = [sqlResult next];
-    int value;
-    
-    if ([current isEqualToString:@"EOS"]){
-        value = -10;
-    } else {
-        value = -1;
-    }
-    if (isThereTargetBigram){
-        int count = [sqlResult intForColumn:@"count"];
-        if (count + value <= 0){
-            [db executeUpdateWithFormat:queryToDeleteBigram, previous, current];
-        } else {
-            [db executeUpdateWithFormat:queryToUpdateBigram, count + value, previous, current];
-        }
-    } else {
-    }
-}
-
-NSString* generateNextWord(FMDatabase *db, NSString *previous){
-    FMResultSet* sqlResult = [db executeQueryWithFormat:queryToSelectBigramSet, previous];
-    int sumOfCase = 0;
-    while ([sqlResult next]){
-        sumOfCase += [sqlResult intForColumn:@"count"];
-    }
-    sqlResult = [db executeQueryWithFormat:queryToSelectBigramSet, previous];
-    
     double k = (double)(arc4random() % 100) / 100;
-    while ([sqlResult next]){
-        k -= (double)[sqlResult intForColumn:@"count"] / sumOfCase;
+
+    for (NSDictionary * bigram in bigrams){
+        k -= (double)[[bigram objectForKey:@"count"] intValue] / sum;
         if (k <= 0){
-            return [sqlResult stringForColumn:@"post"];
+            return [bigram objectForKey:@"post"];
         }
     }
+    //NSAssert(NO, @"理論上ここまでこない");
     return @"EOS";
 }
 
-NSString* generateSentence(void){
-    NSString* previous = @"BOS";
-    NSString* result =@"";
-    FMDatabase* db    = getBigramDB();
+// つぶやぎの文を生成
+- (NSString *)generateSentence{
+    NSString * previous = @"BOS";
+    NSString * sentence =@"";
 
-    [db open];
     int trial = 0;
-    while (true){
-        while (true){
-            NSString* next = generateNextWord(db, previous);
-            if ([next isEqualToString:@"EOS"]){
+    while (YES){
+        while (YES){
+            NSString * nextWord = [self generateNextWordForPrevious:previous];
+            if ([nextWord isEqualToString:@"EOS"]){
                 break;
             }
-            if ([next isEqualToString:@"。"] && [result length] > 20){
-                result = [NSString stringWithFormat:@"%@%@",result,next];
+            if ([nextWord isEqualToString:@"。"] && [sentence length] > 20){
+                sentence = [NSString stringWithFormat:@"%@%@",sentence, nextWord];
                 break;
             }
-            result = [NSString stringWithFormat:@"%@%@",result,next];
-            previous = next;
+            sentence = [NSString stringWithFormat:@"%@%@",sentence,nextWord];
+            previous = nextWord;
         }
-        if ([result length] < 3 && trial < 4){
+        if ([sentence length] < 3 && trial < 4){
             trial += 1;
             continue;
         }
         break;
     }
-    [db close];
-    if ([result length] < 2){
+
+    if ([sentence length] < 2){
         return @"メェ〜。";
     }
     
-    return result;
+    return sentence;
 }
 
 #define _scheme_ NSLinguisticTagSchemeTokenType
-
-void learnFromText(NSString* morphTargetText){
+// 文を分かち書きして、学習
+- (void)calcMorphedText:(NSString*)morphTargetText
+           learn:(BOOL)learn{
     NSArray *schemes = @[_scheme_];
     
     NSLinguisticTagger *tagger = [[NSLinguisticTagger alloc] initWithTagSchemes:schemes
                                                                         options:0];
 
-    
-    
     NSString* targetText = deleteNoises(morphTargetText);
     if ([targetText length] < 3){
         return;
     }
     [tagger setString:targetText];
     
+    //学習履歴を残す（または消す）
+    if (learn){
+        [self.database logLearnedText:morphTargetText];
+    } else {
+        [self.database removeLearnLog:morphTargetText];
+    }
     
-    FMDatabase* learnLogDb    = getLearnLogDB();
-    [learnLogDb open];
-    [learnLogDb executeUpdate:@"CREATE TABLE IF NOT EXISTS learn_log (content TEXT NOT NULL);"];
-    [learnLogDb executeUpdateWithFormat: @"INSERT INTO learn_log VALUES (%@)",morphTargetText];
-    [learnLogDb close];
-    
-    FMDatabase* db    = getBigramDB();
-    NSString*   sqlCreateTable = @"CREATE TABLE IF NOT EXISTS bigram (pre TEXT NOT NULL, post TEXT NOT NULL, count INTEGER NOT NULL);";
-    
-    [db open];
-    [db executeUpdate:sqlCreateTable];
-    
+    //形態素解析して、逐次bigramをDBに追加
     __block NSString *previousEntity = @"BOS";
+    __block __weak MarkovTextGenerator * weakself = self;
     [tagger enumerateTagsInRange:NSMakeRange(0, targetText.length)
                           scheme:_scheme_
                          options:0
                       usingBlock:
      ^(NSString *tag, NSRange tokenRange, NSRange sentenceRange, BOOL *stop) {
          NSString *currentEntity = [targetText substringWithRange:tokenRange];
+         // TODO: 。もスペースと同じ扱いをする
          if ([previousEntity isEqualToString:@"　"]){
-             updateBigramValue(db, @"BOS", currentEntity);
+             [weakself.database updateBigramIncrease:learn
+                                          previousWord:@"BOS"
+                                         followingWord:currentEntity];
          } else if ([currentEntity isEqualToString:@"　"]){
-             updateBigramValue(db, previousEntity, @"EOS");
+             [weakself.database updateBigramIncrease:learn
+                                          previousWord:previousEntity
+                                         followingWord:@"EOS"];
          } else {
-             updateBigramValue(db, previousEntity, currentEntity);             
+             [weakself.database updateBigramIncrease:learn
+                                          previousWord:previousEntity
+                                         followingWord:currentEntity];
          }
 
          previousEntity = currentEntity;
      }];
+    
     if (![previousEntity isEqualToString:@"BOS"]){
-        updateBigramValue(db, previousEntity, @"EOS");
+        [self.database updateBigramIncrease:learn
+                               previousWord:previousEntity
+                              followingWord:@"EOS"];
     }
-    [db close];
 }
 
-
-#warning miyahara learnFromTextを変えたらこっちも変える必要あり。うまく関数にわけると解決可能
-void forgetFromText(NSString* text){
-    NSArray *schemes = @[_scheme_];
-    
-    NSLinguisticTagger *tagger = [[NSLinguisticTagger alloc] initWithTagSchemes:schemes
-                                                                        options:0];
-    NSString* targetText = deleteNoises(text);
-    if ([targetText length] < 3){
-        return;
-    }
-    [tagger setString:targetText];
-    
-    FMDatabase* learnLogDb    = getLearnLogDB();
-    [learnLogDb open];
-    [learnLogDb executeUpdateWithFormat: @"DELETE FROM learn_log WHERE content = %@",text];
-    [learnLogDb close];
-    
-    FMDatabase* db    = getBigramDB();
-    [db open];
-    __block NSString *previousEntity = @"BOS";
-    [tagger enumerateTagsInRange:NSMakeRange(0, targetText.length)
-                          scheme:_scheme_
-                         options:0
-                      usingBlock:
-     ^(NSString *tag, NSRange tokenRange, NSRange sentenceRange, BOOL *stop) {
-         NSString *currentEntity = [targetText substringWithRange:tokenRange];
-         if ([previousEntity isEqualToString:@"　"]){
-             reduceBigramValue(db, @"BOS", currentEntity);
-         } else if ([currentEntity isEqualToString:@"　"]){
-             reduceBigramValue(db, previousEntity, @"EOS");
-         } else {
-             reduceBigramValue(db, previousEntity, currentEntity);
-         }
-         
-         previousEntity = currentEntity;
-     }];
-    if (![previousEntity isEqualToString:@"BOS"]){
-        reduceBigramValue(db, previousEntity, @"EOS");
-    }
-    [db close];
+- (void)learnText:(NSString *)text{
+    [self calcMorphedText:text learn:YES];
 }
 
-void addWaraLog(NSString *content, long long post_id, NSDate *date){
-    FMDatabase* waraLogDb    = getWaraLogDB();
-    [waraLogDb open];
-    [waraLogDb executeUpdate:@"CREATE TABLE IF NOT EXISTS wara_log (content TEXT NOT NULL, wara INTEGER, post_id INTEGER, date TEXT);"];
-#warning  miyahara ここの設計要検討
-    [waraLogDb executeUpdateWithFormat: @"INSERT INTO wara_log VALUES (%@, 0, %qi, %@)",content, post_id,date];
-    [waraLogDb close];
+- (void)forgetText:(NSString *)text{
+    [self calcMorphedText:text learn:NO];
 }
 
-void addMyWaraLog(NSString *content,long long post_id){
-    addWaraLog(content, post_id, [NSDate date]);
-}
 @end
