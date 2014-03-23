@@ -6,7 +6,7 @@
 //  Copyright (c) 2014年 Genki Ishibashi. All rights reserved.
 //
 
-#import "FMDatabase.h"
+#import "FMDB.h"
 
 @interface FMDatabase(Tubuyagi)
 

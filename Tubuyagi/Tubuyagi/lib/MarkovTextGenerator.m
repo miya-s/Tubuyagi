@@ -63,7 +63,7 @@ NSString* deleteNoises(NSString *str){
             return [bigram objectForKey:@"post"];
         }
     }
-    //NSAssert(NO, @"理論上ここまでこない");
+    NSAssert(NO, @"理論上ここまでこない");
     return @"EOS";
 }
 
