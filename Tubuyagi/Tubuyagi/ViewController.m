@@ -438,7 +438,7 @@ NS_ENUM(NSInteger, TYActionSheets){
     __block __weak ViewController *weakSelf = self;
     
     //まず最初に、iOSに設定されたアカウントでのtwitter認証を試みる
-    self.tweetsManager = [[TweetsManager alloc] init];
+    self.tweetsManager = [TweetsManager tweetsManagerFactory];
     [self.tweetsManager checkTwitterAccountsWithSuccessBlock:
      ^(void) {
          [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
@@ -487,7 +487,7 @@ NS_ENUM(NSInteger, TYActionSheets){
 - (void)getTwitterAccountsInformationSafari
 {
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-    self.tweetsManager = [[TweetsManager alloc] init];
+    self.tweetsManager = [TweetsManager tweetsManagerFactory];
     
     [self.tweetsManager
      loginTwitterInSafariWithSuccessBlock:

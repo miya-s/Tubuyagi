@@ -73,6 +73,7 @@ NSArray *TYConvertTweetsToOldStyle(NSArray *tweets);
 }
 
 - (id) init{
+    NSAssert(!_singleTweetsManager, @"tweetsmanager should be single");
     if (self = [super init]) {
         _database = [FMDatabase databaseFactory];
     }

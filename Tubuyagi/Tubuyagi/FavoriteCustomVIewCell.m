@@ -124,7 +124,7 @@
                                       NSLog(@"%@", [status description]);
                                   } errorBlock:^(NSError *error) {
                                     //すでにお気に入りしていた場合
-                                      NSAssert(error, [error localizedDescription]);
+                                      NSAssert(!error, [error localizedDescription]);
                                   }];
 }
 

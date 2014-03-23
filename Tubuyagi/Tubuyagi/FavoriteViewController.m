@@ -144,7 +144,7 @@
         
         // 不正確な値になるので、statusのfavoritedは使用しない
         // 既にふぁぼったものはボタンを無効化
-        NSString *tweetID = [[self.favTweet objectAtIndex:indexPath.row] objectForKey:@"id_str"];
+        NSString *tweetID = [[self.favTweet objectAtIndex:indexPath.row] objectForKey:@"id"];
         FMDatabase *database = [FMDatabase databaseFactory];
         BOOL faved = [database findFavoriteByID:tweetID];
         if (faved){
