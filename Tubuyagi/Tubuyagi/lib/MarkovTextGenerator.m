@@ -53,8 +53,12 @@ NSString* deleteNoises(NSString *str){
 
 - (NSString*) generateNextWordForPrevious:(NSString *)previous{
     int sum = [self.database sumScoreForPreivousWord: previous];
+    if (sum == 0){
+        return @"EOS";
+    }
+    
     NSArray * bigrams = [self.database bigramsForPreviousWord:previous];
-
+    
     double k = (double)(arc4random() % 100) / 100;
 
     for (NSDictionary * bigram in bigrams){

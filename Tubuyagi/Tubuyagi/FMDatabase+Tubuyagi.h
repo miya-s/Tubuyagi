@@ -28,14 +28,21 @@
 
 - (NSArray *)bigramsForPreviousWord:(NSString *)previous;
 
+- (NSArray *)favoritedArrayWithCount:(NSInteger)count;
+
 #pragma mark -sum
 
 - (NSInteger)sumScoreForPreivousWord:(NSString *)previous;
+
+- (NSInteger)sumFavoritedCount;
 
 #pragma mark -add
 - (void)logLearnedText:(NSString *)text;
 
 - (void)logFavoriteTweet:(NSString *)tweetID;
+
+- (void)logMyTweet:(NSString *)tweetID
+           content:(NSString *)content;
 
 -(void) updateBigramIncrease:(BOOL)increase
                 previousWord:(NSString*)previous
@@ -43,5 +50,9 @@
 
 #pragma mark -remove
 - (void)removeLearnLog:(NSString *)text;
+
+#pragma mark -update
+- (void)updateTweetLogForTweetID:(NSString *)tweetID
+                  favoritedCount:(NSInteger)favoritedCount;
 
 @end

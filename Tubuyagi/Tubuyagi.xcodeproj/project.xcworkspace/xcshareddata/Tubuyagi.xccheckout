@@ -5,7 +5,7 @@
 	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
 	<false/>
 	<key>IDESourceControlProjectIdentifier</key>
-	<string>A3A9321E-DFD4-4529-9B62-56AA503ECAE8</string>
+	<string>43E2EF8E-C052-416E-9299-343BD4AAF5E1</string>
 	<key>IDESourceControlProjectName</key>
 	<string>Tubuyagi</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
@@ -14,6 +14,8 @@
 		<string>https://github.com/nst/STTwitter.git</string>
 		<key>9E070512-B03C-492A-B3EA-A56E1AD768B1</key>
 		<string>https://github.com/miya-s/Tubuyagi.git</string>
+		<key>F34D6EDD-69A5-43DA-9A99-9E65EB67569A</key>
+		<string>https://github.com/ccgus/fmdb.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>Tubuyagi/Tubuyagi.xcodeproj/project.xcworkspace</string>
@@ -23,6 +25,8 @@
 		<string>../../Tubuyagi/STTwitter</string>
 		<key>9E070512-B03C-492A-B3EA-A56E1AD768B1</key>
 		<string>../../..</string>
+		<key>F34D6EDD-69A5-43DA-9A99-9E65EB67569A</key>
+		<string>../../Tubuyagi/fmdb</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>https://github.com/miya-s/Tubuyagi.git</string>
@@ -32,6 +36,14 @@
 	<string>9E070512-B03C-492A-B3EA-A56E1AD768B1</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>F34D6EDD-69A5-43DA-9A99-9E65EB67569A</string>
+			<key>IDESourceControlWCCName</key>
+			<string>fmdb</string>
+		</dict>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>

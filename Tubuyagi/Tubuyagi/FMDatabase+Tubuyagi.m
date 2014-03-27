@@ -6,6 +6,8 @@
 //  Copyright (c) 2014年 Genki Ishibashi. All rights reserved.
 //
 
+// !!!:executeQueryとexecuteUpdateを混同しない
+
 #import "FMDatabase+Tubuyagi.h"
 
 @implementation FMDatabase(Tubuyagi)
@@ -19,11 +21,11 @@ static FMDatabase* _singleDatabase = nil;
 #pragma mark-constants
 
 // query
-NSString * const TYQueryToAddBigram = @"INSERT INTO bigram VALUES (%@, %@, %d)";
-NSString * const TYQueryToSelectBigram = @"SELECT * FROM bigram WHERE pre = %@ AND post = %@;";
-NSString * const TYQueryToDeleteBigram = @"DELETE FROM bigram WHERE pre = %@ AND post = %@;";
-NSString * const TYQueryToSelectBigramSet = @"SELECT * FROM bigram WHERE pre = %@";
-NSString * const TYQueryToUpdateBigram = @"UPDATE bigram SET count = %d WHERE pre = %@ AND post = %@;";
+NSString * const TYQueryToAddBigram = @"INSERT INTO bigram VALUES (?, ?, ?);";
+NSString * const TYQueryToSelectBigram = @"SELECT * FROM bigram WHERE pre = ? AND post = ?;";
+NSString * const TYQueryToDeleteBigram = @"DELETE FROM bigram WHERE pre = ? AND post = ?;";
+NSString * const TYQueryToSelectBigramSet = @"SELECT * FROM bigram WHERE pre = ?;";
+NSString * const TYQueryToUpdateBigram = @"UPDATE bigram SET count = ? WHERE pre = ? AND post = ?;";
 
 #pragma mark-factory
 // FMDBのイニシャライザを書き換えると面倒なことになりそう + singletonパターンにしたい
@@ -38,7 +40,8 @@ NSString * const TYQueryToUpdateBigram = @"UPDATE bigram SET count = %d WHERE pr
         [db open];
         [db executeUpdate:@"CREATE TABLE IF NOT EXISTS learn_log (content TEXT NOT NULL);"];
         [db executeUpdate:@"CREATE TABLE IF NOT EXISTS bigram (pre TEXT NOT NULL, post TEXT NOT NULL, count INTEGER NOT NULL);"];
-        [db executeUpdate:@"CREATE TABLE IF NOT EXISTS favorite_log (tweet_id INTEGER);"];
+        [db executeUpdate:@"CREATE TABLE IF NOT EXISTS favorite_log (tweet_id TEXT NOT NULL);"];
+        [db executeUpdate:@"CREATE TABLE IF NOT EXISTS tweet_log (tweet_id TEXT NOT NULL, content TEXT NOT NULL, favorited_count INTEGER NOT NULL);"];
         [db close];
     }];
     _singleDatabase = newDatabase;
@@ -66,6 +69,7 @@ NSString * const TYQueryToUpdateBigram = @"UPDATE bigram SET count = %d WHERE pr
 - (NSArray *)contentsInTable:(NSString *)tableName{
     NSMutableArray *dataToShow = [NSMutableArray array];
     [self execBlock:^(FMDatabase *db) {
+        // ???:ここ、select content fromでいいのでは？
         FMResultSet* sqlResults = [db executeQuery:[NSString stringWithFormat: @"SELECT * FROM %@;", tableName]];
         while ([sqlResults next]){
             NSString *log = [sqlResults stringForColumn:@"content"];
@@ -91,6 +95,28 @@ NSString * const TYQueryToUpdateBigram = @"UPDATE bigram SET count = %d WHERE pr
     return found;
 }
 
+// お気に入られ履歴の配列を得る
+- (NSArray *)favoritedArrayWithCount:(NSInteger)count{
+    __block NSInteger i = 0;
+    __block NSMutableArray *favoritedTweets = [NSMutableArray arrayWithArray:@[]];
+    [self execBlock:^(FMDatabase *db) {
+        FMResultSet* sqlResults = [db executeQuery:@"SELECT * FROM tweet_log ORDER BY tweet_id DESC"];
+        NSError *error = [db lastError];
+        if (error) NSLog(@"%@", [error description]);
+        while ([sqlResults next]){
+            if (i >= count){
+                break;
+            }
+            NSDictionary *tweet = @{@"tweet_id" : [sqlResults stringForColumn:@"tweet_id"],
+                                    @"content" : [sqlResults stringForColumn:@"content"],
+                                    @"favorited_count" : [NSNumber numberWithInt:[sqlResults intForColumn:@"favorited_count"]]};
+            [favoritedTweets addObject:tweet];
+            i += 1;
+        }
+    }];
+    return favoritedTweets;
+}
+
 // bigramのスコアを取得
 // そもそもBigramが存在しない場合は 0
 - (NSInteger)valueForPreviousWord:(NSString*)previous
@@ -98,7 +124,7 @@ NSString * const TYQueryToUpdateBigram = @"UPDATE bigram SET count = %d WHERE pr
     __block int score;
     [self execBlock:^(FMDatabase *db) {
         FMResultSet* queryResult;
-        queryResult = [db executeQueryWithFormat:TYQueryToSelectBigram, previous, following];
+        queryResult = [db executeQuery:TYQueryToSelectBigram, previous, following];
         BOOL exist = [queryResult next];
         score = exist ? [queryResult intForColumn:@"count"] : 0;
     }];
@@ -112,7 +138,7 @@ NSString * const TYQueryToUpdateBigram = @"UPDATE bigram SET count = %d WHERE pr
     __block NSMutableArray *bigrams = [NSMutableArray arrayWithArray:@[]];
     
     [self execBlock:^(FMDatabase *db){
-        FMResultSet* queryResult = [db executeQueryWithFormat:TYQueryToSelectBigramSet, previous];
+        FMResultSet* queryResult = [db executeQuery:TYQueryToSelectBigramSet, previous];
         NSLog(@"%@", [db lastErrorMessage]);
         while ([queryResult next]){
             [bigrams addObject:
@@ -127,11 +153,26 @@ NSString * const TYQueryToUpdateBigram = @"UPDATE bigram SET count = %d WHERE pr
 - (NSInteger)sumScoreForPreivousWord:(NSString *)previous{
     __block NSInteger sum;
     [self execBlock:^(FMDatabase *db) {
-        FMResultSet* queryResult = [self executeQueryWithFormat:TYQueryToSelectBigramSet, previous];
+        FMResultSet* queryResult = [self executeQuery:TYQueryToSelectBigramSet, previous];
         sum = 0;
         while ([queryResult next]){
             sum += [queryResult intForColumn:@"count"];
         }
+    }];
+    return sum;
+}
+
+// 総お気に入られ数を集計する
+- (NSInteger)sumFavoritedCount{
+    __block NSInteger sum;
+    [self execBlock:^(FMDatabase *db) {
+        FMResultSet* queryResult = [self executeQuery:@"SELECT * FROM tweet_log;"];
+        sum = 0;
+        while ([queryResult next]){
+            NSInteger favorited_count = [queryResult intForColumn:@"favorited_count"];
+            sum += favorited_count;
+        }
+        NSLog(@"Error%@", [db lastError]);
     }];
     return sum;
 }
@@ -157,7 +198,7 @@ NSString * const TYQueryToUpdateBigram = @"UPDATE bigram SET count = %d WHERE pr
         int finalValue = difference + oldScore;
         if (finalValue > 0){
             [self execBlock:^(FMDatabase *db) {
-                [db executeUpdateWithFormat:TYQueryToUpdateBigram, finalValue, previous, following];
+                [db executeUpdate:TYQueryToUpdateBigram, [NSNumber numberWithInt:finalValue], previous, following];
             }];
             
             return;
@@ -165,7 +206,7 @@ NSString * const TYQueryToUpdateBigram = @"UPDATE bigram SET count = %d WHERE pr
         
         //消去
         [self execBlock:^(FMDatabase *db) {
-            [db executeUpdateWithFormat:TYQueryToDeleteBigram, previous, following];
+            [db executeUpdate:TYQueryToDeleteBigram, previous, following];
          }];
         return;
     }
@@ -174,30 +215,51 @@ NSString * const TYQueryToUpdateBigram = @"UPDATE bigram SET count = %d WHERE pr
     NSAssert(difference > 0, @"bigram value should be more than 0");
     if (difference > 0){
         [self execBlock:^(FMDatabase *db) {
-            [db executeUpdateWithFormat:TYQueryToAddBigram, previous, following, difference];
+            [db executeUpdate:TYQueryToAddBigram, previous, following, [NSNumber numberWithInt:difference]];
         }];
     }
 }
 
 - (void)logLearnedText:(NSString *)text{
     [self execBlock:^(FMDatabase *db) {
-        [db executeUpdateWithFormat: @"INSERT INTO learn_log VALUES (%@)",text];
+        [db executeUpdate: @"INSERT INTO learn_log VALUES (?)",text];
     }];
 }
 
 - (void)removeLearnLog:(NSString *)text{
     [self execBlock:^(FMDatabase *db) {
-        [db executeUpdateWithFormat: @"DELETE FROM learn_log WHERE content = %@",text];
+        [db executeUpdate: @"DELETE FROM learn_log WHERE content = ?",text];
     }];
 }
 
 // お気に入り履歴追加
-// tweetIDだけで要件は果たせるが、将来使うことを予想して
 - (void)logFavoriteTweet:(NSString *)tweetID{
     [self execBlock:^(FMDatabase *db) {
-        [db executeUpdateWithFormat: @"INSERT INTO favorite_log VALUES (%@)", tweetID];
+        [db executeUpdate: @"INSERT INTO favorite_log VALUES (?)", tweetID];
     }];
 }
 
+// 投稿履歴に追加
+- (void)logMyTweet:(NSString *)tweetID
+           content:(NSString *)content{
+    [self execBlock:^(FMDatabase *db) {
+        [db executeUpdate: @"INSERT INTO tweet_log VALUES (?, ?, 0)", tweetID, content];
+    }];
+}
+
+// 投稿履歴から、特定tweet_idの履歴がないかチェック
+- (void)updateTweetLogForTweetID:(NSString *)tweetID
+                  favoritedCount:(NSInteger)favoritedCount
+{
+    [self execBlock:^(FMDatabase *db) {
+        FMResultSet* sqlResults = [db executeQuery:@"SELECT * FROM tweet_log WHERE tweet_id = ?", tweetID];
+        [sqlResults next];
+        NSInteger oldFavoritedCount = [sqlResults intForColumn:@"favorited_count"];
+        if (oldFavoritedCount < favoritedCount){
+            [db executeUpdate:@"UPDATE tweet_log SET favorited_count = ? WHERE tweet_id = ?;", [NSNumber numberWithInt: favoritedCount], tweetID];
+            NSLog(@"%@", [[db lastError] description]);
+        }
+    }];
+}
 
 @end

@@ -40,6 +40,7 @@ NS_ENUM(NSInteger, TYTweetQualificationError){
 @property(readonly) NSString *username;
 @property(readonly) NSString *userID;
 @property(readonly) BOOL cachedOAuth;
+@property(readonly) NSInteger totalFavoritedCount;
 
 /*
  Twitter認証の管理を行うクラス
@@ -77,13 +78,15 @@ NS_ENUM(NSInteger, TYTweetQualificationError){
                  successBlock:(void(^)(NSDictionary *status))successBlock
                    errorBlock:(void(^)(NSError *error))errorBlock;
 
-#pragma mark 投稿
-- (void)openTweetPostWindowFromViewController:(UIViewController *)viewConttoller
-                                      content:(NSString *)content;
 
-- (void)postDirectlyTweet:(NSString *)content
-             successBlock:(void(^)(NSDictionary *status))successBlock
-               errorBlock:(void(^)(NSError *error))errorBlock;
+- (void)checkFavoritedWithSuccessBlock:(void(^)(void))successBlock
+                            errorBlock:(void(^)(NSError *error))errorBlock;
+
+#pragma mark 投稿
+
+- (void)postTweet:(NSString *)content
+     successBlock:(void(^)(NSDictionary *status))successBlock
+       errorBlock:(void(^)(NSError *error))errorBlock;
 
 - (void)takeScreenShot;
 

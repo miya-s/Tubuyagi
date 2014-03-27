@@ -284,19 +284,14 @@ NS_ENUM(NSInteger, TYActionSheets){
         [alert show];
     }else{
         [self.tweetsManager takeScreenShot];
-        if (self.tweetsManager.authorizeType == TYAuthorizediOS){
-            //iOS認証の場合はiOSの投稿画面を出す
-            [self.tweetsManager openTweetPostWindowFromViewController:self content:strCurrTweet];
-        } else {
-            //Safari認証の場合は共有確認ボタンを出す
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"発言の共有"
-                                                            message:strShare
-                                                           delegate:self
-                                                  cancelButtonTitle:@"OK"
-                                                  otherButtonTitles:@"キャンセル",nil];
-            alert.tag = 10;
-            [alert show];
-        }
+        //共有確認ボタンを出す
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"発言の共有"
+                                                        message:strShare
+                                                       delegate:self
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:@"キャンセル",nil];
+        alert.tag = 10;
+        [alert show];
     }
 }
 
@@ -393,6 +388,9 @@ NS_ENUM(NSInteger, TYActionSheets){
     
     //読みこみの表示の解除
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+    
+    //お気に入られ数もついでに更新
+    [self reloadFavCount];
     
 }
 
@@ -584,7 +582,7 @@ NS_ENUM(NSInteger, TYActionSheets){
                         break;
                     }
                     
-                    [self.tweetsManager postDirectlyTweet:strCurrTweet
+                    [self.tweetsManager postTweet:strCurrTweet
                                              successBlock:^(NSDictionary *status) {
                                                  // TODO  投稿しました
                                              } errorBlock:^(NSError *error) {
@@ -735,10 +733,14 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 }
 
 #pragma mark - FavoriteVieDelegate
+// お気に入られ数の表示
 - (void)reloadFavCount{
-    
-//    [self getWaraCount];
-    //消した
-#warning ここでやってた処理がよくわからない。自分のふぁぼられ数をカウントしていた？
+    TweetsManager *tweetsManager = [TweetsManager tweetsManagerFactory];
+    self.strWara.text = [NSString stringWithFormat:@"%d", tweetsManager.totalFavoritedCount];
+    [tweetsManager checkFavoritedWithSuccessBlock:^() {
+        self.strWara.text = [NSString stringWithFormat:@"%d", tweetsManager.totalFavoritedCount];
+    } errorBlock:^(NSError *error) {
+        NSAssert(!error, [error localizedDescription]);
+    }];
 }
 @end

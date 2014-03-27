@@ -42,6 +42,7 @@ TweetsManager *_singleTweetsManager = nil;
 @synthesize username = _username;
 @synthesize userID = _userID;
 @synthesize twitterAccount = _twitterAccount;
+@synthesize totalFavoritedCount = _totalFavoritedCount;
 
 NSString * const TYApplicationScheme = @"tubuyagi";
 NSString * const TYApplicationDomain = @"I.GA.Tubuyagi";
@@ -76,6 +77,13 @@ NSArray *TYConvertTweetsToOldStyle(NSArray *tweets);
     NSAssert(!_singleTweetsManager, @"tweetsmanager should be single");
     if (self = [super init]) {
         _database = [FMDatabase databaseFactory];
+        NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];\
+        NSNumber *favCount = [ud objectForKey: @"TDFavoritedCount"];
+        if (favCount){
+            _totalFavoritedCount = [favCount intValue];
+        } else {
+            _totalFavoritedCount = 0;
+        }
     }
     return self;
 }
@@ -203,7 +211,7 @@ NSArray *TYConvertTweetsToOldStyle(NSArray *tweets);
 //タイムライン取得
 //参考: http://qiita.com/paming/items/9a6b51fa56915d1f1d64
 - (void)checkTimelineWithSuccessBlock:(void(^)(NSArray *statuses))successBlock
-                           errorBlock:(void(^)(NSError *error))errorBlock;
+                           errorBlock:(void(^)(NSError *error))errorBlock
 {
     [_twitterAPIClient getHomeTimelineSinceID:NULL
                                        count:20
@@ -214,7 +222,7 @@ NSArray *TYConvertTweetsToOldStyle(NSArray *tweets);
 //検索結果取得
 - (void)checkSearchResultForRecent:(BOOL)isRecent
                       SuccessBlock:(void(^)(NSArray *statuses))successBlock
-                        errorBlock:(void(^)(NSError *error))errorBlock;
+                        errorBlock:(void(^)(NSError *error))errorBlock
 {
     [_twitterAPIClient getSearchTweetsWithQuery:@"#つぶやぎ"
                                        geocode:nil
@@ -238,46 +246,22 @@ NSArray *TYConvertTweetsToOldStyle(NSArray *tweets);
 
 #pragma mark -ツイート投稿
 
-//投稿ウィンドウを開く(iOS認証を行った場合のみ)
-//引数content: ヤギの発言
-// TODO: ウィンドウを開くような処理はViewに移す
-- (void)openTweetPostWindowFromViewController:(UIViewController *)viewConttoller
-                                      content:(NSString *)content{
-    NSAssert(self.authorizeType == TYAuthorizediOS, @"This method is only available for iOS Authorization");
-    _twitterComposeViewController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
-    
-    [_twitterComposeViewController setInitialText:@" #つぶやぎ"];
-    [_twitterComposeViewController addURL:[NSURL URLWithString:[self makeTweetURLWithContent:content]]];
-    [_twitterComposeViewController addImage:_recentScreenShot];
-    
-    _twitterComposeViewController.completionHandler = ^(SLComposeViewControllerResult result){
-        if(result == SLComposeViewControllerResultDone){
-
-        }else if(result == SLComposeViewControllerResultCancelled){
-            //
-        }
-        [viewConttoller dismissViewControllerAnimated:YES completion:nil];
-    };
-    [viewConttoller presentViewController:_twitterComposeViewController animated:YES completion:nil];
-}
-
 
 //ツイート投稿（Safari認証では窓を開けないので直接）
-- (void)postDirectlyTweet:(NSString *)content
-             successBlock:(void(^)(NSDictionary *status))successBlock
-               errorBlock:(void(^)(NSError *error))errorBlock{
-    NSAssert(self.authorizeType == TYAuthorizedSafari, @"This method is only available for Safari Authorization");
-    
-    
+- (void)postTweet:(NSString *)content
+     successBlock:(void(^)(NSDictionary *status))successBlock
+       errorBlock:(void(^)(NSError *error))errorBlock{
     NSString *tweetURL = [self makeTweetURLWithContent:content];
     NSString *shortenContent = content;
     if (content.length > TYContentMaxLength){
-        content = [NSString stringWithFormat:@"%@…" , [content substringFromIndex:TYContentMaxLength]];
+        shortenContent = [NSString stringWithFormat:@"%@…" , [content substringToIndex:TYContentMaxLength]];
     }
     NSString *tweetContent = [NSString stringWithFormat:@"%@：%@ %@ #%@", TYMyYagiName(), shortenContent, tweetURL, TYApplicationHashTag];
     
     UIImage *screenShot = _recentScreenShot;
     NSData *dataToSend = [[NSData alloc] initWithData:UIImagePNGRepresentation(screenShot)];
+    __weak __block FMDatabase* weakDatabase = _database;
+    
     [_twitterAPIClient postStatusUpdate:tweetContent
                         mediaDataArray:@[dataToSend]
                      possiblySensitive:nil
@@ -290,13 +274,22 @@ NSArray *TYConvertTweetsToOldStyle(NSArray *tweets);
      ^(NSInteger bytesWritten, NSInteger totalBytesWritten, NSInteger totalBytesExpectedToWrite) {
          
      }
-                          successBlock:successBlock
+                           successBlock:^(NSDictionary *status){
+                               successBlock(status);
+                               [weakDatabase logMyTweet:[status objectForKey:@"id_str"]
+                                                content:content];
+                           }
                             errorBlock:errorBlock];
     
 }
 
 #pragma mark -お気に入り追加
-// !!!:ErrorBlockはすでにお気に入りしていた場合も？
+// !!!:コーディングする際にはNaming規約に注意
+// Favorites : 自分がお気に入り追加した他人のツイート
+// Favorited : 他人がお気に入り追加した自分のツイート
+
+// お気に入り追加
+// ???:ErrorBlockはすでにお気に入りしていた場合も？
 - (void)addFavoriteToStatusID:(NSString *)statusID
                  successBlock:(void(^)(NSDictionary *status))successBlock
                    errorBlock:(void(^)(NSError *error))errorBlock{
@@ -311,11 +304,88 @@ NSArray *TYConvertTweetsToOldStyle(NSArray *tweets);
                               errorBlock:errorBlock];
 }
 
-// APIの返してくる既ふぁぼ判定がガバガバなので、iPhone側で既にふぁぼったものは保存しておく
-// return そのツイートは既にふぁぼらているか
-- (BOOL)favoritedStatusID:(NSString *)statusID{
-    return NO;
+// お気に入り追加され状態の取得
+- (void)checkFavoritedWithSuccessBlock:(void(^)(void))successBlock
+                            errorBlock:(void(^)(NSError *error))errorBlock{
+    
+    // 検索結果に基づいて、Databaseのふぁぼられ状況を更新する・・・つもりだったが、あまりに検索結果が不安定なので、
+    // 最近の発言最新n件について取得する。
+    NSArray *tweets = [_database favoritedArrayWithCount:10];
+    
+    __block NSInteger finishCount = 0;
+    __block NSInteger finishCountMax = tweets.count;
+    for (NSDictionary *tweet in tweets){
+        [_twitterAPIClient getStatusesShowID:[tweet objectForKey:@"tweet_id"]
+                                    trimUser:[NSNumber numberWithInt:1]
+                            includeMyRetweet:nil
+                             includeEntities:[NSNumber numberWithInt:1]
+                                successBlock:^(NSDictionary *status) {
+                                    [_database updateTweetLogForTweetID:[tweet objectForKey:@"tweet_id"]
+                                                         favoritedCount:[[status objectForKey:@"favorite_count"] integerValue]];
+                                    finishCount += 1;
+                                    if (finishCount >= finishCountMax){
+                                    //すべてのツイートについて確認が終わったら、ふぁぼられ数の更新
+                                        _totalFavoritedCount = [_database sumFavoritedCount];
+                                        successBlock();
+                                    }
+                                } errorBlock:^(NSError *error) {
+                                    NSAssert(!error, [error localizedDescription]);
+                                    errorBlock(error);
+                                }];
+    }
+    
 }
+
+// httpリクエスト作成
+- (NSURLRequest *)makeRequestForURL:(NSString *)urlString
+                             method:(NSString *)method
+                        requestBody:(NSString *)requestBody
+{
+    NSURL *url = [NSURL URLWithString:urlString];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    [request setHTTPMethod:method];
+    [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
+    
+    NSLog(@"reqBody: %@", requestBody);
+    [request setHTTPBody:[requestBody dataUsingEncoding:NSUTF8StringEncoding]];
+    return request;
+}
+
+// Google app engine側にお気に入り追加（お気に入り通知用）
+// this method is deprecated
+/*
+- (void)addFavoriteHistoryToStatusID:(NSString *)statusID{
+    NSAssert(NO, @"this method is to be deprecated");
+    NSURLRequest * request = [self makeRequestForURL:[NSString stringWithFormat:@"http://tubu-yagi.appspot.com/favorite?user_id=%@screen_name=%@tweet_id=%@",self.userID, self.username, statusID]
+                                              method:@"POST"
+                                         requestBody:@""];
+    [NSURLConnection sendAsynchronousRequest:request
+                                       queue:[NSOperationQueue mainQueue]
+                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                               if (error) {
+                                   NSAssert(!error, [error localizedDescription]);
+                                   return;
+                               }
+                           }];
+}*/
+
+// Google app engine側に保存されたお気に入りを消去
+// this method is deprecated
+/*
+- (void)clearFavoriteHistory{
+    NSAssert(NO, @"this method is to be deprecated");
+    NSURLRequest * request = [self makeRequestForURL:[NSString stringWithFormat:@"http://tubu-yagi.appspot.com/favorite?user_id=%@", self.userID]
+                                              method:@"DELETE"
+                                         requestBody:@""];
+    [NSURLConnection sendAsynchronousRequest:request
+                                       queue:[NSOperationQueue mainQueue]
+                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                               if (error) {
+                                   NSAssert(!error, [error localizedDescription]);
+                                   return;
+                               }
+                           }];
+}*/
 
 #pragma mark -ツイート作成
 
@@ -495,7 +565,7 @@ NSDictionary *TYExtractElementsFromTweet(NSDictionary *tweet, NSError **error){
 }
 
 
-/*適切な情報を含んだ|tweet|かeどうかを判定する*/
+/*適切な情報を含んだ|tweet|かどうかを判定する*/
 BOOL TYTweetIsQualified(NSDictionary *tweet, NSError** error){
     /*urlが含まれているか*/
     NSDictionary *elementsInURL = TYExtractElementsFromTweet(tweet, error);
@@ -560,7 +630,6 @@ NSDictionary *TYConvertTweetToOldStyle(NSDictionary *oldTweet){
     NSString * yagi_name = [elementsInTweet objectForKey:@"yaginame"];
     NSString * content =  [elementsInTweet objectForKey:@"content"];
     NSString * wara = [oldTweet objectForKey:@"favorite_count"];
-    BOOL favorited = [[oldTweet objectForKey:@"favorited"] boolValue];
     NSString * date = [oldTweet objectForKey:@"created_at"];
     NSString * user_name = [[oldTweet objectForKey:@"user"] objectForKey:@"screen_name"];
     NSString * id_str = [oldTweet objectForKey:@"id_str"];
@@ -575,8 +644,7 @@ NSDictionary *TYConvertTweetToOldStyle(NSDictionary *oldTweet){
                                @"wara" : wara,
                                @"date" : date,
                                @"user_name" : user_name,
-                               @"id" : id_str,
-                               @"favorited" : [NSNumber numberWithBool:favorited]};
+                               @"id" : id_str};
     return newTweet;
 }
 
@@ -678,10 +746,13 @@ void TYSetUserDefault(NSString* key, id object){
     TYSetUD(@"TDUserID", _userID);
 }
 
-
 - (BOOL)cachedOAuth{
     BOOL cached = self.OAuthToken && self.OAuthTokenSecret;
     return cached;
 }
 
+- (void)setTotalFavoritedCount:(NSInteger)totalFavoritedCount{
+    _totalFavoritedCount = totalFavoritedCount;
+    TYSetUD(@"TDFavoritedCount", [NSNumber numberWithInt:totalFavoritedCount]);
+}
 @end
