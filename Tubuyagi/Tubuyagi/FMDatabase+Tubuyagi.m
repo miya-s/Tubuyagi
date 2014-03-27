@@ -9,6 +9,7 @@
 // !!!:executeQueryとexecuteUpdateを混同しない
 
 #import "FMDatabase+Tubuyagi.h"
+#import "NSDate+TimeAgo.h"
 
 @implementation FMDatabase(Tubuyagi)
 
@@ -42,6 +43,8 @@ NSString * const TYQueryToUpdateBigram = @"UPDATE bigram SET count = ? WHERE pre
         [db executeUpdate:@"CREATE TABLE IF NOT EXISTS bigram (pre TEXT NOT NULL, post TEXT NOT NULL, count INTEGER NOT NULL);"];
         [db executeUpdate:@"CREATE TABLE IF NOT EXISTS favorite_log (tweet_id TEXT NOT NULL);"];
         [db executeUpdate:@"CREATE TABLE IF NOT EXISTS tweet_log (tweet_id TEXT NOT NULL, content TEXT NOT NULL, favorited_count INTEGER NOT NULL);"];
+        [db executeUpdate:@"CREATE TABLE IF NOT EXISTS activity_log (text TEXT NOT NULL, seen INTEGER NOT NULL, type INTEGER NOT NULL, date REAL NOT NULL);"];
+        
         [db close];
     }];
     _singleDatabase = newDatabase;
@@ -83,18 +86,6 @@ NSString * const TYQueryToUpdateBigram = @"UPDATE bigram SET count = ? WHERE pre
     return [self contentsInTable:@"learn_log"];
 }
 
-#pragma mark -search
-// 指定したIDのツイートをすでにふぁぼったか
-// Twitterのapiが正しい値を返してくれないのでこれを使う
-- (BOOL)findFavoriteByID:(NSString *)tweet_id{
-    __block BOOL found;
-    [self execBlock:^(FMDatabase *db) {
-        FMResultSet* sqlResults = [db executeQuery:@"SELECT * FROM favorite_log WHERE tweet_id = ?", tweet_id];
-        found = [sqlResults next];
-    }];
-    return found;
-}
-
 // お気に入られ履歴の配列を得る
 - (NSArray *)favoritedArrayWithCount:(NSInteger)count{
     __block NSInteger i = 0;
@@ -115,6 +106,44 @@ NSString * const TYQueryToUpdateBigram = @"UPDATE bigram SET count = ? WHERE pre
         }
     }];
     return favoritedTweets;
+}
+
+// アクティビティの配列を得る
+- (NSArray *)avitivityArrayWithCount:(NSInteger)count{
+    __block NSInteger i = 0;
+    __block NSMutableArray *activities = [NSMutableArray arrayWithArray:@[]];
+    [self execBlock:^(FMDatabase *db) {
+        // TODO:ここでソート
+        FMResultSet* sqlResults = [db executeQuery:@"SELECT * FROM activity_log"];
+        NSError *error = [db lastError];
+        if (error) NSLog(@"%@", [error description]);
+        while ([sqlResults next]){
+            if (i >= count){
+                break;
+            }
+            //CREATE TABLE IF NOT EXISTS activity_log (text TEXT NOT NULL, seen INTEGER NOT NULL, type INTEGER NOT NULL, date REAL NOT NULL
+            NSDictionary *activity = @{@"text" : [sqlResults stringForColumn:@"text"],
+                                       @"seen" : [NSNumber numberWithBool:[sqlResults boolForColumn:@"seen"]],
+                                       @"type" : [NSNumber numberWithInt:[sqlResults intForColumn:@"type"]],
+                                       @"date" : [[sqlResults dateForColumn:@"date"] timeAgo]};
+            [activities addObject:activity];
+            i += 1;
+        }
+    }];
+    return activities;
+}
+
+
+#pragma mark -search
+// 指定したIDのツイートをすでにふぁぼったか
+// Twitterのapiが正しい値を返してくれないのでこれを使う
+- (BOOL)findFavoriteByID:(NSString *)tweet_id{
+    __block BOOL found;
+    [self execBlock:^(FMDatabase *db) {
+        FMResultSet* sqlResults = [db executeQuery:@"SELECT * FROM favorite_log WHERE tweet_id = ?", tweet_id];
+        found = [sqlResults next];
+    }];
+    return found;
 }
 
 // bigramのスコアを取得
@@ -244,6 +273,14 @@ NSString * const TYQueryToUpdateBigram = @"UPDATE bigram SET count = ? WHERE pre
            content:(NSString *)content{
     [self execBlock:^(FMDatabase *db) {
         [db executeUpdate: @"INSERT INTO tweet_log VALUES (?, ?, 0)", tweetID, content];
+    }];
+}
+
+// 投稿履歴に追加
+- (void)logActivityText:(NSString *)text
+                   type:(NSInteger)type{
+    [self execBlock:^(FMDatabase *db) {
+        [db executeUpdate: @"INSERT INTO activity_log VALUES (?, 0, ?, ?)", text, [NSNumber numberWithInt:type], [NSDate date]];
     }];
 }
 

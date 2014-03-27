@@ -12,6 +12,8 @@
 	<dict>
 		<key>82E1FD25-70BF-4A29-8483-4C8677CF97B3</key>
 		<string>https://github.com/nst/STTwitter.git</string>
+		<key>997129B1-758A-4D51-981E-F8A5151AAE59</key>
+		<string>https://github.com/kevinlawler/NSDate-TimeAgo.git</string>
 		<key>9E070512-B03C-492A-B3EA-A56E1AD768B1</key>
 		<string>https://github.com/miya-s/Tubuyagi.git</string>
 		<key>F34D6EDD-69A5-43DA-9A99-9E65EB67569A</key>
@@ -23,6 +25,8 @@
 	<dict>
 		<key>82E1FD25-70BF-4A29-8483-4C8677CF97B3</key>
 		<string>../../Tubuyagi/STTwitter</string>
+		<key>997129B1-758A-4D51-981E-F8A5151AAE59</key>
+		<string>../../Tubuyagi/NSDate-TimeAgo</string>
 		<key>9E070512-B03C-492A-B3EA-A56E1AD768B1</key>
 		<string>../../..</string>
 		<key>F34D6EDD-69A5-43DA-9A99-9E65EB67569A</key>
@@ -43,6 +47,14 @@
 			<string>F34D6EDD-69A5-43DA-9A99-9E65EB67569A</string>
 			<key>IDESourceControlWCCName</key>
 			<string>fmdb</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>997129B1-758A-4D51-981E-F8A5151AAE59</string>
+			<key>IDESourceControlWCCName</key>
+			<string>NSDate-TimeAgo</string>
 		</dict>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>

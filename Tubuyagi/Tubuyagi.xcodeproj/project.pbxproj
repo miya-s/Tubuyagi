@@ -108,6 +108,7 @@
 		4AB139E718DEC53600921337 /* FMDatabasePool.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AB139DF18DEC53600921337 /* FMDatabasePool.m */; };
 		4AB139E818DEC53600921337 /* FMDatabaseQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AB139E118DEC53600921337 /* FMDatabaseQueue.m */; };
 		4AB139E918DEC53600921337 /* FMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AB139E418DEC53600921337 /* FMResultSet.m */; };
+		4AB139ED18E4188800921337 /* NSDate+TimeAgo.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AB139EC18E4188800921337 /* NSDate+TimeAgo.m */; };
 		4ABA5EC517E27DED0041FB3C /* tutorial.png in Resources */ = {isa = PBXBuildFile; fileRef = 4ABA5EC417E27DED0041FB3C /* tutorial.png */; };
 		4ABA5EC717E27E740041FB3C /* tutorial_new3.png in Resources */ = {isa = PBXBuildFile; fileRef = 4ABA5EC617E27E740041FB3C /* tutorial_new3.png */; };
 		4AE36E5F18D2206F000A8084 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4AE36E5E18D2206F000A8084 /* XCTest.framework */; };
@@ -266,6 +267,8 @@
 		4AB139E218DEC53600921337 /* FMDB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDB.h; sourceTree = "<group>"; };
 		4AB139E318DEC53600921337 /* FMResultSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMResultSet.h; sourceTree = "<group>"; };
 		4AB139E418DEC53600921337 /* FMResultSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMResultSet.m; sourceTree = "<group>"; };
+		4AB139EB18E4188800921337 /* NSDate+TimeAgo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSDate+TimeAgo.h"; path = "NSDate-TimeAgo/NSDate+TimeAgo.h"; sourceTree = "<group>"; };
+		4AB139EC18E4188800921337 /* NSDate+TimeAgo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSDate+TimeAgo.m"; path = "NSDate-TimeAgo/NSDate+TimeAgo.m"; sourceTree = "<group>"; };
 		4ABA5EC417E27DED0041FB3C /* tutorial.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial.png; sourceTree = "<group>"; };
 		4ABA5EC617E27E740041FB3C /* tutorial_new3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial_new3.png; sourceTree = "<group>"; };
 		4AE36E5D18D2206F000A8084 /* Tubuyagi Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tubuyagi Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -525,6 +528,7 @@
 		4A63EAA017D96F2D00C93F86 /* lib */ = {
 			isa = PBXGroup;
 			children = (
+				4AB139EA18E4187400921337 /* NSDate+TimeAgo */,
 				4AB139D918DEC53600921337 /* fmdb */,
 				37778AE917DC6D92004F51A5 /* STTwitter */,
 			);
@@ -586,6 +590,15 @@
 			);
 			name = fmdb;
 			path = fmdb/src/fmdb;
+			sourceTree = "<group>";
+		};
+		4AB139EA18E4187400921337 /* NSDate+TimeAgo */ = {
+			isa = PBXGroup;
+			children = (
+				4AB139EB18E4188800921337 /* NSDate+TimeAgo.h */,
+				4AB139EC18E4188800921337 /* NSDate+TimeAgo.m */,
+			);
+			name = "NSDate+TimeAgo";
 			sourceTree = "<group>";
 		};
 		4AE36E5418D1CD24000A8084 /* Helper */ = {
@@ -837,6 +850,7 @@
 				4A9CBCF518D70F6300E32BD9 /* STTwitterOSRequest.m in Sources */,
 				4AEE6B1E180E802E000C945A /* STHTTPRequest.m in Sources */,
 				37D0615F17DB647100F94E30 /* CMPopTipView.m in Sources */,
+				4AB139ED18E4188800921337 /* NSDate+TimeAgo.m in Sources */,
 				4AEE6B10180E800D000C945A /* STTwitterAPI.m in Sources */,
 				4AEE6B0E180E800D000C945A /* NSString+STTwitter.m in Sources */,
 				37CAC1FA17DDA6BB00854D4D /* DeleteWordTableViewController.m in Sources */,

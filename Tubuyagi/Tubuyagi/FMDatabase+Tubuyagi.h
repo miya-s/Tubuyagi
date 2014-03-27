@@ -8,6 +8,11 @@
 
 #import "FMDB.h"
 
+NS_ENUM(NSInteger, TYActivityType){
+    TYFavoritedActivity = 0,
+    TYPostedActivity
+};
+
 @interface FMDatabase(Tubuyagi)
 
 #pragma mark -factory
@@ -43,6 +48,9 @@
 
 - (void)logMyTweet:(NSString *)tweetID
            content:(NSString *)content;
+
+- (void)logActivityText:(NSString *)text
+                   type:(NSInteger)type;
 
 -(void) updateBigramIncrease:(BOOL)increase
                 previousWord:(NSString*)previous
