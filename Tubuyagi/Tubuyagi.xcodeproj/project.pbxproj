@@ -66,7 +66,7 @@
 		37CAC20017DDB7F000854D4D /* HeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 37CAC1FF17DDB7F000854D4D /* HeaderView.m */; };
 		37CAC23B17DED99900854D4D /* FavoriteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37CAC23917DED99800854D4D /* FavoriteViewController.m */; };
 		37CAC23C17DED99900854D4D /* FavoriteViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 37CAC23A17DED99900854D4D /* FavoriteViewController.xib */; };
-		37CAC23F17DEDB8F00854D4D /* FavoriteCustomVIewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 37CAC23E17DEDB8F00854D4D /* FavoriteCustomVIewCell.m */; };
+		37CAC23F17DEDB8F00854D4D /* FavoriteCustomViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 37CAC23E17DEDB8F00854D4D /* FavoriteCustomViewCell.m */; };
 		37CAC24117DEDDE400854D4D /* yagiSample.png in Resources */ = {isa = PBXBuildFile; fileRef = 37CAC24017DEDDE400854D4D /* yagiSample.png */; };
 		37D0612517DB422300F94E30 /* YagiView.m in Sources */ = {isa = PBXBuildFile; fileRef = 37D0612417DB422300F94E30 /* YagiView.m */; };
 		37D0615F17DB647100F94E30 /* CMPopTipView.m in Sources */ = {isa = PBXBuildFile; fileRef = 37D0615E17DB647100F94E30 /* CMPopTipView.m */; };
@@ -117,6 +117,7 @@
 		4AE36E6718D2206F000A8084 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4AE36E6518D2206F000A8084 /* InfoPlist.strings */; };
 		4AE36E6918D2206F000A8084 /* Tubuyagi_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AE36E6818D2206F000A8084 /* Tubuyagi_Tests.m */; };
 		4AE36E7118D22202000A8084 /* TweetsManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AE36E7018D22202000A8084 /* TweetsManagerTests.m */; };
+		4AEC6F4A18E5666000A7BC83 /* ActivityCustomViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AEC6F4918E5666000A7BC83 /* ActivityCustomViewCell.m */; };
 		4AEE6B0E180E800D000C945A /* NSString+STTwitter.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AEE6AFF180E800D000C945A /* NSString+STTwitter.m */; };
 		4AEE6B0F180E800D000C945A /* STHTTPRequest+STTwitter.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AEE6B01180E800D000C945A /* STHTTPRequest+STTwitter.m */; };
 		4AEE6B10180E800D000C945A /* STTwitterAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AEE6B04180E800D000C945A /* STTwitterAPI.m */; };
@@ -207,8 +208,8 @@
 		37CAC23817DED99800854D4D /* FavoriteViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FavoriteViewController.h; sourceTree = "<group>"; };
 		37CAC23917DED99800854D4D /* FavoriteViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FavoriteViewController.m; sourceTree = "<group>"; };
 		37CAC23A17DED99900854D4D /* FavoriteViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FavoriteViewController.xib; sourceTree = "<group>"; };
-		37CAC23D17DEDB8F00854D4D /* FavoriteCustomVIewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FavoriteCustomVIewCell.h; sourceTree = "<group>"; };
-		37CAC23E17DEDB8F00854D4D /* FavoriteCustomVIewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FavoriteCustomVIewCell.m; sourceTree = "<group>"; };
+		37CAC23D17DEDB8F00854D4D /* FavoriteCustomViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FavoriteCustomViewCell.h; sourceTree = "<group>"; };
+		37CAC23E17DEDB8F00854D4D /* FavoriteCustomViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FavoriteCustomViewCell.m; sourceTree = "<group>"; };
 		37CAC24017DEDDE400854D4D /* yagiSample.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = yagiSample.png; sourceTree = "<group>"; };
 		37D0612317DB422300F94E30 /* YagiView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YagiView.h; sourceTree = "<group>"; };
 		37D0612417DB422300F94E30 /* YagiView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YagiView.m; sourceTree = "<group>"; };
@@ -278,6 +279,8 @@
 		4AE36E6818D2206F000A8084 /* Tubuyagi_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Tubuyagi_Tests.m; sourceTree = "<group>"; };
 		4AE36E6A18D2206F000A8084 /* Tubuyagi Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Tubuyagi Tests-Prefix.pch"; sourceTree = "<group>"; };
 		4AE36E7018D22202000A8084 /* TweetsManagerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TweetsManagerTests.m; sourceTree = "<group>"; };
+		4AEC6F4818E5666000A7BC83 /* ActivityCustomViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActivityCustomViewCell.h; sourceTree = "<group>"; };
+		4AEC6F4918E5666000A7BC83 /* ActivityCustomViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActivityCustomViewCell.m; sourceTree = "<group>"; };
 		4AEE6AFE180E800D000C945A /* NSString+STTwitter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+STTwitter.h"; path = "STTwitter/STTwitter/NSString+STTwitter.h"; sourceTree = "<group>"; };
 		4AEE6AFF180E800D000C945A /* NSString+STTwitter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+STTwitter.m"; path = "STTwitter/STTwitter/NSString+STTwitter.m"; sourceTree = "<group>"; };
 		4AEE6B00180E800D000C945A /* STHTTPRequest+STTwitter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "STHTTPRequest+STTwitter.h"; path = "STTwitter/STTwitter/STHTTPRequest+STTwitter.h"; sourceTree = "<group>"; };
@@ -422,7 +425,7 @@
 				3741854317E03D5D00D68688 /* Audio */,
 				4A63EAA017D96F2D00C93F86 /* lib */,
 				374D797A17D8551500FAE80C /* ViewController */,
-				374D797917D8550600FAE80C /* SubClass */,
+				374D797917D8550600FAE80C /* ViewComponents */,
 				374D795A17D8291E00FAE80C /* Images */,
 				374D793817D822D000FAE80C /* AppDelegate.h */,
 				374D793917D822D000FAE80C /* AppDelegate.m */,
@@ -464,20 +467,22 @@
 			path = Images;
 			sourceTree = "<group>";
 		};
-		374D797917D8550600FAE80C /* SubClass */ = {
+		374D797917D8550600FAE80C /* ViewComponents */ = {
 			isa = PBXGroup;
 			children = (
 				4AE36E5518D1D466000A8084 /* YagiBehavior */,
 				37CAC1FE17DDB7F000854D4D /* HeaderView.h */,
 				37CAC1FF17DDB7F000854D4D /* HeaderView.m */,
+				4AEC6F4818E5666000A7BC83 /* ActivityCustomViewCell.h */,
+				4AEC6F4918E5666000A7BC83 /* ActivityCustomViewCell.m */,
+				37CAC23D17DEDB8F00854D4D /* FavoriteCustomViewCell.h */,
+				37CAC23E17DEDB8F00854D4D /* FavoriteCustomViewCell.m */,
 				37D0615D17DB647000F94E30 /* CMPopTipView.h */,
 				37D0615E17DB647100F94E30 /* CMPopTipView.m */,
 				374D797B17D8552B00FAE80C /* bubbleView.h */,
 				374D797C17D8552B00FAE80C /* bubbleView.m */,
-				37CAC23D17DEDB8F00854D4D /* FavoriteCustomVIewCell.h */,
-				37CAC23E17DEDB8F00854D4D /* FavoriteCustomVIewCell.m */,
 			);
-			name = SubClass;
+			name = ViewComponents;
 			sourceTree = "<group>";
 		};
 		374D797A17D8551500FAE80C /* ViewController */ = {
@@ -857,9 +862,10 @@
 				4AB139E618DEC53600921337 /* FMDatabaseAdditions.m in Sources */,
 				37CAC20017DDB7F000854D4D /* HeaderView.m in Sources */,
 				37CAC23B17DED99900854D4D /* FavoriteViewController.m in Sources */,
-				37CAC23F17DEDB8F00854D4D /* FavoriteCustomVIewCell.m in Sources */,
+				37CAC23F17DEDB8F00854D4D /* FavoriteCustomViewCell.m in Sources */,
 				4A9CBCF718D854F900E32BD9 /* AuthentificationKeys.m in Sources */,
 				4AB139E818DEC53600921337 /* FMDatabaseQueue.m in Sources */,
+				4AEC6F4A18E5666000A7BC83 /* ActivityCustomViewCell.m in Sources */,
 				4A2F2F6E17F1D28C0017E97A /* NSString+SHA.m in Sources */,
 				4A2F2F7117F1D8C50017E97A /* TweetsManager.m in Sources */,
 				4AEE6B0F180E800D000C945A /* STHTTPRequest+STTwitter.m in Sources */,

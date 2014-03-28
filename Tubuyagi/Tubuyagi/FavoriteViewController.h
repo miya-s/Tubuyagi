@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "FavoriteCustomVIewCell.h"
+#import "FavoriteCustomViewCell.h"
+#import "ActivityCustomViewCell.h"
 #import "HeaderView.h"
 
 @protocol FavoriteViewControllerDelegate;
@@ -15,14 +16,14 @@
 @interface FavoriteViewController : UIViewController<UITableViewDataSource,UITableViewDelegate,
                                         UIScrollViewDelegate>
 {
-//    NSDictionary *favTweets;
-    FavoriteCustomVIewCell *selectedCell;
-//    NSString *userID;
+    FavoriteCustomViewCell *selectedCell;
 }
 @property (strong, nonatomic) IBOutlet UITableView *tableView;
 @property (nonatomic, retain) NSArray *favTweet;
+@property (nonatomic, retain) NSArray *activities;
 @property (strong, nonatomic) IBOutlet HeaderView *headerView;
 @property (nonatomic, retain) id<FavoriteViewControllerDelegate> delegate;
+@property (readonly) BOOL showActivity;
 
 - (IBAction)backMainView:(id)sender;
 

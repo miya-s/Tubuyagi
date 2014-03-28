@@ -33,7 +33,7 @@
     NSString *userName, *strCurrTweet;
     FoodUIViewController *fvc;
     
-    FavoriteViewController *fvvc1, *fvvc2;
+    FavoriteViewController *fvvc1, *fvvc2, *fvvc3;
 }
 @property (nonatomic, retain) ACAccountStore *accountStore;
 @property (nonatomic, retain) NSArray *twitterAccounts;

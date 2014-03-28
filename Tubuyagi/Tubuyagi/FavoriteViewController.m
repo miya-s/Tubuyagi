@@ -38,6 +38,7 @@
     return self;
 }
 
+//更新表示を隠す
 - (void)_setHeaderViewHidden:(BOOL)hidden animated:(BOOL)animated
 {
     CGFloat topOffset = 0.0;
@@ -68,13 +69,6 @@
     [self _setHeaderViewHidden:YES animated:NO];
     [self.headerView setState:HeaderViewStateHidden];
     
-    //データの取得
-//    favTweets = getJSONTops(0, 20);
-//    NSDictionary *dic = [favTweets objectForKey:@"0"];
-//    NSLog(@"dic %@", self.favTweet);
-//    NSString *userName = [[self.favTweet objectForKey:@"1"] objectForKey:@"content"];
-//    NSLog(@"username %@", userName);
-    
     [self.tableView reloadData];
 
 }
@@ -97,46 +91,61 @@
 
 #pragma mark - UITableViewDataSource
 
+//要素数
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+    if (self.showActivity){
+        if (self.activities) {
+            return [self.activities count];
+        }
+        return 0;
+    }
     
-    NSLog(@"numberOfRowsInSection");
     if (self.favTweet) {
         return [self.favTweet count];
     }
-    return 0;//tweetの数
+    return 0;
 }
 
 // セルの中身の実装
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    //    NSLog(@"cellForRowAtIndexPath");
+    if (self.showActivity){
+        NSString *CellIdentifier = @"ActivityCell";
+        
+        ActivityCustomViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+        if (cell == nil) {
+            cell = [[ActivityCustomViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        }
+        if (self.activities){
+            
+            cell.text = [[self.activities objectAtIndex:indexPath.row] objectForKey:@"text"];
+            cell.seen = [[[self.activities objectAtIndex:indexPath.row] objectForKey:@"seen"]boolValue];
+            cell.type = [[[self.activities objectAtIndex:indexPath.row] objectForKey:@"type"] integerValue];
+            cell.date = [[self.activities objectAtIndex:indexPath.row] objectForKey:@"date"];
+        }
+        
+        
+        return cell;
+    }
     
-//    NSString *strCellIdentifier = [NSString stringWithFormat:@"%d", indexPath.row];
+    
+    
     NSString *CellIdentifier = @"Cell";//strCellIdentifier;
     
-    FavoriteCustomVIewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    FavoriteCustomViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[FavoriteCustomVIewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        cell = [[FavoriteCustomViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
-//        NSString *num = [NSString stringWithFormat:@"%d", indexPath.row];
-        
-        
-    
-//        if (self.favTweet){
-//            NSString *tweet = [[self.favTweet objectAtIndex:indexPath.row] objectForKey:@"content"];
-//            NSString *strYagiName = [[self.favTweet objectAtIndex:indexPath.row] objectForKey:@"yagi_name"];
-//
-//
-//        }
     }
     if (self.favTweet){
         NSString *tweet = [[self.favTweet objectAtIndex:indexPath.row] objectForKey:@"content"];
         NSString *strYagiName = [[self.favTweet objectAtIndex:indexPath.row] objectForKey:@"yagi_name"];
-//        NSString *strFav
+
         int i = [[[self.favTweet objectAtIndex:indexPath.row] objectForKey:@"wara"] intValue];
- 
-//        NSLog(@"%d", strFav);
+
         
+#warning ここの設計よくない cellのpropertyとしてtweetなどを設定し、そのプロパティのセッタで変更内容をビューを反映する処理のほうがいい
         cell.userID = [[self.favTweet objectAtIndex:indexPath.row] objectForKey:@"id"];
         cell.lblTweet.text = tweet;
         cell.lblYagiName.text = strYagiName;
@@ -159,23 +168,7 @@
 //セルを選択した時の処理
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    //    NSLog(@"didSelectRow");
-    //    UITableViewCell *selectedCell = [self.foodTableView cellForRowAtIndexPath:indexPath];
-    //    [self.delegate setTweetString:selectedCell.textLabel.text];
-    //
-    //    learnFromText(selectedCell.textLabel.text);
-    
-    
-//    selectedCell = [self.tableView cellForRowAtIndexPath:indexPath];
-//    NSLog(@"click tubuyaki %@", selectedCell.lblTweet);
-//    NSString *strAlert = [NSString stringWithFormat:@"「%@」を忘れさせてもいいですか？？", selectedCell.textLabel.text];
-//    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"単語の削除"
-//                                                    message:@"おす"
-//                                                   delegate:self
-//                                          cancelButtonTitle:@"OK"
-//                                          otherButtonTitles:@"キャンセル", nil];
-//    [alert show];
-    
+
     
 }
 
@@ -186,11 +179,9 @@
     NSLog(@"heightForRowAtIndexPath");
     if (self.favTweet) {
         
-        FavoriteCustomVIewCell *aCell = [[FavoriteCustomVIewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"];
+        FavoriteCustomViewCell *aCell = [[FavoriteCustomViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"];
         CGSize bounds = CGSizeMake(aCell.lblTweet.frame.size.width, 1000);
-//        UIFont *font = aCell.textLabel.font;
-//        NSLog(@"font desu %@", font);
-        //textLabelのサイズ
+
         CGSize size = [aCell.lblTweet.text sizeWithFont:aCell.lblTweet.font
                                       constrainedToSize:bounds
                                           lineBreakMode:NSLineBreakByWordWrapping];
@@ -229,7 +220,6 @@
         [self _setHeaderViewHidden:NO animated:YES];
         
         [self performSelector:@selector(getFavoriteJsondata) withObject:nil afterDelay:0.1];
-        //        [self.delegate refleshMainView];
     }
 }
 
@@ -239,7 +229,6 @@
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
     __block __weak FavoriteViewController *weakself = self;
     TweetsManager *tweetsManager = [TweetsManager tweetsManagerFactory];
-    
     if ([self.tabBarItem.title isEqualToString:@"新着"]) {
         [tweetsManager checkSearchResultForRecent:YES
                                      SuccessBlock:^(NSArray *statuses) {
@@ -252,7 +241,7 @@
                                            NSAssert(!error, [error localizedDescription]);
                                            [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
                                        }];
-    }else if ([self.tabBarItem.title isEqualToString:@"人気"]){
+    } else if ([self.tabBarItem.title isEqualToString:@"人気"]){
         [tweetsManager checkSearchResultForRecent:NO
                                      SuccessBlock:^(NSArray *statuses) {
                                          weakself.favTweet = statuses;
@@ -264,6 +253,10 @@
                                            NSAssert(!error, [error localizedDescription]);
                                            [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
                                        }];
+    } else if ([self.tabBarItem.title isEqualToString:@"通知"]){
+        FMDatabase *database = [FMDatabase databaseFactory];
+        self.activities = [database activityArrayWithCount:30];
+        [self taskFinished];
     }
 }
 
@@ -284,5 +277,9 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     UIColor *bgColor = [[UIColor alloc] initWithPatternImage:bgImage];
     cell.backgroundColor = bgColor;
     
+}
+
+- (BOOL)showActivity{
+    return [self.tabBarItem.title isEqualToString:@"通知"];
 }
 @end

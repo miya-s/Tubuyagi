@@ -219,13 +219,22 @@ NS_ENUM(NSInteger, TYActionSheets){
     UITabBarItem *tabItem1 = [[UITabBarItem alloc] initWithTitle:@"新着" image:img1 tag:0];
     fvvc1.tabBarItem = tabItem1;
 //    [[fvvc1.tabBarController.tabBar.items objectAtIndex:0] setFinishedSelectedImage:nil withFinishedUnselectedImage:[UIImage imageNamed:@"clock.png"]];
+
     //人気順
     fvvc2 = [[FavoriteViewController alloc] initWithNibName:@"FavoriteViewController" bundle:nil];
     fvvc2.delegate = self;
     UIImage *img2 = [UIImage imageNamed:@"crown.png"];
     UITabBarItem *tabItem2 = [[UITabBarItem alloc] initWithTitle:@"人気" image:img2 tag:0];
     fvvc2.tabBarItem = tabItem2;
-    NSArray *views = [NSArray arrayWithObjects:fvvc1, fvvc2, nil];
+    
+    //通知
+    fvvc3 = [[FavoriteViewController alloc] initWithNibName:@"FavoriteViewController" bundle:nil];
+    fvvc3.delegate = self;
+    UITabBarItem *tabItem3 = [[UITabBarItem alloc] initWithTitle:@"通知" image:img2 tag:0];
+    fvvc3.tabBarItem = tabItem3;
+    
+    
+    NSArray *views = [NSArray arrayWithObjects:fvvc1, fvvc2, fvvc3, nil];
     [tab setViewControllers:views];
 
     [self getFavoriteJsondata:fvvc1];
@@ -236,6 +245,8 @@ NS_ENUM(NSInteger, TYActionSheets){
 //    [self alert];
 }
 
+
+#warning 同じ処理をViewController.mとFavoriteViewController.mで実装してて地獄感ある
 - (void)getFavoriteJsondata:(FavoriteViewController *)vc
 {
 
@@ -252,7 +263,7 @@ NS_ENUM(NSInteger, TYActionSheets){
                                                 NSAssert(!error, [error localizedDescription]);
                                                 [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
                                             }];
-    }else if (vc == fvvc2){
+    } else if (vc == fvvc2){
         [self.tweetsManager checkSearchResultForRecent:NO
                                           SuccessBlock:^(NSArray *statuses) {
                                               fvvc2.favTweet = statuses;
@@ -264,6 +275,10 @@ NS_ENUM(NSInteger, TYActionSheets){
                                                 NSAssert(!error, [error localizedDescription]);
                                                 [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
                                             }];
+    } else if (vc == fvvc3){
+        FMDatabase *database = [FMDatabase databaseFactory];
+        fvvc3.activities = [database activityArrayWithCount:30];
+        [fvvc3.tableView reloadData];
     }
 }
 
@@ -696,14 +711,18 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         if (!fvvc1.favTweet) {
             [self getFavoriteJsondata:fvvc1];
         }
-    }else if (viewController == fvvc2){
+    } else if (viewController == fvvc2){
         if (!fvvc2.favTweet) {
         [self performSelector:@selector(getFavoriteJsondata:)
                    withObject:fvvc2
                    afterDelay:0.1];
         }
+    } else if (viewController == fvvc3){
+        [self performSelector:@selector(getFavoriteJsondata:)
+                   withObject:fvvc3
+                   afterDelay:0.1];
     }
-    
+
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 }
 

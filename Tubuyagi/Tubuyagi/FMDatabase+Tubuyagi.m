@@ -109,7 +109,7 @@ NSString * const TYQueryToUpdateBigram = @"UPDATE bigram SET count = ? WHERE pre
 }
 
 // アクティビティの配列を得る
-- (NSArray *)avitivityArrayWithCount:(NSInteger)count{
+- (NSArray *)activityArrayWithCount:(NSInteger)count{
     __block NSInteger i = 0;
     __block NSMutableArray *activities = [NSMutableArray arrayWithArray:@[]];
     [self execBlock:^(FMDatabase *db) {
@@ -121,11 +121,12 @@ NSString * const TYQueryToUpdateBigram = @"UPDATE bigram SET count = ? WHERE pre
             if (i >= count){
                 break;
             }
-            //CREATE TABLE IF NOT EXISTS activity_log (text TEXT NOT NULL, seen INTEGER NOT NULL, type INTEGER NOT NULL, date REAL NOT NULL
+            
+#warning dateはTimeAgoメソッドの値を返したいが、エラーが出る
             NSDictionary *activity = @{@"text" : [sqlResults stringForColumn:@"text"],
                                        @"seen" : [NSNumber numberWithBool:[sqlResults boolForColumn:@"seen"]],
                                        @"type" : [NSNumber numberWithInt:[sqlResults intForColumn:@"type"]],
-                                       @"date" : [[sqlResults dateForColumn:@"date"] timeAgo]};
+                                       @"date" : [[sqlResults dateForColumn:@"date"] description]};
             [activities addObject:activity];
             i += 1;
         }

@@ -10,8 +10,11 @@
 
 NS_ENUM(NSInteger, TYActivityType){
     TYFavoritedActivity = 0,
-    TYPostedActivity
+    TYSharedActivity
 };
+
+#define TYSharedActivityText @"つぶやきを共有しました「%@」"
+#define TYFavoritedActivityText @"つぶやきがお気に入りに登録されました「%@」"
 
 @interface FMDatabase(Tubuyagi)
 
@@ -23,6 +26,8 @@ NS_ENUM(NSInteger, TYActivityType){
 
 #pragma mark -show
 - (NSArray *)contentsInLearnLog;
+
+- (NSArray *)activityArrayWithCount:(NSInteger)count;
 
 #pragma mark -search
 

@@ -278,6 +278,8 @@ NSArray *TYConvertTweetsToOldStyle(NSArray *tweets);
                                successBlock(status);
                                [weakDatabase logMyTweet:[status objectForKey:@"id_str"]
                                                 content:content];
+                               [weakDatabase logActivityText:[NSString stringWithFormat:TYSharedActivityText, content]
+                                                        type:TYSharedActivity];
                            }
                             errorBlock:errorBlock];
     
