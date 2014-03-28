@@ -212,6 +212,8 @@ NS_ENUM(NSInteger, TYActionSheets){
 
     [[tab.tabBar.items objectAtIndex:0] setBackgroundImage:[UIImage imageNamed:@"clock.png"]];
     
+    
+#warning ここらへんfvvcのコンストラクタで処理するべきでは？
     //新着順
     fvvc1 = [[FavoriteViewController alloc] initWithNibName:@"FavoriteViewController" bundle:nil];
     fvvc1.delegate = self;
@@ -230,7 +232,8 @@ NS_ENUM(NSInteger, TYActionSheets){
     //通知
     fvvc3 = [[FavoriteViewController alloc] initWithNibName:@"FavoriteViewController" bundle:nil];
     fvvc3.delegate = self;
-    UITabBarItem *tabItem3 = [[UITabBarItem alloc] initWithTitle:@"通知" image:img2 tag:0];
+    UIImage *img3 = [UIImage imageNamed:@"bell.png"];
+    UITabBarItem *tabItem3 = [[UITabBarItem alloc] initWithTitle:@"通知" image:img3 tag:0];
     fvvc3.tabBarItem = tabItem3;
     
     
