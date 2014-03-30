@@ -1,5 +1,5 @@
 #そだてて！つぶやぎ
 
-詳しいReadme作る暇がないのでゲーム中のチュートリアル載せます。
+※下の画像はゲーム中のチュートリアルです。
 
 ![チュートリアル画像](/Tubuyagi/Tubuyagi/Images/tutorial_new3.png)
