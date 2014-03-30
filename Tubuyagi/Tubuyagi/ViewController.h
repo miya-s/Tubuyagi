@@ -15,6 +15,7 @@
 #import "FavoriteViewController.h"
 #import "bubbleView.h"
 #import "YagiView.h"
+#import "TreeView.h"
 #import "CMPopTipView.h"
 #import "TweetsManager.h"
 
@@ -38,6 +39,7 @@
 @property (nonatomic, retain) ACAccountStore *accountStore;
 @property (nonatomic, retain) NSArray *twitterAccounts;
 @property (nonatomic, retain) YagiView *yagiView;
+@property (nonatomic, retain) TreeView *treeView;
 @property (nonatomic, retain) TweetsManager *tweetsManager;
 @property (strong, nonatomic) IBOutlet UIButton *btnChooseFood;
 @property (strong, nonatomic) IBOutlet UIButton *btnshowFavolite;

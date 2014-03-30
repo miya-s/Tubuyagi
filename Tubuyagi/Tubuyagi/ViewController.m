@@ -74,6 +74,8 @@ NS_ENUM(NSInteger, TYActionSheets){
     self.btnshowFavolite.enabled = NO;
     btnYagi.enabled = NO;
     
+    //木
+    self.treeView = [[TreeView alloc] initTreeInSubView];
     
     //PopTipViewの管理
     visiblePopTipViews = [NSMutableArray array];
@@ -126,6 +128,7 @@ NS_ENUM(NSInteger, TYActionSheets){
 {
     btnYagi.enabled = YES;
     //その他ボタン利用解除
+    self.treeView.treeButton.enabled = YES;
     self.btnChooseFood.enabled = YES;
     self.btnForget.enabled = YES;
     self.btnConfig.enabled = YES;
