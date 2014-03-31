@@ -198,7 +198,7 @@
                 }];
         }];
         if ([[ud objectForKey:@"TDFirstTime"] isEqualToString:@"1"]) {
-            [self.viewController availableButton];
+            self.viewController.availableButtons = YES;
         }
     }
     
@@ -235,7 +235,7 @@
     
 #warning 最後に直す
     [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"TDFirstTime"];
-    [self.viewController availableButton];
+    self.viewController.availableButtons = YES;
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application

@@ -14,7 +14,7 @@
 }
 
 //指定イニシャライザ
-- (id)initTreeInSubView{
+- (id)initTreeAsSubView{
     CGRect treeRect = CGRectMake(45, 158, 230, 228);
     self = [super initWithFrame:treeRect];
     if (self) {
@@ -22,13 +22,6 @@
         _treeBody = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"tree.png"]];
         _treeBody.center = CGPointMake(144, 120);
         [self addSubview:_treeBody];
-        
-        
-        _treeButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _treeButton.frame = treeRect;
-        [_treeButton addTarget:self action:@selector(moveToTreeView) forControlEvents:UIControlEventTouchUpInside];
-        [self addSubview:_treeButton];
-        _treeButton.enabled = NO;
     }
     return self;
 

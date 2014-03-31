@@ -11,8 +11,6 @@
 
 @interface TreeView : UIView
 
-@property(readwrite) UIButton *treeButton;
-
-- (id)initTreeInSubView;
+- (id)initTreeAsSubView;
 
 @end

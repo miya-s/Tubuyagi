@@ -2,7 +2,7 @@
 //  CMPopTipView.h
 //
 //  Created by Chris Miles on 18/07/10.
-//  Copyright (c) Chris Miles 2010-2013.
+//  Copyright (c) Chris Miles 2010-2014.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,7 @@
 //
 
 /*
-	Version: 2.0
+	Version: 2.1
  */
 
 
@@ -117,8 +117,8 @@ typedef enum {
 @property (nonatomic, strong)			UIFont					*titleFont;
 @property (nonatomic, strong)			UIColor					*textColor;
 @property (nonatomic, strong)			UIFont					*textFont;
-@property (nonatomic, assign)			UITextAlignment			titleAlignment;
-@property (nonatomic, assign)			UITextAlignment			textAlignment;
+@property (nonatomic, assign)			NSTextAlignment			titleAlignment;
+@property (nonatomic, assign)			NSTextAlignment			textAlignment;
 @property (nonatomic, assign)           BOOL                    has3DStyle;
 @property (nonatomic, strong)			UIColor					*borderColor;
 @property (nonatomic, assign)           CGFloat                 cornerRadius;
@@ -128,6 +128,9 @@ typedef enum {
 @property (nonatomic, assign)           CGFloat                 maxWidth;
 @property (nonatomic, assign)           PointDirection          preferredPointDirection;
 @property (nonatomic, assign)           BOOL                    hasGradientBackground;
+@property (nonatomic, assign)           CGFloat                 sidePadding;
+@property (nonatomic, assign)           CGFloat                 topMargin;
+@property (nonatomic, assign)           CGFloat                 pointerSize;
 
 /* Contents can be either a message or a UIView */
 - (id)initWithTitle:(NSString *)titleToShow message:(NSString *)messageToShow;
@@ -145,5 +148,4 @@ typedef enum {
 
 @protocol CMPopTipViewDelegate <NSObject>
 - (void)popTipViewWasDismissedByUser:(CMPopTipView *)popTipView;
-- (void)touchTipPopView;
 @end

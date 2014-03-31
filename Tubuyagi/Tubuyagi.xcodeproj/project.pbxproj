@@ -68,9 +68,9 @@
 		37CAC23C17DED99900854D4D /* FavoriteViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 37CAC23A17DED99900854D4D /* FavoriteViewController.xib */; };
 		37CAC24117DEDDE400854D4D /* yagiSample.png in Resources */ = {isa = PBXBuildFile; fileRef = 37CAC24017DEDDE400854D4D /* yagiSample.png */; };
 		37D0612517DB422300F94E30 /* YagiView.m in Sources */ = {isa = PBXBuildFile; fileRef = 37D0612417DB422300F94E30 /* YagiView.m */; };
-		37D0615F17DB647100F94E30 /* CMPopTipView.m in Sources */ = {isa = PBXBuildFile; fileRef = 37D0615E17DB647100F94E30 /* CMPopTipView.m */; };
 		4A2C7EA718E87F0000B87C25 /* tree.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A2C7EA618E87F0000B87C25 /* tree.png */; };
 		4A2C7EAA18E8809C00B87C25 /* TreeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A2C7EA918E8809C00B87C25 /* TreeView.m */; };
+		4A2C7EB118E8B4C300B87C25 /* CMPopTipView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A2C7EB018E8B4C300B87C25 /* CMPopTipView.m */; };
 		4A2F2F6E17F1D28C0017E97A /* NSString+SHA.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A2F2F6D17F1D28C0017E97A /* NSString+SHA.m */; };
 		4A2F2F7117F1D8C50017E97A /* TweetsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A2F2F7017F1D8C50017E97A /* TweetsManager.m */; };
 		4A4564FA17E1C04F00DA3013 /* paper.wav in Resources */ = {isa = PBXBuildFile; fileRef = 4A4564F917E1C04F00DA3013 /* paper.wav */; };
@@ -214,11 +214,11 @@
 		37CAC24017DEDDE400854D4D /* yagiSample.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = yagiSample.png; sourceTree = "<group>"; };
 		37D0612317DB422300F94E30 /* YagiView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YagiView.h; sourceTree = "<group>"; };
 		37D0612417DB422300F94E30 /* YagiView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YagiView.m; sourceTree = "<group>"; };
-		37D0615D17DB647000F94E30 /* CMPopTipView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMPopTipView.h; sourceTree = "<group>"; };
-		37D0615E17DB647100F94E30 /* CMPopTipView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMPopTipView.m; sourceTree = "<group>"; };
 		4A2C7EA618E87F0000B87C25 /* tree.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tree.png; sourceTree = "<group>"; };
 		4A2C7EA818E8809C00B87C25 /* TreeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TreeView.h; sourceTree = "<group>"; };
 		4A2C7EA918E8809C00B87C25 /* TreeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TreeView.m; sourceTree = "<group>"; };
+		4A2C7EAF18E8B4C300B87C25 /* CMPopTipView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMPopTipView.h; sourceTree = "<group>"; };
+		4A2C7EB018E8B4C300B87C25 /* CMPopTipView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMPopTipView.m; sourceTree = "<group>"; };
 		4A2F2F6C17F1D28C0017E97A /* NSString+SHA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+SHA.h"; path = "lib/NSString+SHA.h"; sourceTree = "<group>"; };
 		4A2F2F6D17F1D28C0017E97A /* NSString+SHA.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+SHA.m"; path = "lib/NSString+SHA.m"; sourceTree = "<group>"; };
 		4A2F2F6F17F1D8C50017E97A /* TweetsManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TweetsManager.h; sourceTree = "<group>"; };
@@ -489,8 +489,6 @@
 				4AEC6F4918E5666000A7BC83 /* ActivityCustomViewCell.m */,
 				4AEC6F4D18E87B2A00A7BC83 /* FavoriteCustomViewCell.h */,
 				4AEC6F4E18E87B2A00A7BC83 /* FavoriteCustomViewCell.m */,
-				37D0615D17DB647000F94E30 /* CMPopTipView.h */,
-				37D0615E17DB647100F94E30 /* CMPopTipView.m */,
 				374D797B17D8552B00FAE80C /* bubbleView.h */,
 				374D797C17D8552B00FAE80C /* bubbleView.m */,
 			);
@@ -542,9 +540,20 @@
 			name = STTwitter;
 			sourceTree = "<group>";
 		};
+		4A2C7EAE18E8B4C300B87C25 /* CMPopTipView */ = {
+			isa = PBXGroup;
+			children = (
+				4A2C7EAF18E8B4C300B87C25 /* CMPopTipView.h */,
+				4A2C7EB018E8B4C300B87C25 /* CMPopTipView.m */,
+			);
+			name = CMPopTipView;
+			path = CMPopTipView/CMPopTipView;
+			sourceTree = "<group>";
+		};
 		4A63EAA017D96F2D00C93F86 /* lib */ = {
 			isa = PBXGroup;
 			children = (
+				4A2C7EAE18E8B4C300B87C25 /* CMPopTipView */,
 				4AB139EA18E4187400921337 /* NSDate+TimeAgo */,
 				4AB139D918DEC53600921337 /* fmdb */,
 				37778AE917DC6D92004F51A5 /* STTwitter */,
@@ -859,7 +868,6 @@
 				37D0612517DB422300F94E30 /* YagiView.m in Sources */,
 				4A9CBCF518D70F6300E32BD9 /* STTwitterOSRequest.m in Sources */,
 				4AEE6B1E180E802E000C945A /* STHTTPRequest.m in Sources */,
-				37D0615F17DB647100F94E30 /* CMPopTipView.m in Sources */,
 				4AB139ED18E4188800921337 /* NSDate+TimeAgo.m in Sources */,
 				4AEE6B10180E800D000C945A /* STTwitterAPI.m in Sources */,
 				4AEE6B0E180E800D000C945A /* NSString+STTwitter.m in Sources */,
@@ -875,6 +883,7 @@
 				4A2F2F6E17F1D28C0017E97A /* NSString+SHA.m in Sources */,
 				4A2F2F7117F1D8C50017E97A /* TweetsManager.m in Sources */,
 				4AEE6B0F180E800D000C945A /* STHTTPRequest+STTwitter.m in Sources */,
+				4A2C7EB118E8B4C300B87C25 /* CMPopTipView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

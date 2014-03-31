@@ -2,7 +2,7 @@
 //  CMPopTipView.m
 //
 //  Created by Chris Miles on 18/07/10.
-//  Copyright (c) Chris Miles 2010-2013.
+//  Copyright (c) Chris Miles 2010-2014.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -31,8 +31,6 @@
 	CGSize					_bubbleSize;
 	CGFloat					_cornerRadius;
 	BOOL					_highlight;
-	CGFloat					_sidePadding;
-	CGFloat					_topMargin;
 	PointDirection			_pointDirection;
 	CGFloat					_pointerSize;
 	CGPoint					_targetPoint;
@@ -74,8 +72,8 @@
     }
 }
 
-- (void)drawRect:(CGRect)rect {
-	
+- (void)drawRect:(__unused CGRect)rect
+{
 	CGRect bubbleRect = [self bubbleFrame];
 	
 	CGContextRef c = UIGraphicsGetCurrentContext(); 
@@ -159,7 +157,7 @@
         CGFloat green;
         CGFloat blue;
         CGFloat alpha;
-        int numComponents = CGColorGetNumberOfComponents([self.backgroundColor CGColor]);
+        size_t numComponents = CGColorGetNumberOfComponents([self.backgroundColor CGColor]);
         const CGFloat *components = CGColorGetComponents([self.backgroundColor CGColor]);
         if (numComponents == 2) {
             red = components[0];
@@ -228,7 +226,7 @@
 
     //Draw Border
     if (self.borderWidth > 0) {
-        int numBorderComponents = CGColorGetNumberOfComponents([self.borderColor CGColor]);
+        size_t numBorderComponents = CGColorGetNumberOfComponents([self.borderColor CGColor]);
         const CGFloat *borderComponents = CGColorGetComponents(self.borderColor.CGColor);
         CGFloat r, g, b, a;
         if (numBorderComponents == 2) {
@@ -255,10 +253,35 @@
     if (self.title) {
         [self.titleColor set];
         CGRect titleFrame = [self contentFrame];
-        [self.title drawInRect:titleFrame
-                      withFont:self.titleFont
-                 lineBreakMode:NSLineBreakByClipping//UILineBreakModeClip
-                     alignment:NSTextAlignmentCenter];//self.titleAlignment];
+        
+        if ([self.title respondsToSelector:@selector(drawWithRect:options:attributes:context:)]) {
+            NSMutableParagraphStyle *titleParagraphStyle = [[NSMutableParagraphStyle alloc] init];
+            titleParagraphStyle.alignment = self.titleAlignment;
+            titleParagraphStyle.lineBreakMode = NSLineBreakByClipping;
+            
+            [self.title drawWithRect:titleFrame
+                             options:NSStringDrawingUsesLineFragmentOrigin
+                          attributes:@{
+                                       NSFontAttributeName: self.titleFont,
+                                       NSForegroundColorAttributeName: self.titleColor,
+                                       NSParagraphStyleAttributeName: titleParagraphStyle
+                                       }
+                             context:nil];
+            
+        }
+        else {
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+
+            [self.title drawInRect:titleFrame
+                          withFont:self.titleFont
+                     lineBreakMode:NSLineBreakByClipping
+                         alignment:self.titleAlignment];
+
+#pragma clang diagnostic pop
+
+        }
     }
 	
 	if (self.message) {
@@ -267,19 +290,59 @@
         
         // Move down to make room for title
         if (self.title) {
-            textFrame.origin.y += [self.title sizeWithFont:self.titleFont
-                                         constrainedToSize:CGSizeMake(textFrame.size.width, 99999.0)
-                                             lineBreakMode:NSLineBreakByClipping/*UILineBreakModeClip*/].height;
+            
+            if ([self.title respondsToSelector:@selector(boundingRectWithSize:options:attributes:context:)]) {
+                NSMutableParagraphStyle *titleParagraphStyle = [[NSMutableParagraphStyle alloc] init];
+                titleParagraphStyle.lineBreakMode = NSLineBreakByClipping;
+
+                textFrame.origin.y += [self.title boundingRectWithSize:CGSizeMake(textFrame.size.width, 99999.0)
+                                                               options:kNilOptions
+                                                            attributes:@{
+                                                                         NSFontAttributeName: self.titleFont,
+                                                                         NSParagraphStyleAttributeName: titleParagraphStyle
+                                                                         }
+                                                               context:nil].size.height;
+            }
+            else {
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+
+                textFrame.origin.y += [self.title sizeWithFont:self.titleFont
+                                             constrainedToSize:CGSizeMake(textFrame.size.width, 99999.0)
+                                                 lineBreakMode:NSLineBreakByClipping].height;
+
+#pragma clang diagnostic pop
+
+            }
         }
         
-        [self.message drawInRect:textFrame
-                        withFont:self.textFont
-                   lineBreakMode:NSLineBreakByWordWrapping//UILineBreakModeWordWrap
-                       alignment:NSTextAlignmentCenter];//self.textAlignment];
-//        [self.message drawInRect:textFrame
-//                        withFont:self.textFont
-//                   lineBreakMode:NSLineBreakByCharWrapping
-//                       alignment:NSTextAlignmentCenter];
+        NSMutableParagraphStyle *textParagraphStyle = [[NSMutableParagraphStyle alloc] init];
+        textParagraphStyle.alignment = self.textAlignment;
+        textParagraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
+        
+        if ([self.message respondsToSelector:@selector(drawWithRect:options:attributes:context:)]) {
+            [self.message drawWithRect:textFrame
+                               options:NSStringDrawingUsesLineFragmentOrigin attributes:@{
+                                                                                          NSFontAttributeName: self.textFont,
+                                                                                          NSParagraphStyleAttributeName: textParagraphStyle,
+                                                                                          NSForegroundColorAttributeName: self.textColor
+                                                                                          }
+                               context:nil];
+        }
+        else {
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+
+            [self.message drawInRect:textFrame
+                            withFont:self.textFont
+                       lineBreakMode:NSLineBreakByWordWrapping
+                           alignment:self.textAlignment];
+
+#pragma clang diagnostic pop
+
+        }
     }
 }
 
@@ -328,24 +391,72 @@
             }
         }
         else {
-            rectWidth = (int)(containerView.frame.size.width*4/5);//2/3);
+            rectWidth = (int)(containerView.frame.size.width*2/3);
         }
     }
 
 	CGSize textSize = CGSizeZero;
     
     if (self.message!=nil) {
-        textSize= [self.message sizeWithFont:self.textFont
-                           constrainedToSize:CGSizeMake(rectWidth, 99999.0)
-                               lineBreakMode:NSLineBreakByWordWrapping];//UILineBreakModeWordWrap];
+        if ([self.message respondsToSelector:@selector(boundingRectWithSize:options:attributes:context:)]) {
+            NSMutableParagraphStyle *textParagraphStyle = [[NSMutableParagraphStyle alloc] init];
+            textParagraphStyle.alignment = self.textAlignment;
+            textParagraphStyle.lineBreakMode  =NSLineBreakByWordWrapping;
+
+            textSize = [self.message boundingRectWithSize:CGSizeMake(rectWidth, 99999.0)
+                                                  options:NSStringDrawingUsesLineFragmentOrigin
+                                               attributes:@{
+                                                            NSFontAttributeName: self.textFont,
+                                                            NSParagraphStyleAttributeName: textParagraphStyle
+                                                            }
+                                                  context:nil].size;
+        }
+        else {
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+
+            textSize = [self.message sizeWithFont:self.textFont
+                                constrainedToSize:CGSizeMake(rectWidth, 99999.0)
+                                    lineBreakMode:NSLineBreakByWordWrapping];
+
+#pragma clang diagnostic pop
+        
+        }
     }
     if (self.customView != nil) {
         textSize = self.customView.frame.size;
     }
     if (self.title != nil) {
-        textSize.height += [self.title sizeWithFont:self.titleFont
-                                  constrainedToSize:CGSizeMake(rectWidth, 99999.0)
-                                      lineBreakMode:/*UILineBreakModeClip*/NSLineBreakByClipping].height;
+        CGSize titleSize;
+
+        if ([self.title respondsToSelector:@selector(boundingRectWithSize:options:attributes:context:)]) {
+            NSMutableParagraphStyle *titleParagraphStyle = [[NSMutableParagraphStyle alloc] init];
+            titleParagraphStyle.lineBreakMode = NSLineBreakByClipping;
+
+            titleSize = [self.title boundingRectWithSize:CGSizeMake(rectWidth, 99999.0)
+                                                 options:kNilOptions
+                                              attributes:@{
+                                                           NSFontAttributeName: self.titleFont,
+                                                           NSParagraphStyleAttributeName: titleParagraphStyle
+                                                           }
+                                                 context:nil].size;
+        }
+        else {
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+
+            titleSize = [self.title sizeWithFont:self.titleFont
+                               constrainedToSize:CGSizeMake(rectWidth, 99999.0)
+                                   lineBreakMode:NSLineBreakByClipping];
+
+#pragma clang diagnostic pop
+        
+        }
+
+        if (titleSize.width > textSize.width) textSize.width = titleSize.width;
+        textSize.height += titleSize.height;
     }
     
 	_bubbleSize = CGSizeMake(textSize.width + _cornerRadius*2, textSize.height + _cornerRadius*2);
@@ -374,8 +485,8 @@
         CGFloat sizeBelow = containerView.bounds.size.height - targetOriginInContainer.y;
         if (_pointDirection == PointDirectionAny) {
             if (sizeBelow > targetOriginInContainer.y) {
-                pointerY = targetOriginInContainer.y;//吹き出しの位置　　　　　　　// + targetView.bounds.size.height;
-                _pointDirection = PointDirectionDown;//Up;吹き出しの上向き
+                pointerY = targetOriginInContainer.y + targetView.bounds.size.height;
+                _pointDirection = PointDirectionUp;
             }
             else {
                 pointerY = targetOriginInContainer.y;
@@ -503,7 +614,8 @@
 	self.targetObject = nil;
 }
 
-- (void)dismissAnimationDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
+- (void)dismissAnimationDidStop:(__unused NSString *)animationID finished:(__unused NSNumber *)finished context:(__unused void *)context
+{
 	[self finaliseDismiss];
 }
 
@@ -547,17 +659,15 @@
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    
-    [self.delegate touchTipPopView];
-//	if (self.disableTapToDismiss) {
-//		[super touchesBegan:touches withEvent:event];
-//		return;
-//	}
-//
-//	[self dismissByUser];
+	if (self.disableTapToDismiss) {
+		[super touchesBegan:touches withEvent:event];
+		return;
+	}
+
+	[self dismissByUser];
 }
 
-- (void)dismissTapAnywhereFired:(UIButton *)button
+- (void)dismissTapAnywhereFired:(__unused UIButton *)button
 {
 	[self dismissByUser];
 }
@@ -572,7 +682,8 @@
 	[self notifyDelegatePopTipViewWasDismissedByUser];
 }
 
-- (void)popAnimationDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
+- (void)popAnimationDidStop:(__unused NSString *)animationID finished:(__unused NSNumber *)finished context:(__unused void *)context
+{
     // at the end set to normal size
 	[UIView beginAnimations:nil context:nil];
 	[UIView setAnimationDuration:0.1f];
@@ -580,7 +691,8 @@
 	[UIView commitAnimations];
 }
 
-- (id)initWithFrame:(CGRect)frame {
+- (id)initWithFrame:(CGRect)frame
+{
     if ((self = [super initWithFrame:frame])) {
         // Initialization code
 		self.opaque = NO;
@@ -606,22 +718,29 @@
     return self;
 }
 
-- (void)setHasShadow:(BOOL)newHasShadow {
-    if (newHasShadow) {
-        self.layer.shadowOffset = CGSizeMake(0, 3);
-        self.layer.shadowRadius = 2.0;
-        self.layer.shadowColor = [[UIColor blackColor] CGColor];
-        self.layer.shadowOpacity = 0.3;
-    } else {
-        self.layer.shadowOpacity = 0.0;
+- (void)setHasShadow:(BOOL)hasShadow
+{
+    if (hasShadow != _hasShadow) {
+        _hasShadow = hasShadow;
+
+        if (hasShadow) {
+            self.layer.shadowOffset = CGSizeMake(0, 3);
+            self.layer.shadowRadius = 2.0;
+            self.layer.shadowColor = [[UIColor blackColor] CGColor];
+            self.layer.shadowOpacity = 0.3;
+        } else {
+            self.layer.shadowOpacity = 0.0;
+        }
     }
 }
 
-- (PointDirection) getPointDirection {
+- (PointDirection) getPointDirection
+{
   return _pointDirection;
 }
 
-- (id)initWithTitle:(NSString *)titleToShow message:(NSString *)messageToShow {
+- (id)initWithTitle:(NSString *)titleToShow message:(NSString *)messageToShow
+{
 	CGRect frame = CGRectZero;
 	
 	if ((self = [self initWithFrame:frame])) {
@@ -630,14 +749,15 @@
         
         self.titleFont = [UIFont boldSystemFontOfSize:16.0];
         self.titleColor = [UIColor whiteColor];
-        self.titleAlignment = NSTextAlignmentCenter;//UITextAlignmentCenter;
+        self.titleAlignment = NSTextAlignmentCenter;
         self.textFont = [UIFont systemFontOfSize:14.0];
 		self.textColor = [UIColor whiteColor];
 	}
 	return self;
 }
 
-- (id)initWithMessage:(NSString *)messageToShow {
+- (id)initWithMessage:(NSString *)messageToShow
+{
 	CGRect frame = CGRectZero;
 	
 	if ((self = [self initWithFrame:frame])) {
@@ -646,7 +766,8 @@
 	return self;
 }
 
-- (id)initWithCustomView:(UIView *)aView {
+- (id)initWithCustomView:(UIView *)aView
+{
 	CGRect frame = CGRectZero;
 	
 	if ((self = [self initWithFrame:frame])) {

@@ -7,142 +7,208 @@
 //
 
 #import "YagiView.h"
+#import "MarkovTextGenerator.h"
 
-@implementation YagiView
+/*
+ ViewとControllerが分離できていない
+ */
+
+@implementation YagiView{
+    int _kaoFlag;
+    int _kaisuu;
+    BOOL _timerFlag;
+    
+    // image
+    UIImageView *_imgFace, *_imgBody,
+    *_imgFrntRightLeg, *_imgFrntLeftLeg,
+    *_imgBackRightLeg, *_imgBackLeftLeg,
+    *_imgKamikuzu, *_imgTarai;
+    
+    UIImage *_imgYokoFace,*_imgMaeFace,*_imgGakkariFace,
+    *_imgMgmg, *_imgPaku, *_imgKaoTrai;
+    
+    // timer for movement
+    NSTimer *_timer;
+    
+    //音関連
+    SystemSoundID _soundID;
+    SystemSoundID _paperSound;
+    SystemSoundID _yagiSound;
+    SystemSoundID _fail;
+    
+}
+
+#pragma mark-initializer
+
+- (id)initYagi{
+    CGRect yagiRect = CGRectMake(45, 158, 230, 228);
+    self = [self initWithFrame:yagiRect];
+    if (self) {
+    }
+    return self;
+}
 
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
     if (self) {
-        // Initialization code
-        CGPoint fakePoint = CGPointZero;
-        yagi_type = @"normal";
-        imgFace = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[yagi_type stringByAppendingString:@"_kao.png"]]];
-        
-        imgBody = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[yagi_type stringByAppendingString:@"_doutai.png"]]];
-        imgFrntLeftLeg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[yagi_type stringByAppendingString:@"_maeashi.png"]]];
-        imgFrntRightLeg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[yagi_type stringByAppendingString:@"_maeashi2.png"]]];
-        imgBackLeftLeg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[yagi_type stringByAppendingString:@"_ushiroashi.png"]]];
-        imgBackRightLeg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[yagi_type stringByAppendingString:@"_ushiroashi2.png"]]];
-        imgTarai = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"tarai.png"]];
-        imgKamikuzu = [[UIImageView alloc] initWithFrame:CGRectMake(fakePoint.x, fakePoint.y, 20, 20)];
-        imgKamikuzu.image = [UIImage imageNamed:@"kamikuzu.png"];
-        
-        imgYokoFace = [UIImage imageNamed:[yagi_type stringByAppendingString:@"_yoko.png"]];
-        imgMaeFace = [UIImage imageNamed:[yagi_type stringByAppendingString:@"_kao.png"]];
-        imgGakkariFace = [UIImage imageNamed:[yagi_type stringByAppendingString:@"_hukigen.png"]];
-        imgMgmg = [UIImage imageNamed:[yagi_type stringByAppendingString:@"_mgmg.png"]];
-        imgPaku = [UIImage imageNamed:[yagi_type stringByAppendingString:@"_a.png"]];
-        imgKaoTrai = [UIImage imageNamed:[yagi_type stringByAppendingString:@"_tarai.png"]];
-        
-        CGRect setRect;
-        if ([yagi_type isEqualToString:@"real"]) {
-            setRect = CGRectMake(0, 0, 29, 223);
-            imgFrntRightLeg.contentMode = UIViewContentModeBottom ;
-            imgFrntLeftLeg.contentMode = UIViewContentModeBottom ;
-            imgBackRightLeg.contentMode = UIViewContentModeBottom ;
-            imgBackLeftLeg.contentMode = UIViewContentModeBottom ;
-        } else {
-            setRect = CGRectMake(0, 0, 29, 113);
-        }
-
-        imgFrntRightLeg.frame = setRect;
-        imgFrntLeftLeg.frame = setRect;
-        imgBackRightLeg.frame = setRect;
-        imgBackLeftLeg.frame = setRect;
-
-        
-    
-        
-        if ([yagi_type isEqualToString:@"normal"]){
-            imgFace.center = CGPointMake(62, 74);
-            imgBody.center = CGPointMake(144, 120);
-            imgFrntRightLeg.center = CGPointMake(108, 153);
-            imgFrntLeftLeg.center = CGPointMake(130, 157);
-            imgBackRightLeg.center = CGPointMake(170, 154);
-            imgBackLeftLeg.center = CGPointMake(190, 152);
-            imgKamikuzu.center = CGPointMake(200, 150);
-            imgTarai.center = CGPointMake(57.5, -104);
-        } else if ([yagi_type isEqualToString:@"real"]) {
-            imgFace.center = CGPointMake(62, 74);
-            imgBody.center = CGPointMake(144, 120);
-            imgFrntRightLeg.center = CGPointMake(108, 113);
-            imgFrntLeftLeg.center = CGPointMake(130, 127);
-            imgBackRightLeg.center = CGPointMake(170, 104);
-            imgBackLeftLeg.center = CGPointMake(205, 132);
-            imgKamikuzu.center = CGPointMake(200, 150);
-            imgTarai.center = CGPointMake(57.5, -104);
-
-        }
-
-        imgTarai.alpha = 0.0;
-        
-        //最初にどっちに動かすかの設定
-        imgFrntRightLeg.tag = 1;
-        imgBackRightLeg.tag = 1;
+        [self createImages];
+        [self configImages];
         
         //顔のフラグ
-        kaoFlag = 0;
-        kaisuu = 0;
+        _kaoFlag = 0;
+        _kaisuu = 0;
         
-        [self addSubview:imgKamikuzu];
-        [self addSubview:imgBackRightLeg];
-        [self addSubview:imgFrntRightLeg];
-        [self addSubview:imgBody];
-        [self addSubview:imgBackLeftLeg];
-        [self addSubview:imgFrntLeftLeg];
-        [self addSubview:imgFace];
-        [self addSubview:imgTarai];
+        // 効果音準備
+        [self prepareSound];
         
-        //音の準備
-        NSString *path = [[NSBundle mainBundle] pathForResource:@"tarai" ofType:@"wav"];
-        NSURL *url = [NSURL fileURLWithPath:path];
-        AudioServicesCreateSystemSoundID((__bridge CFURLRef)url, &soudID);
+        _button = [[UIYagiButton alloc] initWithFrame:frame];
         
-        NSString *path2 = [[NSBundle mainBundle] pathForResource:@"paper" ofType:@"wav"];
-        NSURL *url2 = [NSURL fileURLWithPath:path2];
-        AudioServicesCreateSystemSoundID((__bridge CFURLRef)url2, &paperSound);
+        //PopTipView準備
+        [self preparePopTipView];
         
-        NSString *path3 = [[NSBundle mainBundle] pathForResource:@"yagi" ofType:@"wav"];
-        NSURL *url3 = [NSURL fileURLWithPath:path3];
-        AudioServicesCreateSystemSoundID((__bridge CFURLRef)url3, &yagiSound);
+        [self reset];
     }
     return self;
 }
+
+//ヤギを初期状態にもどす
+- (void)reset{
+    NSLog(@"reset");
+    self.lblYagiTweet.frame = CGRectMake(40, 330, 280, 52);
+    self.lblYagiTweet.alpha = 0.0;
+    self.lblYagiTweet.transform = CGAffineTransformIdentity;
+#warning timerFlagという名前はセンスがない
+    _timerFlag = YES;
+    [self dismissPopTipView];
+}
+
+- (void)preparePopTipView{
+    CGRect lblRect = CGRectMake(40, 330, 280, 52);
+    self.lblYagiTweet = [[UILabel alloc] initWithFrame:lblRect];
+    self.lblYagiTweet.text = @"aaaa";
+    UIImage *imgPaper = [UIImage imageNamed:@"paper_2.jpg"];
+    UIColor *bgColor = [UIColor colorWithPatternImage:imgPaper];
+    self.lblYagiTweet.backgroundColor = bgColor;
+}
+
+- (void)createImages{
+    CGPoint fakePoint = CGPointZero;
+
+    _imgFace = [self yagiImageViewForPart:@"kao"];
+    _imgBody = [self yagiImageViewForPart:@"doutai"];
+    _imgFrntLeftLeg = [self yagiImageViewForPart:@"maeashi"];
+    _imgFrntRightLeg = [self yagiImageViewForPart:@"maeashi2"];
+    _imgBackLeftLeg = [self yagiImageViewForPart:@"ushiroashi"];
+    _imgBackRightLeg = [self yagiImageViewForPart:@"ushiroashi2"];
+    
+    _imgTarai = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"tarai.png"]];
+    _imgKamikuzu = [[UIImageView alloc] initWithFrame:CGRectMake(fakePoint.x, fakePoint.y, 20, 20)];
+    _imgKamikuzu.image = [UIImage imageNamed:@"kamikuzu.png"];
+    
+    /* 以下のUIImage群は、|_imgFace|の上にのる、ヤギの顔バリエーション */
+    _imgYokoFace = [self yagiImageForPart:@"yoko"];
+    _imgMaeFace = [self yagiImageForPart:@"kao"];
+    _imgGakkariFace = [self yagiImageForPart:@"hukigen"];
+    _imgMgmg = [self yagiImageForPart:@"mgmg"];
+    _imgPaku = [self yagiImageForPart:@"a"];
+    _imgKaoTrai = [self yagiImageForPart:@"tarai"];
+}
+
+- (void)configImages{
+    CGRect setRect = CGRectMake(0, 0, 29, 113);
+    
+    _imgFrntRightLeg.frame = setRect;
+    _imgFrntLeftLeg.frame = setRect;
+    _imgBackRightLeg.frame = setRect;
+    _imgBackLeftLeg.frame = setRect;
+    
+    _imgFace.center = CGPointMake(62, 74);
+    _imgBody.center = CGPointMake(144, 120);
+    _imgFrntRightLeg.center = CGPointMake(108, 153);
+    _imgFrntLeftLeg.center = CGPointMake(130, 157);
+    _imgBackRightLeg.center = CGPointMake(170, 154);
+    _imgBackLeftLeg.center = CGPointMake(190, 152);
+    _imgKamikuzu.center = CGPointMake(200, 150);
+    _imgTarai.center = CGPointMake(57.5, -104);
+    
+    _imgTarai.alpha = 0.0;
+    
+    //最初にどっちに動かすかの設定
+    _imgFrntRightLeg.tag = 1;
+    _imgBackRightLeg.tag = 1;
+    
+    [self addSubview:_imgKamikuzu];
+    [self addSubview:_imgBackRightLeg];
+    [self addSubview:_imgFrntRightLeg];
+    [self addSubview:_imgBody];
+    [self addSubview:_imgBackLeftLeg];
+    [self addSubview:_imgFrntLeftLeg];
+    [self addSubview:_imgFace];
+    [self addSubview:_imgTarai];
+}
+
+//違うタイプのヤギを作りたいときはこれをオーバーライド
+- (UIImageView *)yagiImageViewForPart:(NSString *)part{
+    NSString *imageName = [NSString stringWithFormat:@"normal_%@.png", part ];
+    return [[UIImageView alloc] initWithImage:[UIImage imageNamed:imageName]];
+}
+
+- (UIImage *)yagiImageForPart:(NSString *)part{
+    NSString *imageName = [NSString stringWithFormat:@"normal_%@.png", part ];
+    return [UIImage imageNamed:imageName];
+}
+
+- (void)prepareSound{
+    NSString *path = [[NSBundle mainBundle] pathForResource:@"tarai" ofType:@"wav"];
+    NSURL *url = [NSURL fileURLWithPath:path];
+    AudioServicesCreateSystemSoundID((__bridge CFURLRef)url, &_soundID);
+    
+    NSString *path2 = [[NSBundle mainBundle] pathForResource:@"paper" ofType:@"wav"];
+    NSURL *url2 = [NSURL fileURLWithPath:path2];
+    AudioServicesCreateSystemSoundID((__bridge CFURLRef)url2, &_paperSound);
+    
+    NSString *path3 = [[NSBundle mainBundle] pathForResource:@"yagi" ofType:@"wav"];
+    NSURL *url3 = [NSURL fileURLWithPath:path3];
+    AudioServicesCreateSystemSoundID((__bridge CFURLRef)url3, &_yagiSound);
+}
+
+#pragma mark-behavior
 - (void)walk
 {
-    [self walkRotation:imgFrntRightLeg];
-    [self walkRotation:imgFrntLeftLeg];
-    [self walkRotation:imgBackLeftLeg];
-    [self walkRotation:imgBackRightLeg];
+    [self walkRotation:_imgFrntRightLeg];
+    [self walkRotation:_imgFrntLeftLeg];
+    [self walkRotation:_imgBackLeftLeg];
+    [self walkRotation:_imgBackRightLeg];
     
 }
 
 - (void)stopWalk:(BOOL)hukigen
 {
-    imgFrntRightLeg.tag = 2;
-    imgFrntLeftLeg.tag = 2;
-    imgBackLeftLeg.tag = 2;
-    imgBackRightLeg.tag = 2;
+    _imgFrntRightLeg.tag = 2;
+    _imgFrntLeftLeg.tag = 2;
+    _imgBackLeftLeg.tag = 2;
+    _imgBackRightLeg.tag = 2;
     
 
-    AudioServicesPlaySystemSound(yagiSound);
+    AudioServicesPlaySystemSound(_yagiSound);
     if (hukigen == YES) {
-        imgFace.image = imgGakkariFace;
+        _imgFace.image = _imgGakkariFace;
     }else{
-        imgFace.image = imgMaeFace;
+        _imgFace.image = _imgMaeFace;
     }
 }
 
 - (void)walkRestart
 {
-    imgFrntRightLeg.tag = 0;
-    imgFrntLeftLeg.tag = 1;
-    imgBackLeftLeg.tag = 0;
-    imgBackRightLeg.tag = 1;
-    imgFace.image = imgYokoFace;
+    _imgFrntRightLeg.tag = 0;
+    _imgFrntLeftLeg.tag = 1;
+    _imgBackLeftLeg.tag = 0;
+    _imgBackRightLeg.tag = 1;
+    _imgFace.image = _imgYokoFace;
+    [self dismissPopTipView];
     [self walk];
-    
+    _timerFlag = YES;
 }
 
 
@@ -152,19 +218,32 @@
 #define kutiakeruTime 1
 #define mogKurikaesi 7
 #define mogKankaku 0.5
-- (void)eatFood
+- (void)eatTweet:(NSString *)tweet
 {
-    imgFace.image = imgPaku;
+    _imgFace.image = _imgPaku;
     [self performSelector:@selector(mogmog) withObject:nil afterDelay:kutiakeruTime];
-    AudioServicesPlaySystemSound(paperSound);
+    AudioServicesPlaySystemSound(_paperSound);
     
+    self.lblYagiTweet.alpha = 1.0;
+    [UIView animateWithDuration:1.0f animations:^{
+        self.lblYagiTweet.center = CGPointMake(self.center.x - 52, self.center.y -15);
+        self.lblYagiTweet.transform = CGAffineTransformMakeScale(0.01, 0.01);
+    } completion:^(BOOL finished){
+        
+        //iOS7だとコールバックできないのでタイマー関数で呼ぶ
+        [self performSelector:@selector(reset) withObject:Nil afterDelay:1.0f];
+        
+    }];
+    
+    self.lblYagiTweet.text = tweet;
+    [self.lblYagiTweet sizeThatFits:self.lblYagiTweet.bounds.size];
 }
 
 - (void)mogmog
 {
-    [timer invalidate];
-    kaisuu = 0;
-    timer = [NSTimer scheduledTimerWithTimeInterval:mogKankaku
+    [_timer invalidate];
+    _kaisuu = 0;
+    _timer = [NSTimer scheduledTimerWithTimeInterval:mogKankaku
                                              target:self
                                            selector:@selector(repeatMog)
                                            userInfo:nil
@@ -176,29 +255,29 @@
 
 - (void)repeatMog
 {
-    switch (kaoFlag) {
+    switch (_kaoFlag) {
         case 0:
-            imgFace.image = imgMgmg;
-            kaoFlag = 1;
-            kaisuu++;
+            _imgFace.image = _imgMgmg;
+            _kaoFlag = 1;
+            _kaisuu++;
             break;
             
         case 1:
             
-            imgFace.image = imgMaeFace;
-            kaoFlag = 0;
-            kaisuu++;
+            _imgFace.image = _imgMaeFace;
+            _kaoFlag = 0;
+            _kaisuu++;
             break;
             
         default:
             break;
     }
     
-    if (kaisuu == mogKurikaesi)
+    if (_kaisuu == mogKurikaesi)
     {
-        [timer invalidate];
-        imgFace.image = imgYokoFace;
-        kaisuu = 0;
+        [_timer invalidate];
+        _imgFace.image = _imgYokoFace;
+        _kaisuu = 0;
     }
     
 }
@@ -242,47 +321,89 @@
 {
 //    [UIView setAnimationCurve:UIViewAnimationCurveEaseIn];
     [UIView animateWithDuration:0.5 animations:^(void){
-        CGPoint fallPoint = imgKamikuzu.center;
+        CGPoint fallPoint = _imgKamikuzu.center;
         fallPoint.y += 40;
-        imgKamikuzu.center = fallPoint;
+        _imgKamikuzu.center = fallPoint;
     } completion:^(BOOL finished){
         [UIView animateWithDuration:2.0
                          animations:^(void){
-                             CGPoint movePoint = imgKamikuzu.center;
+                             CGPoint movePoint = _imgKamikuzu.center;
                              movePoint.x += 100;
-                             imgKamikuzu.center = movePoint;
+                             _imgKamikuzu.center = movePoint;
                          } completion:^(BOOL finished){
-                             imgKamikuzu.center = CGPointMake(200, 150);
+                             _imgKamikuzu.center = CGPointMake(200, 150);
                          }];
     }];
 }
 
 - (void)allFoget
 {
-    imgTarai.alpha = 1.0;
+    _imgTarai.alpha = 1.0;
     [UIView animateWithDuration:0.4 animations:^(void){
-        imgTarai.center = CGPointMake(imgFace.center.x , imgFace.center.y - 50);
+        _imgTarai.center = CGPointMake(_imgFace.center.x , _imgFace.center.y - 50);
     } completion:^(BOOL finished){
         [UIView animateWithDuration:0.4 animations:^(void){
-            AudioServicesPlaySystemSound(soudID);
-            imgFace.image = imgKaoTrai;
-            CGPoint endPoint = imgTarai.center;
+            AudioServicesPlaySystemSound(_soundID);
+            _imgFace.image = _imgKaoTrai;
+            CGPoint endPoint = _imgTarai.center;
             endPoint.x += 60;
             endPoint.y -= 20;
-            imgTarai.center = endPoint;
-            imgTarai.transform = CGAffineTransformMakeRotation(45 * M_PI / 180);
+            _imgTarai.center = endPoint;
+            _imgTarai.transform = CGAffineTransformMakeRotation(45 * M_PI / 180);
             [UIView animateWithDuration:1.0 animations:^(void){
-                imgTarai.alpha = 0.0;
+                _imgTarai.alpha = 0.0;
             }completion:^(BOOL finished){                
-                imgTarai.transform = CGAffineTransformIdentity;
-                imgTarai.center = CGPointMake(57.5, -104);
-                imgFace.image = imgYokoFace;
+                _imgTarai.transform = CGAffineTransformIdentity;
+                _imgTarai.center = CGPointMake(57.5, -104);
+                _imgFace.image = _imgYokoFace;
             }];
         } completion:^(BOOL finished){
 
         }];
     }];
 }
+
+
+//ヤギがつぶやく
+- (void)tweet{
+    //まず吹き出しを消す
+    [self dismissPopTipView];
+    
+    //吹き出し
+    MarkovTextGenerator *generator = [MarkovTextGenerator markovTextGeneratorFactory];
+    _recentTweet = [generator generateSentence];
+    self.popTipView = [[CMPopTipView alloc] initWithMessage:_recentTweet];
+    self.popTipView.animation = 0;
+    self.popTipView.has3DStyle = 0;
+    self.popTipView.backgroundColor = [UIColor whiteColor];
+    self.popTipView.textColor = [UIColor blackColor];
+    self.popTipView.preferredPointDirection = PointDirectionDown;
+    
+    //ヤギの動き
+    [self stopWalk:NO];
+    
+    if (_timerFlag == NO) {
+        [_timer invalidate];
+    }
+    
+    NSUInteger showTime = self.recentTweet.length / 4.0;
+    if (showTime < 3) {
+        showTime = 3;
+    }
+    NSLog(@"time is %uld", showTime);
+    _timer = [NSTimer scheduledTimerWithTimeInterval:showTime
+                                              target:self
+                                            selector:@selector(walkRestart)
+                                            userInfo:nil
+                                             repeats:NO];
+    _timerFlag = NO;
+}
+
+- (void)dismissPopTipView{
+    [self.popTipView dismissAnimated:YES];
+    self.popTipView = nil;
+}
+
 /*
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.
@@ -291,5 +412,19 @@
     // Drawing code
 }
 */
+
+@end
+
+@implementation UIYagiButton
+
+- (id)initWithFrame:(CGRect)frame{
+    
+    self = [UIButton buttonWithType:UIButtonTypeCustom];
+    if (self) {
+        frame.size.height -= 30;
+        self.frame = frame;
+    }
+    return self;
+}
 
 @end

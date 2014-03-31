@@ -85,10 +85,9 @@ NS_ENUM(NSInteger, TYTweetQualificationError){
 #pragma mark 投稿
 
 - (void)postTweet:(NSString *)content
+       screenshot:(UIImage *)screenshot
      successBlock:(void(^)(NSDictionary *status))successBlock
        errorBlock:(void(^)(NSError *error))errorBlock;
-
-- (void)takeScreenShot;
 
 
                     

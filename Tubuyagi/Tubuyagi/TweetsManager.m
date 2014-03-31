@@ -32,8 +32,6 @@
     NSString *_OAuthToken;
     NSString *_OAuthTokenSecret;
     
-    UIImage *_recentScreenShot;
-    
     FMDatabase *_database;
 }
 
@@ -248,7 +246,9 @@ NSArray *TYConvertTweetsToOldStyle(NSArray *tweets);
 
 
 //ツイート投稿（Safari認証では窓を開けないので直接）
+// TODO: screenshotはnilを許容する
 - (void)postTweet:(NSString *)content
+       screenshot:(UIImage *)screenshot
      successBlock:(void(^)(NSDictionary *status))successBlock
        errorBlock:(void(^)(NSError *error))errorBlock{
     NSString *tweetURL = [self makeTweetURLWithContent:content];
@@ -257,9 +257,8 @@ NSArray *TYConvertTweetsToOldStyle(NSArray *tweets);
         shortenContent = [NSString stringWithFormat:@"%@…" , [content substringToIndex:TYContentMaxLength]];
     }
     NSString *tweetContent = [NSString stringWithFormat:@"%@：%@ %@ #%@", TYMyYagiName(), shortenContent, tweetURL, TYApplicationHashTag];
-    
-    UIImage *screenShot = _recentScreenShot;
-    NSData *dataToSend = [[NSData alloc] initWithData:UIImagePNGRepresentation(screenShot)];
+
+    NSData *dataToSend = [[NSData alloc] initWithData:UIImagePNGRepresentation(screenshot)];
     __weak __block FMDatabase* weakDatabase = _database;
     
     [_twitterAPIClient postStatusUpdate:tweetContent
@@ -420,32 +419,6 @@ NSString *TYMakeHashFromTweet(NSString *tweet, NSString*twitterID){
                           contentEncoded];
     return tweetURL;
 }
-
-/*
- 投稿用スクリーンショットを撮る
- 参考 : http://www.yoheim.net/blog.php?q=20130706
- */
-- (void)takeScreenShot{
-    // キャプチャ対象をWindowに
-    UIWindow *window = [[UIApplication sharedApplication] keyWindow];
-    
-    // キャプチャ画像を描画する対象を生成
-    UIGraphicsBeginImageContextWithOptions(window.bounds.size, NO, 0.0f);
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    
-    // Windowの現在の表示内容を１つずつ描画
-    for (UIWindow *aWindow in [[UIApplication sharedApplication] windows]) {
-        [aWindow.layer renderInContext:context];
-    }
-    
-    // 描画した内容をUIImageとして受け取る
-    UIImage *capturedImage = UIGraphicsGetImageFromCurrentImageContext();
-    
-    UIGraphicsEndImageContext();
-    
-    _recentScreenShot = capturedImage;
-}
-
 
 /*
  URL形式へのエンコード・デコード

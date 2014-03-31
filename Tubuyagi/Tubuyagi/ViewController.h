@@ -14,24 +14,22 @@
 //#import "ManualInputViewController.h"
 #import "FavoriteViewController.h"
 #import "bubbleView.h"
-#import "YagiView.h"
 #import "TreeView.h"
-#import "CMPopTipView.h"
 #import "TweetsManager.h"
+#import "YagiView.h"
+#import "CMPopTipView.h"
+
+@class YagiView;
 
 @interface ViewController : UIViewController<FoodViewControllerDelegate, UIActionSheetDelegate,
-                                                UIAlertViewDelegate, DeleteWordTabelViewControllerDelegate,
-                                                CMPopTipViewDelegate, UITabBarControllerDelegate,UITextFieldDelegate,
+                                                CMPopTipViewDelegate, UIAlertViewDelegate, DeleteWordTabelViewControllerDelegate,
+                                                UITabBarControllerDelegate,UITextFieldDelegate,
                                                 FavoriteViewControllerDelegate>
 {
-    BOOL timerFlag, twitterAcountFlag,//本体にアカウントが設定されてないフラグ？？
-                    twitterAcountflag2;//電場が通じないフラグ？
-    UILabel *lblYagiTweet;
-    UIButton *btnYagi;                  //ヤギをタッチした時
-    NSMutableArray *visiblePopTipViews; //ヤギの発言
-    NSTimer *timer;
+    BOOL twitterAcountFlag;//本体にアカウントが設定されてないフラグ
+    BOOL twitterAcountflag2;//電波が通じないフラグ
     NSArray *tweets;
-    NSString *userName, *strCurrTweet;
+    NSString *userName;
     FoodUIViewController *fvc;
     
     FavoriteViewController *fvvc1, *fvvc2, *fvvc3;
@@ -52,14 +50,12 @@
 @property (strong, nonatomic) IBOutlet UILabel *strYagiName;
 @property (strong, nonatomic) IBOutlet UITextField *txfYagiName;
 @property (strong, nonatomic) IBOutlet UIView *configView;
-
+@property (readwrite) BOOL availableButtons;
 
 - (IBAction)chooseFood:(UIButton *)sender;
 - (IBAction)setConfig:(UIButton *)sender;
 - (IBAction)forgetWord:(UIButton *)sender;
 - (IBAction)showFavorite:(id)sender;
-- (IBAction)shareTweet:(UIButton *)sender;
-- (void)availableButton;
 - (IBAction)closeConfigView:(id)sender;
 - (void)alert;
 

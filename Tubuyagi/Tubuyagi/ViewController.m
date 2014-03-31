@@ -8,16 +8,18 @@
 
 #import "ViewController.h"
 #import "FoodUIViewController.h"
-#import "MarkovTextGenerator.h"
 #import "STTwitter.h"
 #import "NSString+SHA.h"
 #import "FMDatabase+Tubuyagi.h"
 
+// TODO: 現在のViewContorllerの課題：画面の構成要素をすべてこのファイルに書き込んでしまっている
+// TODO: 処理ごとにクラスへ分割するべき
+
 NS_ENUM(NSInteger, TYAlertTags){
-    alertStrTweet = 10,
-    alertDeleteAllBigramData = 11,
-    alertDelegateTextField = 12,
-    alertTwitterAccessFailed = 13
+    TYAlertStrTweet = 10,
+    TYAlertDeleteAllBigramData = 11,
+    TYAlertDelegateTextField = 12,
+    TYAlertTwitterAccessFailed = 13
 };
 
 NS_ENUM(NSInteger, TYActionSheets){
@@ -29,15 +31,11 @@ NS_ENUM(NSInteger, TYActionSheets){
 @end
 
 @implementation ViewController
-//@synthesize bblView = _bblView;
 
-- (BOOL)shouldAutorotate
-{
-    
-    return NO;
-}
+@synthesize availableButtons = _availableButtons;
 
-
+#pragma mark -initial settings
+//初期設定
 
 //ステータスバーの非表示
 - (BOOL)prefersStatusBarHidden
@@ -45,73 +43,60 @@ NS_ENUM(NSInteger, TYActionSheets){
     return YES;
 }
 
+- (BOOL)shouldAutorotate
+{
+    return NO;
+}
+
+
 - (void)viewDidLoad
 {
     NSLog(@"ViewDidLoad");
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
     //ヤギの生成
-    CGRect yagiRect = CGRectMake(45, 158, 230, 228);
-    _yagiView = [[YagiView alloc] initWithFrame:yagiRect];
-    [self.view addSubview:_yagiView];
+    self.yagiView = [[YagiView alloc] initYagi];
+    //ヤギは柵の下に置く
+    [self.view insertSubview:self.yagiView belowSubview:self.imgSaku];
+    //ヤギ用ボタンの配置
+    [self.view addSubview:self.yagiView.button];
+    //ボタンイベント登録
+    [self.yagiView.button addTarget:self action:@selector(tweetYagi) forControlEvents:UIControlEventTouchUpInside];
+    //食べる紙配置
+    [self.view addSubview:self.yagiView.lblYagiTweet];
+
     
-    [self.view insertSubview:_yagiView belowSubview:self.imgSaku];
-    
-    
-    //ヤギを押した時のボタン
-    btnYagi = [UIButton buttonWithType:UIButtonTypeCustom];
-    yagiRect.size.height -= 30;
-    btnYagi.frame = yagiRect;
-    [btnYagi addTarget:self action:@selector(tweetYagi) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:btnYagi];
-    btnYagi.enabled = NO;
-    
-    //その他ボタン一時利用できないようにする
-    self.btnChooseFood.enabled = NO;
-//    self.btnShareTweet.enabled = NO;
-    self.btnConfig.enabled = NO;
-    self.btnForget.enabled = NO;
-    self.btnshowFavolite.enabled = NO;
-    btnYagi.enabled = NO;
-    
-    //木
-    self.treeView = [[TreeView alloc] initTreeInSubView];
-    
-    //PopTipViewの管理
-    visiblePopTipViews = [NSMutableArray array];
-    
+    /*
+    //木の生成
+    self.treeView = [[TreeView alloc] initTreeAsSubView];
+    //木はヤギの下に置く
+    [self.view insertSubview:self.treeView belowSubview:self.yagiView];
+    */
+     
     //FoodViewControllerの生成
     fvc = [[FoodUIViewController alloc] initWithNibName:@"FoodUIViewController" bundle:nil];
     fvc.delegate = self;
     fvc.twitterAccounts = self.twitterAccounts;
     
-    //食べる紙のVIew
-    CGRect lblRect = CGRectMake(40, 330, 280, 52);
-    lblYagiTweet = [[UILabel alloc] initWithFrame:lblRect];
-    lblYagiTweet.text = @"aaaa";
-    UIImage *imgPaper = [UIImage imageNamed:@"paper_2.jpg"];
-    UIColor *bgColor = [UIColor colorWithPatternImage:imgPaper];
-    lblYagiTweet.backgroundColor = bgColor;
-    [self.view addSubview:lblYagiTweet];
-    
     //twitter情報の取得
     [self performSelector:@selector(getTwitterAccountsInformationiOS)
                withObject:nil
-               afterDelay:0.1];//getTwitterAccountInformation];
+               afterDelay:0.1];
     
     //ヤギのステータス
+    #warning YagiView側に持っていくべき
     [self setYagiName];
-    
-    //ヤギの食べるエサの配置
-    [self initialize];
-    
 
+#warning コメントアウト（認証のタイミングがここじゃないので）　別のタイミングで自分のお気に入り数取得をしなければならない
     //自分のお気に入り数を生成
     //[self performSelector:@selector(getWaraCount) withObject:nil afterDelay:3];
 
     //設定画面の初期設定
     self.txfYagiName.delegate = self;
     self.txfYagiName.returnKeyType = UIReturnKeyDone;
+    
+    //ボタン一時利用できないようにする
+    self.availableButtons = NO;
 }
 
 - (void)setYagiName
@@ -124,17 +109,6 @@ NS_ENUM(NSInteger, TYActionSheets){
     _strStatus.text = [NSString stringWithFormat:@"オーナー:%@\nヤギの名前:%@", strOwner, strYagiName];
 }
 
-- (void)availableButton
-{
-    btnYagi.enabled = YES;
-    //その他ボタン利用解除
-    self.treeView.treeButton.enabled = YES;
-    self.btnChooseFood.enabled = YES;
-    self.btnForget.enabled = YES;
-    self.btnConfig.enabled = YES;
-    self.btnshowFavolite.enabled = YES;
-}
-
 - (IBAction)closeConfigView:(id)sender {
     
     [_txfYagiName resignFirstResponder];
@@ -143,18 +117,6 @@ NS_ENUM(NSInteger, TYActionSheets){
     } completion:^(BOOL finished){
         [self.configView removeFromSuperview];
     }];
-}
-
-//ヤギのエサの位置設定
-- (void)initialize
-{
-    NSLog(@"initialize");
-    lblYagiTweet.frame = CGRectMake(40, 330, 280, 52);
-    lblYagiTweet.alpha = 0.0;
-   lblYagiTweet.transform = CGAffineTransformIdentity;
-    timerFlag = YES;
-    
-    [self dismissAllPopTipViews];
 }
 
 - (void)didReceiveMemoryWarning
@@ -169,8 +131,7 @@ NS_ENUM(NSInteger, TYActionSheets){
     [self presentViewController:fvc animated:YES completion:nil];
     fvc.lblTitle.text = userName;
     
-    
-    [self initialize];
+    [self.yagiView dismissPopTipView];
 }
 
 - (IBAction)setConfig:(UIButton *)sender {
@@ -288,13 +249,12 @@ NS_ENUM(NSInteger, TYActionSheets){
     }
 }
 
+#pragma mark - CMPopTipViewDelegate
 
-
-
-- (IBAction)shareTweet:(UIButton *)sender {
-    
-    NSString *strShare = [NSString stringWithFormat:@"「%@」のつぶやきを共有しますか？？", strCurrTweet];
-    if (!strCurrTweet) {
+- (void)touchTipPopView
+{
+    NSString *strShare = [NSString stringWithFormat:@"「%@」のつぶやきを共有しますか？？", self.yagiView.recentTweet];
+    if (!self.yagiView.recentTweet) {
         strShare = @"つぶやぎをタップして\nしゃべらせよう！";
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"発言の共有"
                                                         message:strShare
@@ -304,7 +264,7 @@ NS_ENUM(NSInteger, TYActionSheets){
         alert.tag = 10;
         [alert show];
     }else{
-        [self.tweetsManager takeScreenShot];
+        [self takeScreenShot];
         //共有確認ボタンを出す
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"発言の共有"
                                                         message:strShare
@@ -316,78 +276,49 @@ NS_ENUM(NSInteger, TYActionSheets){
     }
 }
 
-
-- (void)eatPaper
+- (void)popTipViewWasDismissedByUser:(CMPopTipView *)popTipView
 {
-    NSLog(@"eatPaper");
-    lblYagiTweet.center = _yagiView.center;
-    lblYagiTweet.transform = CGAffineTransformMakeScale(0.01, 0.01);
+    [self touchTipPopView];
 }
 
-- (void)judgdeWalkRestart
-{
-    NSLog(@"judgeWalkRestart");
-    [_yagiView walkRestart];
-    [self dismissAllPopTipViews];
-    timerFlag = YES;
+/*
+ 投稿用スクリーンショットを撮る
+ 参考 : http://www.yoheim.net/blog.php?q=20130706
+ */
+- (void)takeScreenShot{
+    // キャプチャ対象をWindowに
+    UIWindow *window = [[UIApplication sharedApplication] keyWindow];
+    
+    // キャプチャ画像を描画する対象を生成
+    UIGraphicsBeginImageContextWithOptions(window.bounds.size, NO, 0.0f);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    // Windowの現在の表示内容を１つずつ描画
+    for (UIWindow *aWindow in [[UIApplication sharedApplication] windows]) {
+        [aWindow.layer renderInContext:context];
+    }
+    
+    // 描画した内容をUIImageとして受け取る
+    UIImage *capturedImage = UIGraphicsGetImageFromCurrentImageContext();
+    
+    UIGraphicsEndImageContext();
+    
+    self.yagiView.recentScreenShot = capturedImage;
 }
 
-- (void)dismissAllPopTipViews {
-	while ([visiblePopTipViews count] > 0) {
-		CMPopTipView *popTipView = [visiblePopTipViews objectAtIndex:0];
-		[popTipView dismissAnimated:YES];
-		[visiblePopTipViews removeObjectAtIndex:0];
-	}
-}
-
+#pragma mark-YagiButton Delegate
 - (void)tweetYagi
 {
-    [self dismissAllPopTipViews];
-
-    //吹き出し
-    MarkovTextGenerator *generator = [MarkovTextGenerator markovTextGeneratorFactory];
-    strCurrTweet = [NSString stringWithFormat:@"%@", [generator generateSentence]];
-    CMPopTipView *popTipView = [[CMPopTipView alloc] initWithMessage:strCurrTweet];
-    popTipView.delegate = self;
-    popTipView.animation = 0;
-    popTipView.has3DStyle = 0;
-    [popTipView presentPointingAtView:btnYagi inView:self.view animated:YES];
-    popTipView.backgroundColor = [UIColor whiteColor];
-    popTipView.textColor = [UIColor blackColor];
-    [visiblePopTipViews addObject:popTipView];
-//    popTipView.center = CGPointMake(self.view.center.x, popTipView.center.y);
-    
-    //ヤギの動き
-    [_yagiView stopWalk:NO];
-    
-    if (timerFlag == NO) {
-        [timer invalidate];
-    }
-    
-    NSUInteger showTime = strCurrTweet.length / 4.0;
-    if (showTime < 3) {
-        showTime = 3;
-    }
-    NSLog(@"time is %uld", showTime);
-    timer = [NSTimer scheduledTimerWithTimeInterval:showTime
-                                    target:self
-                                  selector:@selector(judgdeWalkRestart)
-                                  userInfo:nil
-                                   repeats:NO];
-    timerFlag = NO;
+    [self.yagiView tweet];
+    self.yagiView.popTipView.delegate = self;
+    [self.yagiView.popTipView presentPointingAtView:self.yagiView inView:self.view animated:YES];
     twitterAcountFlag = NO;
     twitterAcountflag2 = NO;
-
-    
-//#warning 直す
-//    [_yagiView dischargeWord];
 }
 
 
 - (void)alert{
     if (twitterAcountFlag) {
-        
-    
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Twitterの情報を取得できませんでした" message:@"電波のいいところで再起動、もしくは本体に登録されているTwitterアカウントを確認して下さい" delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
         [alert show];
     }else if (twitterAcountflag2)
@@ -493,7 +424,7 @@ NS_ENUM(NSInteger, TYActionSheets){
                                        delegate:weakSelf
                               cancelButtonTitle:@"設定方法"
                               otherButtonTitles:@"Safariで認証", nil];
-             alert.tag = alertTwitterAccessFailed;
+             alert.tag = TYAlertTwitterAccessFailed;
              [alert show];
          });
          
@@ -528,30 +459,13 @@ NS_ENUM(NSInteger, TYActionSheets){
 
 - (void)setTweetString:(NSString *)strTweet
 {
-    [_yagiView eatFood];
-    lblYagiTweet.alpha = 1.0;
-    [UIView animateWithDuration:1.0f animations:^{
-        lblYagiTweet.center = CGPointMake(_yagiView.center.x - 52, _yagiView.center.y -15);
-        lblYagiTweet.transform = CGAffineTransformMakeScale(0.01, 0.01);
-    } completion:^(BOOL finished){
-        
-        //iOS7だとコールバックできないのでタイマー関数で呼ぶ
-        [self performSelector:@selector(initialize) withObject:Nil afterDelay:1.0f];
-        
-    }];
-    
-    lblYagiTweet.text = strTweet;
-    [lblYagiTweet sizeThatFits:lblYagiTweet.bounds.size];
-    
-    //    [UIView commitAnimations];
-    
-    
+    [self.yagiView eatTweet:strTweet];
 }
 
 - (void)foodCancel
 {
-    [_yagiView stopWalk:YES];
-    [self performSelector:@selector(judgdeWalkRestart) withObject:nil afterDelay:2.4];
+    [self.yagiView stopWalk:YES];
+    [self.yagiView performSelector:@selector(walkRestart) withObject:nil afterDelay:2.4];
     
 }
 
@@ -563,7 +477,7 @@ NS_ENUM(NSInteger, TYActionSheets){
     switch (actionSheet.tag) {
         case TYForgetActionSheet:
             alert = [[UIAlertView alloc] initWithTitle:@"忘却完了" message:@"全ての単語を忘れさせてもいいですか？？" delegate:self cancelButtonTitle:@"OK" otherButtonTitles: @"キャンセル", nil];
-            alert.tag = alertDeleteAllBigramData;
+            alert.tag = TYAlertDeleteAllBigramData;
             dtvc = [[DeleteWordTableViewController alloc] initWithNibName:@"DeleteWordTableViewController" bundle:nil];
             dtvc.delegate = self;
             switch (buttonIndex) {
@@ -596,19 +510,20 @@ NS_ENUM(NSInteger, TYActionSheets){
     FMDatabase *database;
     
     switch (alertView.tag) {
-        case alertStrTweet:
+        case TYAlertStrTweet:
             switch (buttonIndex) {
                 case 0:
-                    if (!strCurrTweet) {
+                    if (!self.yagiView.recentTweet) {
                         break;
                     }
                     
-                    [self.tweetsManager postTweet:strCurrTweet
-                                             successBlock:^(NSDictionary *status) {
-                                                 // TODO  投稿しました
-                                             } errorBlock:^(NSError *error) {
-                                                 // TODO　もう一度投稿
-                                             }];
+                    [self.tweetsManager postTweet:self.yagiView.recentTweet
+                                       screenshot:self.yagiView.recentScreenShot
+                                     successBlock:^(NSDictionary *status) {
+                                         // TODO:  投稿しました
+                                     } errorBlock:^(NSError *error) {
+                                         // TODO:　もう一度投稿
+                                     }];
                     break;
                     
                 default:
@@ -616,12 +531,12 @@ NS_ENUM(NSInteger, TYActionSheets){
             }
             break;
             
-        case alertDeleteAllBigramData:
+        case TYAlertDeleteAllBigramData:
             switch (buttonIndex) {
                 case 0:
                     database = [FMDatabase databaseFactory];
                     [database deleteAllLearnedData];
-                    [_yagiView allFoget];
+                    [self.yagiView allFoget];
                     NSLog(@"全消去");
                     break;
             
@@ -630,7 +545,7 @@ NS_ENUM(NSInteger, TYActionSheets){
             }
             break;
             
-        case alertDelegateTextField:
+        case TYAlertDelegateTextField:
             switch (buttonIndex) {
                 case 0:
                     break;
@@ -638,7 +553,7 @@ NS_ENUM(NSInteger, TYActionSheets){
                 default:
                     break;
             }
-        case alertTwitterAccessFailed:
+        case TYAlertTwitterAccessFailed:
             switch (buttonIndex) {
                 //設定方法参照
                 case 0:
@@ -679,8 +594,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 #pragma mark - DeleteWordTabeleViewControllerDelegate
 - (void)wordDelete
 {
-    [_yagiView dischargeWord];
-    
+    [self.yagiView dischargeWord];
 }
 - (void)viewDidUnload {
     [self setBtnChooseFood:nil];
@@ -696,17 +610,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     [self setTxfYagiName:nil];
     [self setConfigView:nil];
     [super viewDidUnload];
-}
-
-#pragma mark - CMPopTipViewDelegate
-- (void)touchTipPopView
-{
-    [self shareTweet:nil];
-}
-
-- (void)popTipViewWasDismissedByUser:(CMPopTipView *)popTipView
-{
-    
 }
 
 #pragma mark - UITabBarController
@@ -737,7 +640,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if ([textField.text isEqualToString:@""]) {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"名前が設定されていません" message:@"やぎの名前を設定して下さい" delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
-        alert.tag = alertDelegateTextField;
+        alert.tag = TYAlertDelegateTextField;
         [alert show];
     }else{
     
@@ -768,4 +671,20 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         NSAssert(!error, [error localizedDescription]);
     }];
 }
+
+#pragma mark- getter and setter
+- (BOOL)availableButtons{
+    return _availableButtons;
+}
+
+- (void)setAvailableButtons:(BOOL)availableButtons{
+    self.yagiView.button.enabled = availableButtons;
+    //self.treeView.button.enabled = availableButtons;
+    self.btnChooseFood.enabled = availableButtons;
+    self.btnForget.enabled = availableButtons;
+    self.btnConfig.enabled = availableButtons;
+    self.btnshowFavolite.enabled = availableButtons;
+    _availableButtons = availableButtons;
+}
+
 @end

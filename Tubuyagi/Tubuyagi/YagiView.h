@@ -8,33 +8,49 @@
 
 #import <UIKit/UIKit.h>
 #import <AudioToolbox/AudioToolbox.h>
+#import "ViewController.h"
+#import "CMPopTipView.h"
+
+@class UIYagiButton;
 
 @interface YagiView : UIView
-{
-    int kaoFlag;
-    int kaisuu;
-    NSString *yagi_type;
-    UIImageView *imgFace,*imgBody,
-                *imgFrntRightLeg, *imgFrntLeftLeg,
-                *imgBackRightLeg, *imgBackLeftLeg,
-                *imgKamikuzu, *imgTarai;
-    
-    UIImage *imgYokoFace,*imgMaeFace,*imgGakkariFace,
-            *imgMgmg, *imgPaku, *imgKaoTrai;
-    
-    NSTimer *timer;
-    
-    //音関連
-    SystemSoundID soudID;
-    SystemSoundID paperSound;
-    SystemSoundID yagiSound;
-    SystemSoundID fail;
-}
+
+// ヤギをタッチした時の動作を管理
+@property(readwrite) UIYagiButton *button;
+
+// ヤギの発言が表示されるpopup
+@property(readwrite) CMPopTipView *popTipView;
+
+// 食べた発言が表示されるLabel
+@property(readwrite) UILabel *lblYagiTweet;
+
+// 一番最近生成した発言
+@property(readonly) NSString *recentTweet;
+
+// 一番最近撮影したスクリーンショット
+@property(readwrite) UIImage *recentScreenShot;
+
+- (id)initYagi;
+
+- (void)reset;
 
 - (void)stopWalk:(BOOL)hukigen;
+
 - (void)walkRestart;
-- (void)eatFood;
+
+- (void)eatTweet:(NSString *)tweet;
+
 - (void)dischargeWord;
+
 - (void)allFoget;
+
+- (void)tweet;
+
+- (void)dismissPopTipView;
+
+@end
+
+@interface UIYagiButton : UIButton
+
 @end
 
