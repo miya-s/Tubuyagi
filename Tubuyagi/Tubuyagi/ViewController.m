@@ -54,6 +54,11 @@ NS_ENUM(NSInteger, TYActionSheets){
     NSLog(@"ViewDidLoad");
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
+    
+    // お気に入られ数の表示
+    TweetsManager *tweetsManager = [TweetsManager tweetsManagerFactory];
+    self.strWara.text = [NSString stringWithFormat:@"%d", tweetsManager.totalFavoritedCount];
+    
     //ヤギの生成
     self.yagiView = [[YagiView alloc] initYagi];
     //ヤギは柵の下に置く
@@ -83,13 +88,8 @@ NS_ENUM(NSInteger, TYActionSheets){
                withObject:nil
                afterDelay:0.1];
     
-    //ヤギのステータス
-    #warning YagiView側に持っていくべき
-    [self setYagiName];
 
-#warning コメントアウト（認証のタイミングがここじゃないので）　別のタイミングで自分のお気に入り数取得をしなければならない
-    //自分のお気に入り数を生成
-    //[self performSelector:@selector(getWaraCount) withObject:nil afterDelay:3];
+    [self prepareStatusBar];
 
     //設定画面の初期設定
     self.txfYagiName.delegate = self;
@@ -99,13 +99,11 @@ NS_ENUM(NSInteger, TYActionSheets){
     self.availableButtons = NO;
 }
 
-- (void)setYagiName
+- (void)prepareStatusBar
 {
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
     NSString *strOwner = [ud stringForKey:@"TDUserName"];
     NSString *strYagiName = [ud stringForKey:@"TDYagiName"];
-    NSLog(@"yagi name %@", [ud objectForKey:@"TDYagiName"]);
-    NSLog(@"yagi name 2 %@", [ud stringForKey:@"TDYagiName"]);
     _strStatus.text = [NSString stringWithFormat:@"オーナー:%@\nヤギの名前:%@", strOwner, strYagiName];
 }
 
@@ -336,7 +334,7 @@ NS_ENUM(NSInteger, TYActionSheets){
     [fvc.foodTableView reloadData];
     
     //ステータスの更新
-    [self setYagiName];
+    [self prepareStatusBar];
     
     //読みこみの表示の解除
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
@@ -653,7 +651,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     
         NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
         [ud setValue:textField.text forKey:@"TDYagiName"];
-        [self setYagiName];
+        [self prepareStatusBar];
     }
     
 
