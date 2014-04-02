@@ -22,4 +22,6 @@
 
 - (void)forgetText:(NSString *)text;
 
+double TYCalcFitnessForTeach(NSDictionary *tweet);
+
 @end

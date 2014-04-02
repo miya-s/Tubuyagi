@@ -168,4 +168,14 @@ NSString* deleteNoises(NSString *str){
     [self calcMorphedText:text learn:NO];
 }
 
+#pragma mark-そのツイートがどれだけ教えやすいものかスコア計算
+double TYCalcFitnessForTeach(NSDictionary *tweet){
+    NSString* content = [tweet objectForKey:@"text"];
+#warning もっと正確な計算方法
+    if(content.length == 0){
+        return 0;
+    }
+    return 1 / content.length;
+}
+
 @end

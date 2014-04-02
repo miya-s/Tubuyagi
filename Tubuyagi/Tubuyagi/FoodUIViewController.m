@@ -8,7 +8,7 @@
 
 #import "FoodUIViewController.h"
 #import "MarkovTextGenerator.h"
-#import "STTwitter.h"
+#import "TweetsManager.h"
 #import "DeleteWordTableViewController.h"
 
 @interface FoodUIViewController ()
@@ -76,9 +76,6 @@
     [self _setHeaderViewHidden:YES animated:NO];
     [self.headerView setState:HeaderViewStateHidden];
     
-    //twtterデータの取得
-//    [self getTwitterInformation];
-    
     //紙の背景の生成
     
 }
@@ -113,39 +110,22 @@
 
 - (void)getTwitterInformation
 {
-//    self.statuses = @[];
-//    self.statusLabel.text = @"";
-//    [self.foodTableView reloadData];
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-    STTwitterAPI *twitter = [STTwitterAPI twitterAPIOSWithFirstAccount];
-    
-    [twitter verifyCredentialsWithSuccessBlock:^(NSString *username) {
-        
-//        self.statusLabel.text = [NSString stringWithFormat:@"Fetching timeline for @%@...", username];
 
-        [twitter getHomeTimelineSinceID:nil
-                                  count:20
-                           successBlock:^(NSArray *statuses) {
-                               
-                               NSLog(@"-- statuses: %@", statuses);
-                               
-//                               self.statusLabel.text = [NSString stringWithFormat:@"@%@", username];
-                               
-                               self.tweets = statuses;
-                               [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-                               self.headerView.state = HeaderViewStateHidden;
-                               [self.headerView setUpdatedDate:[NSDate date]];
-                               [self _setHeaderViewHidden:YES animated:YES];
-                               [self.foodTableView reloadData];
-                               
-                               
-                           } errorBlock:^(NSError *error) {
-                               NSLog(@"%@", [error localizedDescription]);
-                           }];
-        
+    TweetsManager *tweetsManager = [TweetsManager tweetsManagerFactory];
+    [tweetsManager checkTweetsToTrainWithSuccessBlock:^(NSArray *statuses) {
+#warning メインスレッドでやったほうがよさげ
+        self.tweets = statuses;
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+        self.headerView.state = HeaderViewStateHidden;
+        [self.headerView setUpdatedDate:[NSDate date]];
+        [self _setHeaderViewHidden:YES animated:YES];
+        [self.foodTableView reloadData];
     } errorBlock:^(NSError *error) {
         NSLog(@"%@", [error localizedDescription]);
+        NSLog(@"通信失敗1");
     }];
+
 }
 
 

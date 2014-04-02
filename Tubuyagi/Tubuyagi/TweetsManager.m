@@ -18,6 +18,7 @@
 #import "FMDatabase+Tubuyagi.h"
 
 #import "AuthentificationKeys.h"
+#import "MarkovTextGenerator.h"
 // !!!: AuthentificationKeysはgitの管理外にあります。ほしい人は kan.tan.san @ gmail.com まで
 
 @implementation TweetsManager
@@ -206,18 +207,48 @@ NSArray *TYConvertTweetsToOldStyle(NSArray *tweets);
 }
 
 #pragma mark -ツイート取得
-//タイムライン取得
-//参考: http://qiita.com/paming/items/9a6b51fa56915d1f1d64
-- (void)checkTimelineWithSuccessBlock:(void(^)(NSArray *statuses))successBlock
-                           errorBlock:(void(^)(NSError *error))errorBlock
+// 学習用ツイートの取得
+// statusesに"score"という項目が増えている
+// これは、ツイートがどれだけ学習に適しているかをスコア付けしたもの
+- (void)checkTweetsToTrainWithSuccessBlock:(void(^)(NSArray *statuses))successBlock
+                                errorBlock:(void(^)(NSError *error))errorBlock
 {
     [_twitterAPIClient getHomeTimelineSinceID:NULL
-                                       count:20
-                                successBlock:successBlock
-                                  errorBlock:errorBlock];
+                                        count:20
+                                 successBlock:^(NSArray *statuses){
+                                     NSArray *sortedStatuses = [self scoredTweets:statuses];
+                                     successBlock(sortedStatuses);
+                                 }
+                                   errorBlock:errorBlock];
 }
 
-//検索結果取得
+
+// MEMO: ユーザーアイコンは user -> profile_image_url で取れる
+// 学習に適している度合いをアノテーション＆それに基づきソートされたtweetsを返す
+- (NSArray *)scoredTweets:(NSArray *)tweets{
+    NSMutableArray *scoredTweets = [NSMutableArray array];
+
+    for (NSDictionary *tweet in tweets){
+        // スコア計算(計算方法はMarkovTextGenerator.hに記載)
+        double scoreForTweet = TYCalcFitnessForTeach(tweet);
+
+        // 付与
+        NSMutableDictionary *scoredTweet = [NSMutableDictionary dictionaryWithDictionary:tweet];
+        [scoredTweet setObject:[NSNumber numberWithDouble:scoreForTweet] forKey:@"score"];
+        [scoredTweets addObject:scoredTweet];
+    }
+    
+    //ソート
+    NSArray *sortedTweets = [scoredTweets sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+        NSDictionary *tweet1 = obj1;
+        NSDictionary *tweet2 = obj2;
+        return [[tweet2 objectForKey:@"score"] doubleValue] - [[tweet1 objectForKey:@"score"] doubleValue];
+    }];
+
+    return sortedTweets;
+}
+
+#pragma mark- 検索結果取得
 - (void)checkSearchResultForRecent:(BOOL)isRecent
                       SuccessBlock:(void(^)(NSArray *statuses))successBlock
                         errorBlock:(void(^)(NSError *error))errorBlock

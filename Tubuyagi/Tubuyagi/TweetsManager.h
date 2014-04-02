@@ -64,9 +64,9 @@ NS_ENUM(NSInteger, TYTweetQualificationError){
 - (void)OAuthWithOAuthToken:(NSString *)token
               OAuthVerifier:(NSString *)verifier;
 
-#pragma mark タイムライン取得
-- (void)checkTimelineWithSuccessBlock:(void(^)(NSArray *statuses))successBlock
-                           errorBlock:(void(^)(NSError *error))errorBlock;
+#pragma mark 学習用ツイート取得
+- (void)checkTweetsToTrainWithSuccessBlock:(void(^)(NSArray *statuses))successBlock
+                                errorBlock:(void(^)(NSError *error))errorBlock;
 
 #pragma mark 検索結果取得
 - (void)checkSearchResultForRecent:(BOOL)isRecent

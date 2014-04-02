@@ -15,4 +15,6 @@
 
 - (id)initTreeAsSubView;
 
+- (void)putFruits;
+
 @end

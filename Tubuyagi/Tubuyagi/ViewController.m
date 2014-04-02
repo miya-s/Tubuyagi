@@ -300,7 +300,7 @@ NS_ENUM(NSInteger, TYActionSheets){
     [df setObject:newUserName forKey:@"TDUserName"];
     userName = [NSString stringWithFormat:@"%@のタイムライン", newUserName];
     
-    [self.tweetsManager checkTimelineWithSuccessBlock:^(NSArray *statuses) {
+    [self.tweetsManager checkTweetsToTrainWithSuccessBlock:^(NSArray *statuses) {
         [self performSelectorOnMainThread:@selector(loadTimeLine:)
                                withObject:statuses
                             waitUntilDone:YES];
