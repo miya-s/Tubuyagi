@@ -42,6 +42,8 @@
 @property (weak, nonatomic) IBOutlet UIImageView *statusBar;
 @property (strong, nonatomic) IBOutlet UITextField *txfYagiName;
 @property (strong, nonatomic) IBOutlet UIView *configView;
+@property (weak, nonatomic) IBOutlet UIButton *backButton;
+
 @property (readwrite) BOOL availableButtons;
 @property (readwrite) double alphaForButtons;
 

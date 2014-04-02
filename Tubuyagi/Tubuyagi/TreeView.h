@@ -13,8 +13,6 @@
 
 @property(readwrite) UIButton *button;
 
-@property(readwrite) UIButton *backButton;
-
 - (id)initTreeAsSubView;
 
 @end

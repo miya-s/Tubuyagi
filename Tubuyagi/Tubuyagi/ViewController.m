@@ -87,11 +87,9 @@ NS_ENUM(NSInteger, TYActionSheets){
     [self.view insertSubview:self.treeView belowSubview:self.statusBar];
     //木用ボタンの配置(ヤギの上に置く)
     [self.view addSubview:self.treeView.button];
-    //木用「もどる」ボタンの配置
-    [self.view addSubview:self.treeView.backButton];
     //ボタンイベント登録
     [self.treeView.button addTarget:self action:@selector(moveToTreeView) forControlEvents:UIControlEventTouchUpInside];
-    [self.treeView.backButton addTarget:self action:@selector(backFromTreeView) forControlEvents:UIControlEventTouchUpInside];
+    [self.backButton addTarget:self action:@selector(backFromTreeView) forControlEvents:UIControlEventTouchUpInside];
     
     //FoodViewControllerの生成
     fvc = [[FoodUIViewController alloc] initWithNibName:@"FoodUIViewController" bundle:nil];
@@ -620,24 +618,26 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 #pragma mark- TreeViewDelegate
 - (void)moveToTreeView{
     NSLog(@"Tree Button");
-    [UIView animateWithDuration:1 animations:^(void){
+    [UIView animateWithDuration:0.8 animations:^(void){
         self.alphaForButtons = 0;
         self.availableButtons = NO;
         self.treeView.transform = CGAffineTransformConcat(CGAffineTransformMakeScale(2.4, 2.4),
                                                           CGAffineTransformMakeTranslation(-100, 50));
     } completion:^(BOOL finished){
-        self.treeView.backButton.enabled = YES;
+        self.backButton.alpha = 1;
+        self.backButton.enabled = YES;
     }];
 }
 
 - (void)backFromTreeView{
     NSLog(@"Tree Button");
-    [UIView animateWithDuration:1 animations:^(void){
+    [UIView animateWithDuration:0.5 animations:^(void){
         self.alphaForButtons = 1;
+        self.backButton.alpha = 0;
         self.availableButtons = YES;
         self.treeView.transform = CGAffineTransformIdentity;
     } completion:^(BOOL finished){
-        self.treeView.backButton.enabled = NO;
+        self.backButton.enabled = NO;
     }];
 }
 

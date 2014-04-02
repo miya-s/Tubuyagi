@@ -33,10 +33,6 @@
         //ボタン追加
         _button = [UIButton buttonWithType:UIButtonTypeCustom];
         _button.frame = frame;
-        
-        _backButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _backButton.frame = frame;
-        _backButton.enabled = NO;
     }
     return self;
 }
