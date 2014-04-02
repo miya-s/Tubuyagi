@@ -13,6 +13,7 @@
 
 @class UIYagiButton;
 
+// ヤギはいろいろなパーツから構成されるので、UIImageViewとしては扱っていない
 @interface YagiView : UIView<CMPopTipViewDelegate>
 
 // ヤギをタッチした時の動作を管理

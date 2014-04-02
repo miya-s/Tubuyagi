@@ -112,6 +112,7 @@
 		4AB139ED18E4188800921337 /* NSDate+TimeAgo.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AB139EC18E4188800921337 /* NSDate+TimeAgo.m */; };
 		4ABA5EC517E27DED0041FB3C /* tutorial.png in Resources */ = {isa = PBXBuildFile; fileRef = 4ABA5EC417E27DED0041FB3C /* tutorial.png */; };
 		4ABA5EC717E27E740041FB3C /* tutorial_new3.png in Resources */ = {isa = PBXBuildFile; fileRef = 4ABA5EC617E27E740041FB3C /* tutorial_new3.png */; };
+		4ACC839118EC336700072FBD /* iAd.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4ACC839018EC336700072FBD /* iAd.framework */; };
 		4AE36E5F18D2206F000A8084 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4AE36E5E18D2206F000A8084 /* XCTest.framework */; };
 		4AE36E6018D2206F000A8084 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 374D792B17D822D000FAE80C /* Foundation.framework */; };
 		4AE36E6118D2206F000A8084 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 374D792917D822D000FAE80C /* UIKit.framework */; };
@@ -276,6 +277,7 @@
 		4AB139EC18E4188800921337 /* NSDate+TimeAgo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSDate+TimeAgo.m"; path = "NSDate-TimeAgo/NSDate+TimeAgo.m"; sourceTree = "<group>"; };
 		4ABA5EC417E27DED0041FB3C /* tutorial.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial.png; sourceTree = "<group>"; };
 		4ABA5EC617E27E740041FB3C /* tutorial_new3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial_new3.png; sourceTree = "<group>"; };
+		4ACC839018EC336700072FBD /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
 		4AE36E5D18D2206F000A8084 /* Tubuyagi Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tubuyagi Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4AE36E5E18D2206F000A8084 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		4AE36E6418D2206F000A8084 /* Tubuyagi Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Tubuyagi Tests-Info.plist"; sourceTree = "<group>"; };
@@ -317,6 +319,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4ACC839118EC336700072FBD /* iAd.framework in Frameworks */,
 				3741854717E0408C00D68688 /* AudioToolbox.framework in Frameworks */,
 				37778B0517DC6DFA004F51A5 /* Twitter.framework in Frameworks */,
 				4A63EA9F17D890F400C93F86 /* libsqlite3.0.dylib in Frameworks */,
@@ -414,6 +417,7 @@
 		374D792817D822CF00FAE80C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4ACC839018EC336700072FBD /* iAd.framework */,
 				3741854617E0408C00D68688 /* AudioToolbox.framework */,
 				37778B0417DC6DFA004F51A5 /* Twitter.framework */,
 				375137BF17D9761F0069A12C /* Social.framework */,

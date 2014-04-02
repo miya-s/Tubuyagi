@@ -621,10 +621,10 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 - (void)moveToTreeView{
     NSLog(@"Tree Button");
     [UIView animateWithDuration:1 animations:^(void){
-        //ObjectName.layer.anchorPoint= CGPointMake(0,0.5);
         self.alphaForButtons = 0;
         self.availableButtons = NO;
-        self.treeView.transform = CGAffineTransformMakeScale(2, 2);
+        self.treeView.transform = CGAffineTransformConcat(CGAffineTransformMakeScale(2.4, 2.4),
+                                                          CGAffineTransformMakeTranslation(-100, 50));
     } completion:^(BOOL finished){
         self.treeView.backButton.enabled = YES;
     }];
@@ -633,10 +633,9 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 - (void)backFromTreeView{
     NSLog(@"Tree Button");
     [UIView animateWithDuration:1 animations:^(void){
-        //ObjectName.layer.anchorPoint= CGPointMake(0,0.5);
         self.alphaForButtons = 1;
         self.availableButtons = YES;
-        self.treeView.transform = CGAffineTransformInvert(CGAffineTransformMakeScale(2, 2));
+        self.treeView.transform = CGAffineTransformIdentity;
     } completion:^(BOOL finished){
         self.treeView.backButton.enabled = NO;
     }];

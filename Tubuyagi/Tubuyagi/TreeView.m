@@ -10,11 +10,10 @@
 @implementation TreeView
 {
     UIImageView *_treeBody;
-    
 }
 
 - (id)initTreeAsSubView{
-    CGRect treeRect = CGRectMake(50, 20, 130, 200);
+    CGRect treeRect = CGRectMake(180, 100, 130, 200);
     self = [self initWithFrame:treeRect];
     if (self) {
     }
