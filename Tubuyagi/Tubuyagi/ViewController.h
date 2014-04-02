@@ -22,18 +22,9 @@
 @class YagiView;
 
 @interface ViewController : UIViewController<FoodViewControllerDelegate, UIActionSheetDelegate,
-                                                CMPopTipViewDelegate, UIAlertViewDelegate, DeleteWordTabelViewControllerDelegate,
+                                                UIAlertViewDelegate, DeleteWordTabelViewControllerDelegate,
                                                 UITabBarControllerDelegate,UITextFieldDelegate,
                                                 FavoriteViewControllerDelegate>
-{
-    BOOL twitterAcountFlag;//本体にアカウントが設定されてないフラグ
-    BOOL twitterAcountflag2;//電波が通じないフラグ
-    NSArray *tweets;
-    NSString *userName;
-    FoodUIViewController *fvc;
-    
-    FavoriteViewController *fvvc1, *fvvc2, *fvvc3;
-}
 @property (nonatomic, retain) ACAccountStore *accountStore;
 @property (nonatomic, retain) NSArray *twitterAccounts;
 @property (nonatomic, retain) YagiView *yagiView;
@@ -48,16 +39,16 @@
 @property (strong, nonatomic) IBOutlet UILabel *strWara;
 @property (strong, nonatomic) IBOutlet UILabel *strOwnerName;
 @property (strong, nonatomic) IBOutlet UILabel *strYagiName;
+@property (weak, nonatomic) IBOutlet UIImageView *statusBar;
 @property (strong, nonatomic) IBOutlet UITextField *txfYagiName;
 @property (strong, nonatomic) IBOutlet UIView *configView;
 @property (readwrite) BOOL availableButtons;
+@property (readwrite) double alphaForButtons;
 
 - (IBAction)chooseFood:(UIButton *)sender;
 - (IBAction)setConfig:(UIButton *)sender;
 - (IBAction)forgetWord:(UIButton *)sender;
 - (IBAction)showFavorite:(id)sender;
 - (IBAction)closeConfigView:(id)sender;
-- (void)alert;
-
 
 @end

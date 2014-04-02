@@ -230,7 +230,6 @@
         scrTutorial.transform = CGAffineTransformMakeScale(0.001, 0.001);
     } completion:^(BOOL finished){
         [scrTutorial removeFromSuperview];
-        [self.viewController alert];
     }];
     
 #warning 最後に直す

@@ -13,28 +13,31 @@
     
 }
 
-//指定イニシャライザ
 - (id)initTreeAsSubView{
-    CGRect treeRect = CGRectMake(45, 158, 230, 228);
-    self = [super initWithFrame:treeRect];
+    CGRect treeRect = CGRectMake(50, 20, 130, 200);
+    self = [self initWithFrame:treeRect];
     if (self) {
-        //木画像追加
-        _treeBody = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"tree.png"]];
-        _treeBody.center = CGPointMake(144, 120);
-        [self addSubview:_treeBody];
     }
     return self;
-
-}
-
-- (void)moveToTreeView{
-    
 }
 
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
     if (self) {
+        //木画像追加
+        _treeBody = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"tree.png"]];
+        _treeBody.frame = CGRectMake(0, 0, 130, 200);
+        [self addSubview:_treeBody];
+        
+        // !!!:ButtonはTreeと独立して存在するで、絶対座標指定が必要
+        //ボタン追加
+        _button = [UIButton buttonWithType:UIButtonTypeCustom];
+        _button.frame = frame;
+        
+        _backButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        _backButton.frame = frame;
+        _backButton.enabled = NO;
     }
     return self;
 }

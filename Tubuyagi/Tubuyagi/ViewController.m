@@ -31,8 +31,17 @@ NS_ENUM(NSInteger, TYActionSheets){
 @end
 
 @implementation ViewController
+{
+    NSArray *tweets;
+    NSMutableArray *_buttons;
+    NSString *userName;
+    FoodUIViewController *fvc;
+    
+    FavoriteViewController *fvvc1, *fvvc2, *fvvc3;
+}
 
 @synthesize availableButtons = _availableButtons;
+@synthesize alphaForButtons = _alphaForButtons;
 
 #pragma mark -initial settings
 //初期設定
@@ -55,6 +64,8 @@ NS_ENUM(NSInteger, TYActionSheets){
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
     
+    _buttons = [NSMutableArray arrayWithArray:@[]];
+    
     // お気に入られ数の表示
     TweetsManager *tweetsManager = [TweetsManager tweetsManagerFactory];
     self.strWara.text = [NSString stringWithFormat:@"%d", tweetsManager.totalFavoritedCount];
@@ -70,14 +81,18 @@ NS_ENUM(NSInteger, TYActionSheets){
     //食べる紙配置
     [self.view addSubview:self.yagiView.lblYagiTweet];
 
-    
-    /*
     //木の生成
     self.treeView = [[TreeView alloc] initTreeAsSubView];
     //木はヤギの下に置く
-    [self.view insertSubview:self.treeView belowSubview:self.yagiView];
-    */
-     
+    [self.view insertSubview:self.treeView belowSubview:self.statusBar];
+    //木用ボタンの配置(ヤギの上に置く)
+    [self.view addSubview:self.treeView.button];
+    //木用「もどる」ボタンの配置
+    [self.view addSubview:self.treeView.backButton];
+    //ボタンイベント登録
+    [self.treeView.button addTarget:self action:@selector(moveToTreeView) forControlEvents:UIControlEventTouchUpInside];
+    [self.treeView.backButton addTarget:self action:@selector(backFromTreeView) forControlEvents:UIControlEventTouchUpInside];
+    
     //FoodViewControllerの生成
     fvc = [[FoodUIViewController alloc] initWithNibName:@"FoodUIViewController" bundle:nil];
     fvc.delegate = self;
@@ -94,6 +109,14 @@ NS_ENUM(NSInteger, TYActionSheets){
     //設定画面の初期設定
     self.txfYagiName.delegate = self;
     self.txfYagiName.returnKeyType = UIReturnKeyDone;
+    
+    //管理用にボタンを登録
+    [_buttons addObject:self.yagiView.button];
+    [_buttons addObject:self.treeView.button];
+    [_buttons addObject:self.btnChooseFood];
+    [_buttons addObject:self.btnConfig];
+    [_buttons addObject:self.btnForget];
+    [_buttons addObject:self.btnshowFavolite];
     
     //ボタン一時利用できないようにする
     self.availableButtons = NO;
@@ -152,7 +175,6 @@ NS_ENUM(NSInteger, TYActionSheets){
     }];
     
     [self.txfYagiName becomeFirstResponder];
-//    [self alert];
 }
 
 - (IBAction)forgetWord:(UIButton *)sender {
@@ -207,7 +229,6 @@ NS_ENUM(NSInteger, TYActionSheets){
     [self presentViewController:tab animated:YES completion:nil];
     
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-//    [self alert];
 }
 
 
@@ -247,84 +268,13 @@ NS_ENUM(NSInteger, TYActionSheets){
     }
 }
 
-#pragma mark - CMPopTipViewDelegate
-
-- (void)touchTipPopView
-{
-    NSString *strShare = [NSString stringWithFormat:@"「%@」のつぶやきを共有しますか？？", self.yagiView.recentTweet];
-    if (!self.yagiView.recentTweet) {
-        strShare = @"つぶやぎをタップして\nしゃべらせよう！";
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"発言の共有"
-                                                        message:strShare
-                                                       delegate:self
-                                              cancelButtonTitle:@"OK"
-                                              otherButtonTitles:nil];
-        alert.tag = 10;
-        [alert show];
-    }else{
-        [self takeScreenShot];
-        //共有確認ボタンを出す
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"発言の共有"
-                                                        message:strShare
-                                                       delegate:self
-                                              cancelButtonTitle:@"OK"
-                                              otherButtonTitles:@"キャンセル",nil];
-        alert.tag = 10;
-        [alert show];
-    }
-}
-
-- (void)popTipViewWasDismissedByUser:(CMPopTipView *)popTipView
-{
-    [self touchTipPopView];
-}
-
-/*
- 投稿用スクリーンショットを撮る
- 参考 : http://www.yoheim.net/blog.php?q=20130706
- */
-- (void)takeScreenShot{
-    // キャプチャ対象をWindowに
-    UIWindow *window = [[UIApplication sharedApplication] keyWindow];
-    
-    // キャプチャ画像を描画する対象を生成
-    UIGraphicsBeginImageContextWithOptions(window.bounds.size, NO, 0.0f);
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    
-    // Windowの現在の表示内容を１つずつ描画
-    for (UIWindow *aWindow in [[UIApplication sharedApplication] windows]) {
-        [aWindow.layer renderInContext:context];
-    }
-    
-    // 描画した内容をUIImageとして受け取る
-    UIImage *capturedImage = UIGraphicsGetImageFromCurrentImageContext();
-    
-    UIGraphicsEndImageContext();
-    
-    self.yagiView.recentScreenShot = capturedImage;
-}
-
 #pragma mark-YagiButton Delegate
 - (void)tweetYagi
 {
     [self.yagiView tweet];
-    self.yagiView.popTipView.delegate = self;
     [self.yagiView.popTipView presentPointingAtView:self.yagiView inView:self.view animated:YES];
-    twitterAcountFlag = NO;
-    twitterAcountflag2 = NO;
 }
 
-
-- (void)alert{
-    if (twitterAcountFlag) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Twitterの情報を取得できませんでした" message:@"電波のいいところで再起動、もしくは本体に登録されているTwitterアカウントを確認して下さい" delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
-        [alert show];
-    }else if (twitterAcountflag2)
-    {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Twitterの情報を取得できませんでした" message:@"本体に登録されているTwitterアカウントを確認して下さい" delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
-        [alert show];
-    }
-}
 - (void)loadTimeLine:(NSArray *)statuses{
     //取得内容の保存
     tweets = statuses;
@@ -359,7 +309,6 @@ NS_ENUM(NSInteger, TYActionSheets){
     } errorBlock:^(NSError *error) {
         NSLog(@"%@", [error localizedDescription]);
         NSLog(@"通信失敗1");
-        twitterAcountFlag = YES;
     }];
 }
 
@@ -449,7 +398,6 @@ NS_ENUM(NSInteger, TYActionSheets){
          // 認証失敗
          NSAssert(!error, [error description]);
          [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-         twitterAcountflag2 = YES;
      }];
 }
 
@@ -596,7 +544,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 }
 - (void)viewDidUnload {
     [self setBtnChooseFood:nil];
-//    [self setBtnShareTweet:nil];
     [self setBtnshowFavolite:nil];
     [self setImgSaku:nil];
     [self setStrStatus:nil];
@@ -658,7 +605,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     return YES;
 }
 
-#pragma mark - FavoriteVieDelegate
+#pragma mark - FavoriteViewDelegate
 // お気に入られ数の表示
 - (void)reloadFavCount{
     TweetsManager *tweetsManager = [TweetsManager tweetsManagerFactory];
@@ -670,19 +617,54 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     }];
 }
 
+#pragma mark- TreeViewDelegate
+- (void)moveToTreeView{
+    NSLog(@"Tree Button");
+    [UIView animateWithDuration:1 animations:^(void){
+        //ObjectName.layer.anchorPoint= CGPointMake(0,0.5);
+        self.alphaForButtons = 0;
+        self.availableButtons = NO;
+        self.treeView.transform = CGAffineTransformMakeScale(2, 2);
+    } completion:^(BOOL finished){
+        self.treeView.backButton.enabled = YES;
+    }];
+}
+
+- (void)backFromTreeView{
+    NSLog(@"Tree Button");
+    [UIView animateWithDuration:1 animations:^(void){
+        //ObjectName.layer.anchorPoint= CGPointMake(0,0.5);
+        self.alphaForButtons = 1;
+        self.availableButtons = YES;
+        self.treeView.transform = CGAffineTransformInvert(CGAffineTransformMakeScale(2, 2));
+    } completion:^(BOOL finished){
+        self.treeView.backButton.enabled = NO;
+    }];
+}
+
 #pragma mark- getter and setter
 - (BOOL)availableButtons{
     return _availableButtons;
 }
 
 - (void)setAvailableButtons:(BOOL)availableButtons{
-    self.yagiView.button.enabled = availableButtons;
-    //self.treeView.button.enabled = availableButtons;
-    self.btnChooseFood.enabled = availableButtons;
-    self.btnForget.enabled = availableButtons;
-    self.btnConfig.enabled = availableButtons;
-    self.btnshowFavolite.enabled = availableButtons;
+    for (UIButton *button in _buttons){
+        button.enabled = availableButtons;
+    }
     _availableButtons = availableButtons;
 }
+
+- (double)alphaForButtons{
+    return _alphaForButtons;
+}
+
+- (void)setAlphaForButtons:(double)alphaForButtons{
+    for (UIButton *button in _buttons){
+        button.alpha = alphaForButtons;
+    }
+    self.yagiView.alpha = alphaForButtons;
+    _alphaForButtons = alphaForButtons;
+}
+
 
 @end

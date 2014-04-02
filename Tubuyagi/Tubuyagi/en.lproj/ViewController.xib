@@ -13,6 +13,7 @@
                 <outlet property="btnshowFavolite" destination="348" id="539"/>
                 <outlet property="configView" destination="844" id="906"/>
                 <outlet property="imgSaku" destination="703" id="744"/>
+                <outlet property="statusBar" destination="658" id="Tnf-Tg-8Mz"/>
                 <outlet property="strOwnerName" destination="877" id="903"/>
                 <outlet property="strStatus" destination="250" id="810"/>
                 <outlet property="strWara" destination="823" id="837"/>

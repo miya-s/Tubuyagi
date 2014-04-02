@@ -13,7 +13,7 @@
 
 @class UIYagiButton;
 
-@interface YagiView : UIView
+@interface YagiView : UIView<CMPopTipViewDelegate>
 
 // ヤギをタッチした時の動作を管理
 @property(readwrite) UIYagiButton *button;

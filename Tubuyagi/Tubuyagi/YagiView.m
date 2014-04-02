@@ -64,6 +64,7 @@
         
         _button = [[UIYagiButton alloc] initWithFrame:frame];
         
+        
         //PopTipView準備
         [self preparePopTipView];
         
@@ -378,6 +379,7 @@
     self.popTipView.backgroundColor = [UIColor whiteColor];
     self.popTipView.textColor = [UIColor blackColor];
     self.popTipView.preferredPointDirection = PointDirectionDown;
+    self.popTipView.delegate = self;
     
     //ヤギの動き
     [self stopWalk:NO];
@@ -398,6 +400,64 @@
                                              repeats:NO];
     _timerFlag = NO;
 }
+
+#pragma mark - CMPopTipViewDelegate
+
+/*
+ 投稿用スクリーンショットを撮る
+ 参考 : http://www.yoheim.net/blog.php?q=20130706
+ */
+- (void)takeScreenShot{
+    // キャプチャ対象をWindowに
+    UIWindow *window = [[UIApplication sharedApplication] keyWindow];
+    
+    // キャプチャ画像を描画する対象を生成
+    UIGraphicsBeginImageContextWithOptions(window.bounds.size, NO, 0.0f);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    // Windowの現在の表示内容を１つずつ描画
+    for (UIWindow *aWindow in [[UIApplication sharedApplication] windows]) {
+        [aWindow.layer renderInContext:context];
+    }
+    
+    // 描画した内容をUIImageとして受け取る
+    UIImage *capturedImage = UIGraphicsGetImageFromCurrentImageContext();
+    
+    UIGraphicsEndImageContext();
+    
+    self.recentScreenShot = capturedImage;
+}
+
+- (void)touchTipPopView
+{
+    NSString *strShare = [NSString stringWithFormat:@"「%@」のつぶやきを共有しますか？？", self.recentTweet];
+    if (!self.recentTweet) {
+        strShare = @"つぶやぎをタップして\nしゃべらせよう！";
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"発言の共有"
+                                                        message:strShare
+                                                       delegate:self
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+        alert.tag = 10;
+        [alert show];
+    }else{
+        [self takeScreenShot];
+        //共有確認ボタンを出す
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"発言の共有"
+                                                        message:strShare
+                                                       delegate:self
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:@"キャンセル",nil];
+        alert.tag = 10;
+        [alert show];
+    }
+}
+
+- (void)popTipViewWasDismissedByUser:(CMPopTipView *)popTipView
+{
+    [self touchTipPopView];
+}
+
 
 - (void)dismissPopTipView{
     [self.popTipView dismissAnimated:YES];
